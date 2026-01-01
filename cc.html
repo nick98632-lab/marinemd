@@ -40,9 +40,9 @@ details summary{cursor:pointer;font-weight:950;color:var(--a)}
 .day:hover{border-color:rgba(121,192,255,.5)}.day .n{font-weight:950;font-size:12px;display:flex;align-items:center;justify-content:space-between}
 .chips{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}
 .chip{font-size:10px;padding:2px 6px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-.chip.sch{border-color:rgba(126,231,135,.55);color:var(--ok)}
-.chip.log{border-color:rgba(121,192,255,.65);color:var(--a)}
-.chip.rest{border-color:rgba(242,204,96,.55);color:var(--warn)}
+.chip.sch{border-color:rgba(126,231,135,.55);color:var(--ok);background:rgba(126,231,135,.10)}
+.chip.log{border-color:rgba(121,192,255,.65);color:var(--a);background:rgba(121,192,255,.10)}
+.chip.rest{border-color:rgba(242,204,96,.55);color:var(--warn);background:rgba(242,204,96,.10)}
 .list{display:flex;flex-direction:column;gap:8px}
 .item{border:1px solid var(--line);border-radius:12px;padding:8px;background:rgba(7,10,15,.28)}
 .right{display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
@@ -56,6 +56,53 @@ details summary{cursor:pointer;font-weight:950;color:var(--a)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:#0d1320;border:1px solid var(--line);padding:8px 10px;border-radius:12px;font-weight:950;font-size:12px;display:none;z-index:60}
 img,video,canvas,svg{max-width:100%;height:auto}
 @media (max-width:420px){:root{--pad:6px}}
+
+/* --- Neon Guide Additions --- */
+.neonCard{
+  border:1px solid rgba(121,192,255,.35);
+  box-shadow:0 0 18px rgba(47,123,255,.18), 0 0 28px rgba(255,59,212,.08);
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(47,123,255,.10), transparent 55%),
+    radial-gradient(900px 500px at 90% 30%, rgba(255,59,212,.10), transparent 55%),
+    radial-gradient(700px 420px at 50% 100%, rgba(40,240,167,.08), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+}
+.neonTitle{
+  font-weight:950;
+  font-size:12px;
+  letter-spacing:.25px;
+  margin:0 0 6px;
+}
+.neonBtns{display:flex;gap:6px;flex-wrap:wrap}
+.neonBtn{
+  border:1px solid rgba(121,192,255,.35);
+  background:
+    linear-gradient(180deg, rgba(13,19,32,.95), rgba(7,10,18,.92));
+  color:var(--ink);
+  padding:8px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(47,123,255,.12);
+}
+.neonBtn:hover{border-color:rgba(121,192,255,.65); box-shadow:0 0 14px rgba(47,123,255,.18)}
+.neonBtn.pink{border-color:rgba(255,59,212,.35); box-shadow:0 0 10px rgba(255,59,212,.10)}
+.neonBtn.pink:hover{border-color:rgba(255,59,212,.65); box-shadow:0 0 14px rgba(255,59,212,.16)}
+.neonBtn.green{border-color:rgba(40,240,167,.30); box-shadow:0 0 10px rgba(40,240,167,.10)}
+.neonBtn.green:hover{border-color:rgba(40,240,167,.55); box-shadow:0 0 14px rgba(40,240,167,.16)}
+.neonBtn.amber{border-color:rgba(255,204,87,.30); box-shadow:0 0 10px rgba(255,204,87,.09)}
+.neonBtn.amber:hover{border-color:rgba(255,204,87,.55); box-shadow:0 0 14px rgba(255,204,87,.14)}
+.neonPanel{
+  display:none;
+  margin-top:8px;
+  border:1px solid rgba(35,48,66,.9);
+  border-radius:12px;
+  padding:10px;
+  background:rgba(7,10,15,.28);
+}
+.neonPanel.show{display:block}
+.neonKicker{color:var(--muted);font-size:11px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -94,6 +141,76 @@ img,video,canvas,svg{max-width:100%;height:auto}
       </div>
     </details>
   </div>
+
+    <div class="hr"></div>
+
+    <div class="card neonCard" style="margin:0;">
+      <div class="neonTitle">Why this works: Convict Conditioning + Internal Medicine</div>
+      <div class="tiny">
+        Convict Conditioning is a standards-based strength system. Read through the lens of internal medicine, it supports long-term
+        functional reserve, injury resistance, and survivability under physiologic stress. Use the buttons below to expand the medical logic.
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="neonBtns">
+        <button class="neonBtn" data-open="panel_core">Core rationale</button>
+        <button class="neonBtn pink" data-open="panel_harrisons">Harrison’s</button>
+        <button class="neonBtn green" data-open="panel_wade">Coach Wade method</button>
+        <button class="neonBtn amber" data-open="panel_mets">METs + surgery/hospital</button>
+        <button class="neonBtn" data-open="panel_rules">Practical rules</button>
+      </div>
+
+      <div id="panel_core" class="neonPanel show">
+        <div class="tiny">
+          Convict Conditioning favors progressive bodyweight resistance with strict form and controlled tempo. That discipline builds
+          joint integrity, spinal resilience, neuromuscular control, and durable strength. Medicine values the same outcome:
+          preserve functional capacity and reduce downstream morbidity. Pair this with daily movement (like walking) to blunt the
+          independent harms of sedentary time, and you get a simple system that is sustainable for years.
+        </div>
+      </div>
+
+      <div id="panel_harrisons" class="neonPanel">
+        <div class="tiny">
+          <b>Harrison’s Principles of Internal Medicine</b> is a flagship internal medicine textbook used worldwide to train physicians and guide
+          evidence-based clinical thinking. In its preventive and chronic disease frameworks, it treats physical activity like a dose-dependent
+          therapy: regular movement reduces cardiometabolic disease, musculoskeletal decline, depression, and all-cause mortality.
+          It emphasizes that sedentary behavior is independently harmful, and that aerobic activity plus resistance training provides the most
+          reliable long-term benefit when it is sustainable and consistent.
+        </div>
+      </div>
+
+      <div id="panel_wade" class="neonPanel">
+        <div class="tiny">
+          Coach Wade’s method rejects shortcuts and gimmicks. It uses a fixed set of foundational movements (“Big Six”) and makes you earn
+          progression through standards: clean reps, controlled tempo, and patience. The goal is not flashy effort—it’s ownership of strength.
+          That creates resilience rather than fragility and supports lifelong training without requiring equipment or maximal loading.
+        </div>
+      </div>
+
+      <div id="panel_mets" class="neonPanel">
+        <div class="tiny">
+          In perioperative and inpatient medicine, clinicians often use functional capacity in <b>METs</b> (metabolic equivalents) as a proxy for
+          physiologic reserve. A common threshold is <b>4 METs</b>—the ability to do tasks like brisk walking or climbing stairs.
+          Patients below that threshold tend to have higher complication risk with acute illness and surgery. Daily walking preserves aerobic reserve,
+          and progressive strength training improves efficiency and tolerance to exertion—together supporting safer reserve when life gets stressful.
+        </div>
+      </div>
+
+      <div id="panel_rules" class="neonPanel">
+        <div class="tiny">
+          <b>Simple synthesis:</b> Train the Big Six with standards. Add daily walking or other steady movement. Break up long sitting.
+          Progress only when you can repeat the target cleanly at your official tempo. The result is strength that holds, and reserve that shows up
+          when you need it most.
+        </div>
+        <div class="hr"></div>
+        <div class="tiny">
+          <span class="pill ok">Green</span> scheduled
+          <span class="pill a" style="margin-left:6px;">Blue</span> logged
+          <span class="pill w" style="margin-left:6px;">Yellow</span> rest
+        </div>
+      </div>
+    </div>
 
   <div class="card" id="viewCalendar" style="display:none;">
     <div class="calHead">
@@ -250,7 +367,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
     "Pushups":[{name:"Wall",type:"rep",sets:3,per:20},{name:"Incline",type:"rep",sets:3,per:20},{name:"Knee",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Arm",type:"rep",sets:3,per:10},{name:"Lever",type:"rep",sets:3,per:8},{name:"1-Arm",type:"rep",sets:3,per:5}],
     "Pullups":[{name:"Vertical Rows",type:"rep",sets:3,per:20},{name:"Horizontal Rows",type:"rep",sets:3,per:20},{name:"Jackknife",type:"rep",sets:3,per:20},{name:"Half Pullup",type:"rep",sets:3,per:15},{name:"Full Pullup",type:"rep",sets:3,per:10},{name:"Close Pullup",type:"rep",sets:3,per:10},{name:"Uneven Pullup",type:"rep",sets:3,per:8},{name:"Half 1-Arm",type:"rep",sets:3,per:6},{name:"Assist 1-Arm",type:"rep",sets:3,per:5},{name:"1-Arm",type:"rep",sets:3,per:3}],
     "Squats":[{name:"Shoulderstand",type:"rep",sets:3,per:25},{name:"Jackknife",type:"rep",sets:3,per:25},{name:"Supported",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Leg",type:"rep",sets:3,per:10},{name:"Assist 1-Leg",type:"rep",sets:3,per:8},{name:"1-Leg",type:"rep",sets:3,per:5}],
-    "Bridges":[{name:"Short",type:"rep",sets:3,per:25},{name:"Straight",type:"rep",sets:3,per:25},{name:"Angled",type:"rep",sets:3,per:20},{name:"Head",type:"rep",sets:3,per:15},{name:"Half",type:"rep",sets:3,per:15},{name:"Full",type:"rep",sets:3,per:10},{name:"Wall Walks",type:"rep",sets:3,per:8},{name:"Closing",type:"rep",sets:3,per:6},{name:"Sit-to-Stand (assist)",type:"rep",sets:3,per:3},{name:"Stand-to-Sit / Stand-to-Stand",type:"rep",sets:3,per:2}],
+    "Bridges":[{name:"Short",type:"rep",sets:3,per:25},{name:"Straight",type:"rep",sets:3,per:25},{name:"Angled",type:"rep",sets:3,per:20},{name:"Head",type:"rep",sets:3,per:15},{name:"Half",type:"rep",sets:3,per:15},{name:"Full",type:"rep",sets:3,per:10},{name:"Wall Walks",type:"rep",sets:3,per:8},{name:"Closing",type:"rep",sets:3,per:6},{name:"Sit-to-Stand (assist)",type:"rep",sets:3,per:3},{name:"Stand-to-Sit & Sit-to-Stand",type:"rep",sets:3,per:2}],
     "Leg Raises":[{name:"Knee Tucks",type:"rep",sets:3,per:20},{name:"Flat Knee Raises",type:"rep",sets:3,per:20},{name:"Flat Bent Leg",type:"rep",sets:3,per:15},{name:"Flat Frog",type:"rep",sets:3,per:10},{name:"Flat Straight",type:"rep",sets:3,per:10},{name:"Hanging Knee",type:"rep",sets:3,per:15},{name:"Hanging Bent",type:"rep",sets:3,per:10},{name:"Hanging Frog",type:"rep",sets:3,per:8},{name:"Hanging Straight",type:"rep",sets:3,per:6},{name:"V-Raise",type:"rep",sets:3,per:5}],
     "Handstand Pushups":[{name:"Wall Headstand",type:"rep",sets:3,per:30},{name:"Crow",type:"rep",sets:3,per:30},{name:"Wall Handstand",type:"sec",sets:3,per:30},{name:"Half HSPU",type:"rep",sets:3,per:20},{name:"HSPU",type:"rep",sets:3,per:15},{name:"Close HSPU",type:"rep",sets:3,per:12},{name:"Uneven HSPU",type:"rep",sets:3,per:10},{name:"Half 1-Arm HSPU",type:"rep",sets:3,per:6},{name:"Assist 1-Arm HSPU",type:"rep",sets:3,per:4},{name:"1-Arm HSPU",type:"rep",sets:3,per:2}],
   };
@@ -446,6 +563,21 @@ img,video,canvas,svg{max-width:100%;height:auto}
       const meta=getDayMeta(ds);
       const div=document.createElement("div");
       div.className="day";
+
+      // Subtle, obvious day tint if any marker exists
+      if(meta.isScheduled){
+        div.style.borderColor="rgba(126,231,135,.45)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(126,231,135,.10), 0 0 14px rgba(126,231,135,.06)";
+      }
+      if(meta.hasLog){
+        div.style.borderColor="rgba(121,192,255,.55)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(121,192,255,.12), 0 0 14px rgba(121,192,255,.08)";
+      }
+      if(meta.isRest){
+        div.style.borderColor="rgba(242,204,96,.50)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(242,204,96,.12), 0 0 14px rgba(242,204,96,.06)";
+      }
+
       div.innerHTML=`
         <div class="n"><span>${d}</span>
           <span class="mono" style="font-size:10px;color:var(--muted)">${ds.slice(5)}</span>
@@ -741,9 +873,35 @@ ${last}
   navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); };
   navBtns.Data.onclick=()=>showView("Data");
 
+  // Neon Guide panels
+  function initNeonGuide(){
+    const btns = Array.from(document.querySelectorAll(".neonBtn[data-open]"));
+    if(!btns.length) return;
+    function closeAll(exceptId){
+      document.querySelectorAll(".neonPanel").forEach(p=>{
+        if(p.id === exceptId) return;
+        p.classList.remove("show");
+      });
+    }
+    btns.forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const id=b.getAttribute("data-open");
+        const panel=document.getElementById(id);
+        if(!panel) return;
+        const willShow=!panel.classList.contains("show");
+        closeAll(id);
+        panel.classList.toggle("show", willShow);
+        if(willShow){
+          panel.scrollIntoView({behavior:"smooth", block:"start"});
+        }
+      });
+    });
+  }
+
   // Init
   showView("Guide");
   renderCalendar();
+  initNeonGuide();
 })();
 </script>
 </body>
