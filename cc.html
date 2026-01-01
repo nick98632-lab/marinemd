@@ -67,23 +67,13 @@ img,video,canvas,svg{max-width:100%;height:auto}
     radial-gradient(700px 420px at 50% 100%, rgba(40,240,167,.08), transparent 55%),
     linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
 }
-.neonTitle{
-  font-weight:950;
-  font-size:12px;
-  letter-spacing:.25px;
-  margin:0 0 6px;
-}
+.neonTitle{font-weight:950;font-size:12px;letter-spacing:.25px;margin:0 0 6px}
 .neonBtns{display:flex;gap:6px;flex-wrap:wrap}
 .neonBtn{
   border:1px solid rgba(121,192,255,.35);
-  background:
-    linear-gradient(180deg, rgba(13,19,32,.95), rgba(7,10,18,.92));
+  background:linear-gradient(180deg, rgba(13,19,32,.95), rgba(7,10,18,.92));
   color:var(--ink);
-  padding:8px 10px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:950;
-  cursor:pointer;
+  padding:8px 10px;border-radius:999px;font-size:12px;font-weight:950;cursor:pointer;
   box-shadow:0 0 10px rgba(47,123,255,.12);
 }
 .neonBtn:hover{border-color:rgba(121,192,255,.65); box-shadow:0 0 14px rgba(47,123,255,.18)}
@@ -93,16 +83,8 @@ img,video,canvas,svg{max-width:100%;height:auto}
 .neonBtn.green:hover{border-color:rgba(40,240,167,.55); box-shadow:0 0 14px rgba(40,240,167,.16)}
 .neonBtn.amber{border-color:rgba(255,204,87,.30); box-shadow:0 0 10px rgba(255,204,87,.09)}
 .neonBtn.amber:hover{border-color:rgba(255,204,87,.55); box-shadow:0 0 14px rgba(255,204,87,.14)}
-.neonPanel{
-  display:none;
-  margin-top:8px;
-  border:1px solid rgba(35,48,66,.9);
-  border-radius:12px;
-  padding:10px;
-  background:rgba(7,10,15,.28);
-}
+.neonPanel{display:none;margin-top:8px;border:1px solid rgba(35,48,66,.9);border-radius:12px;padding:10px;background:rgba(7,10,15,.28)}
 .neonPanel.show{display:block}
-.neonKicker{color:var(--muted);font-size:11px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -113,7 +95,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
   </div>
   <div class="right">
     <span class="pill ok" id="helloPill">Athlete</span>
-    <span class="pill w" id="rankPill">RANK</span>
+    <span class="pill w mono" id="rankPill">RANK</span>
     <button class="btn2" id="btnEditProfile">Profile</button>
   </div>
 </div>
@@ -140,7 +122,6 @@ img,video,canvas,svg{max-width:100%;height:auto}
         <br>4) When you meet your target clean at the same official tempo at least twice, tap <b>Advance Step</b>.
       </div>
     </details>
-  </div>
 
     <div class="hr"></div>
 
@@ -148,7 +129,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
       <div class="neonTitle">Why this works: Convict Conditioning + Internal Medicine</div>
       <div class="tiny">
         Convict Conditioning is a standards-based strength system. Read through the lens of internal medicine, it supports long-term
-        functional reserve, injury resistance, and survivability under physiologic stress. Use the buttons below to expand the medical logic.
+        functional reserve, injury resistance, and survivability under physiologic stress. Use the buttons below to expand the logic.
       </div>
 
       <div class="hr"></div>
@@ -164,9 +145,8 @@ img,video,canvas,svg{max-width:100%;height:auto}
       <div id="panel_core" class="neonPanel show">
         <div class="tiny">
           Convict Conditioning favors progressive bodyweight resistance with strict form and controlled tempo. That discipline builds
-          joint integrity, spinal resilience, neuromuscular control, and durable strength. Medicine values the same outcome:
-          preserve functional capacity and reduce downstream morbidity. Pair this with daily movement (like walking) to blunt the
-          independent harms of sedentary time, and you get a simple system that is sustainable for years.
+          joint integrity, spinal resilience, neuromuscular control, and durable strength. Pair this with daily movement (like walking) to blunt
+          the independent harms of sedentary time, and you get a simple system that is sustainable for years.
         </div>
       </div>
 
@@ -211,6 +191,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
         </div>
       </div>
     </div>
+  </div>
 
   <div class="card" id="viewCalendar" style="display:none;">
     <div class="calHead">
@@ -362,6 +343,19 @@ img,video,canvas,svg{max-width:100%;height:auto}
   const LS_KEY="marinemd_cc_elite_v2";
   const TEMPO_PRESETS=["","2-0-2-0","3-1-2-1","5-1-5-1"];
 
+  // Rank is based on cumulative progression across the Big Six.
+  // We score "earned steps" as (step-1) for each movement. Max = 6 * 9 = 54.
+  const RANKS=[
+    {name:"CADET",      min:0},
+    {name:"RECRUIT",    min:6},
+    {name:"PRIVATE",    min:14},
+    {name:"CORPORAL",   min:22},
+    {name:"SERGEANT",   min:30},
+    {name:"GUNNY",      min:38},
+    {name:"MASTER",     min:46},
+    {name:"ELITE",      min:54}
+  ];
+
   // Paraphrased names only (not verbatim text from the book).
   const LADDERS={
     "Pushups":[{name:"Wall",type:"rep",sets:3,per:20},{name:"Incline",type:"rep",sets:3,per:20},{name:"Knee",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Arm",type:"rep",sets:3,per:10},{name:"Lever",type:"rep",sets:3,per:8},{name:"1-Arm",type:"rep",sets:3,per:5}],
@@ -373,9 +367,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
   };
 
   const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
   const $=sel=>document.querySelector(sel);
-  const $$=sel=>Array.from(document.querySelectorAll(sel));
 
   const toastEl=$("#toast");
   function toast(msg){
@@ -415,11 +407,39 @@ img,video,canvas,svg{max-width:100%;height:auto}
   const defaultState=()=>({
     profile:{name:"Athlete"},
     steps:Object.fromEntries(MOVES.map(m=>[m,{step:1,tempo:"3-1-2-1"}])),
-    schedule:{}, // date -> { move: true, rest: bool }
-    logs:[] // {date,move,tempo,type,sets:[n,n,n],note}
+    schedule:{},
+    logs:[]
   });
 
   let S=load()||defaultState();
+
+  // ---------- RANK COMPUTATION ----------
+  function earnedStepPoints(){
+    // step 1 => 0 points, step 10 => 9 points
+    let pts=0;
+    for(const m of MOVES){
+      const st = Math.max(1, Math.min(10, +(S.steps?.[m]?.step||1)));
+      pts += (st - 1);
+    }
+    return pts;
+  }
+  function computeRank(){
+    const pts = earnedStepPoints();
+    const maxPts = MOVES.length * 9; // 54
+    let name = RANKS[0].name;
+    for(const r of RANKS){
+      if(pts >= r.min) name = r.name;
+    }
+    const pct = maxPts ? Math.round((pts / maxPts) * 100) : 0;
+    return {name, pts, maxPts, pct};
+  }
+  function updateRankPill(){
+    const rp = $("#rankPill");
+    if(!rp) return;
+    const {name, pts, maxPts, pct} = computeRank();
+    rp.textContent = `${name} ${pts}/${maxPts} (${pct}%)`;
+  }
+  // -------------------------------------
 
   // UI refs
   const views={
@@ -502,8 +522,12 @@ img,video,canvas,svg{max-width:100%;height:auto}
   $("#btnResetSteps").onclick=()=>{
     if(!confirm("Reset all steps to 1?")) return;
     MOVES.forEach(m=>S.steps[m]={step:1,tempo:"3-1-2-1"});
-    save(S); makeSteps(); toast("Reset steps");
+    save(S);
+    makeSteps();
+    updateRankPill();
+    toast("Reset steps");
   };
+
   $("#btnSaveSteps").onclick=()=>{
     MOVES.forEach(m=>{
       const step=+($(`#step_${CSS.escape(m)}`).value||1);
@@ -511,6 +535,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
       S.steps[m]={step,tempo};
     });
     save(S);
+    updateRankPill();       // <-- THIS IS THE FIX
     toast("Saved steps");
     renderCalendar();
   };
@@ -527,9 +552,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
   let calCursor=new Date();
   function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
   function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
-  function fmtMonth(d){
-    return d.toLocaleString(undefined,{month:"long",year:"numeric"});
-  }
+  function fmtMonth(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
 
   function getDayMeta(dateStr){
     const meta=S.schedule[dateStr]||{};
@@ -548,7 +571,6 @@ img,video,canvas,svg{max-width:100%;height:auto}
     const lead=first.getDay();
     const days=last.getDate();
 
-    // prev month blanks
     for(let i=0;i<lead;i++){
       const blank=document.createElement("div");
       blank.className="day";
@@ -556,7 +578,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
       blank.style.pointerEvents="none";
       grid.appendChild(blank);
     }
-    // days
+
     for(let d=1; d<=days; d++){
       const dt=new Date(calCursor.getFullYear(), calCursor.getMonth(), d);
       const ds=iso(dt);
@@ -564,7 +586,6 @@ img,video,canvas,svg{max-width:100%;height:auto}
       const div=document.createElement("div");
       div.className="day";
 
-      // Subtle, obvious day tint if any marker exists
       if(meta.isScheduled){
         div.style.borderColor="rgba(126,231,135,.45)";
         div.style.boxShadow="inset 0 0 0 1px rgba(126,231,135,.10), 0 0 14px rgba(126,231,135,.06)";
@@ -658,15 +679,11 @@ img,video,canvas,svg{max-width:100%;height:auto}
   }
 
   function sumSets(type, sets){
-    if(type==="sec"){
-      return sets.reduce((a,v)=>a+parseHold(v),0);
-    }
+    if(type==="sec") return sets.reduce((a,v)=>a+parseHold(v),0);
     return sets.reduce((a,v)=>a+(+v||0),0);
   }
 
-  function getLogsForDay(ds){
-    return S.logs.filter(x=>x.date===ds);
-  }
+  function getLogsForDay(ds){ return S.logs.filter(x=>x.date===ds); }
 
   function getProgress(move){
     const step=+(S.steps[move]?.step||1);
@@ -707,7 +724,7 @@ img,video,canvas,svg{max-width:100%;height:auto}
       container.appendChild(div);
       return;
     }
-    logs.slice().reverse().forEach((x,idx)=>{
+    logs.slice().reverse().forEach((x)=>{
       const div=document.createElement("div");
       div.className="item";
       const sets=x.sets||[];
@@ -757,7 +774,6 @@ NEXT: ${next?`Step ${step+1} (${next.name})`:"(top step)"}
 RECENT (same tempo):
 ${last}
 `;
-    // Advance enabled if we have 2 logs meeting or exceeding goal at same tempo
     let okCount=0;
     if(stepInfo){
       recent.forEach(x=>{
@@ -828,11 +844,12 @@ ${last}
   btnAdvance.onclick=()=>{
     const move=logMove.value;
     const ladder=LADDERS[move]||[];
-    const curr=S.steps[move]?.step||1;
+    const curr=+ (S.steps[move]?.step||1);
     if(curr >= (ladder.length||10)) return;
     S.steps[move].step = curr+1;
     save(S);
     makeSteps();
+    updateRankPill();     // <-- ALSO UPDATE ON ADVANCE
     renderProgress();
     toast(`Advanced to Step ${curr+1}`);
   };
@@ -860,6 +877,7 @@ ${last}
       save(S);
       $("#helloPill").textContent=S.profile?.name||"Athlete";
       makeSteps();
+      updateRankPill();   // <-- ALSO UPDATE ON IMPORT
       renderCalendar();
       toast("Imported");
     }catch(e){
@@ -902,6 +920,7 @@ ${last}
   showView("Guide");
   renderCalendar();
   initNeonGuide();
+  updateRankPill(); // <-- INITIAL RANK SET
 })();
 </script>
 </body>
