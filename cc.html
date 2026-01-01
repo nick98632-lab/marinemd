@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>MarineMD | CC Elite Tracker</title>
 <style>
-:root{--bg:#0b0f16;--card:#0f1622;--ink:#e6edf3;--muted:#a9b4c0;--line:#233042;--a:#79c0ff;--ok:#7ee787;--warn:#f2cc60;--btn:#152033;--btn2:#0d1320}
-html,body{background:var(--bg);color:var(--ink);margin:0;font:12px/1.25 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+:root{--pad:8px;--bg:#0b0f16;--card:#0f1622;--ink:#e6edf3;--muted:#a9b4c0;--line:#233042;--a:#79c0ff;--ok:#7ee787;--warn:#f2cc60;--btn:#152033;--btn2:#0d1320}
+html,body{background:var(--bg);color:var(--ink);margin:0;font:12px/1.25 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;overflow-x:hidden}
 *{box-sizing:border-box}
 b,h2{font-weight:950}h2{font-size:12px;margin:0 0 6px;letter-spacing:.2px}
 .tiny{font-size:11px;color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-bottom:1px solid var(--line);background:rgba(15,22,34,.55);position:sticky;top:0;z-index:20;backdrop-filter:blur(10px)}
-.brand{display:flex;flex-direction:column;gap:2px;min-width:200px}
-.brand .t{font-weight:950;font-size:12px;letter-spacing:.2px}.brand .s{font-size:11px;color:var(--muted)}
-.wrap{max-width:980px;margin:0 auto;padding:10px 10px 76px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px calc(10px + env(safe-area-inset-right)) 10px calc(10px + env(safe-area-inset-left));border-bottom:1px solid var(--line);background:rgba(15,22,34,.55);position:sticky;top:0;z-index:20;backdrop-filter:blur(10px)}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 auto}
+.brand .t{font-weight:950;font-size:12px;letter-spacing:.2px;overflow-wrap:anywhere}.brand .s{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.wrap{max-width:980px;margin:0 auto;padding:var(--pad) var(--pad) 76px}
 .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0}
 .hr{height:1px;background:var(--line);margin:8px 0}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
@@ -28,7 +28,7 @@ details summary{cursor:pointer;font-weight:950;color:var(--a)}
 .pill{display:inline-block;padding:3px 7px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:950}
 .pill.ok{border-color:rgba(126,231,135,.65);color:var(--ok)}.pill.a{border-color:rgba(121,192,255,.65);color:var(--a)}.pill.w{border-color:rgba(242,204,96,.65);color:var(--warn)}
 .footerNav{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,22,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
-.footerNav .bar{max-width:980px;margin:0 auto;display:flex;gap:6px;padding:8px 10px}
+.footerNav .bar{max-width:980px;margin:0 auto;display:flex;gap:6px;padding:8px calc(10px + env(safe-area-inset-right)) 8px calc(10px + env(safe-area-inset-left))}
 .footerNav button{flex:1;padding:10px 0;border-radius:12px;background:#0d1320;border:1px solid var(--line);color:var(--ink);font-weight:950;font-size:12px}
 .footerNav button.active{border-color:rgba(121,192,255,.7);color:var(--a)}
 .calHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -54,6 +54,8 @@ details summary{cursor:pointer;font-weight:950;color:var(--a)}
 .setbox input{width:120px;max-width:120px;padding:8px;font-family:ui-monospace,Menlo,Consolas,monospace;text-align:center}
 .mini{padding:7px 9px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:76px;background:#0d1320;border:1px solid var(--line);padding:8px 10px;border-radius:12px;font-weight:950;font-size:12px;display:none;z-index:60}
+img,video,canvas,svg{max-width:100%;height:auto}
+@media (max-width:420px){:root{--pad:6px}}
 </style>
 </head>
 <body>
@@ -248,482 +250,500 @@ details summary{cursor:pointer;font-weight:950;color:var(--a)}
     "Pushups":[{name:"Wall",type:"rep",sets:3,per:20},{name:"Incline",type:"rep",sets:3,per:20},{name:"Knee",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Arm",type:"rep",sets:3,per:10},{name:"Lever",type:"rep",sets:3,per:8},{name:"1-Arm",type:"rep",sets:3,per:5}],
     "Pullups":[{name:"Vertical Rows",type:"rep",sets:3,per:20},{name:"Horizontal Rows",type:"rep",sets:3,per:20},{name:"Jackknife",type:"rep",sets:3,per:20},{name:"Half Pullup",type:"rep",sets:3,per:15},{name:"Full Pullup",type:"rep",sets:3,per:10},{name:"Close Pullup",type:"rep",sets:3,per:10},{name:"Uneven Pullup",type:"rep",sets:3,per:8},{name:"Half 1-Arm",type:"rep",sets:3,per:6},{name:"Assist 1-Arm",type:"rep",sets:3,per:5},{name:"1-Arm",type:"rep",sets:3,per:3}],
     "Squats":[{name:"Shoulderstand",type:"rep",sets:3,per:25},{name:"Jackknife",type:"rep",sets:3,per:25},{name:"Supported",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Leg",type:"rep",sets:3,per:10},{name:"Assist 1-Leg",type:"rep",sets:3,per:8},{name:"1-Leg",type:"rep",sets:3,per:5}],
-    "Bridges":[{name:"Short",type:"rep",sets:3,per:25},{name:"Straight",type:"rep",sets:3,per:25},{name:"Angled",type:"rep",sets:3,per:20},{name:"Head",type:"rep",sets:3,per:15},{name:"Half",type:"rep",sets:3,per:15},{name:"Full",type:"rep",sets:3,per:10},{name:"Wall Walks",type:"rep",sets:3,per:8},{name:"Closing",type:"rep",sets:3,per:6},{name:"Stand-to-Stand (assist)",type:"rep",sets:3,per:3},{name:"Stand-to-Stand",type:"rep",sets:3,per:2}],
-    "Leg Raises":[{name:"Knee Tucks",type:"rep",sets:3,per:20},{name:"Flat Knee",type:"rep",sets:3,per:20},{name:"Bent-Leg",type:"rep",sets:3,per:15},{name:"Frog",type:"rep",sets:3,per:15},{name:"Straight",type:"rep",sets:3,per:10},{name:"Hanging Knee",type:"rep",sets:3,per:12},{name:"Hanging Bent",type:"rep",sets:3,per:10},{name:"Hanging Frog",type:"rep",sets:3,per:8},{name:"Hanging Straight",type:"rep",sets:3,per:6},{name:"Hanging High",type:"rep",sets:3,per:5}],
-    "Handstand Pushups":[{name:"Wall Headstand",type:"rep",sets:3,per:15},{name:"Tripod",type:"rep",sets:3,per:15},{name:"Wall Hold",type:"sec",sets:3,per:30},{name:"Half ROM",type:"rep",sets:3,per:10},{name:"Full ROM",type:"rep",sets:3,per:8},{name:"Close",type:"rep",sets:3,per:6},{name:"Uneven",type:"rep",sets:3,per:5},{name:"Half 1-Arm",type:"rep",sets:3,per:3},{name:"Lever",type:"rep",sets:3,per:2},{name:"1-Arm",type:"rep",sets:3,per:1}],
+    "Bridges":[{name:"Short",type:"rep",sets:3,per:25},{name:"Straight",type:"rep",sets:3,per:25},{name:"Angled",type:"rep",sets:3,per:20},{name:"Head",type:"rep",sets:3,per:15},{name:"Half",type:"rep",sets:3,per:15},{name:"Full",type:"rep",sets:3,per:10},{name:"Wall Walks",type:"rep",sets:3,per:8},{name:"Closing",type:"rep",sets:3,per:6},{name:"Sit-to-Stand (assist)",type:"rep",sets:3,per:3},{name:"Stand-to-Sit / Stand-to-Stand",type:"rep",sets:3,per:2}],
+    "Leg Raises":[{name:"Knee Tucks",type:"rep",sets:3,per:20},{name:"Flat Knee Raises",type:"rep",sets:3,per:20},{name:"Flat Bent Leg",type:"rep",sets:3,per:15},{name:"Flat Frog",type:"rep",sets:3,per:10},{name:"Flat Straight",type:"rep",sets:3,per:10},{name:"Hanging Knee",type:"rep",sets:3,per:15},{name:"Hanging Bent",type:"rep",sets:3,per:10},{name:"Hanging Frog",type:"rep",sets:3,per:8},{name:"Hanging Straight",type:"rep",sets:3,per:6},{name:"V-Raise",type:"rep",sets:3,per:5}],
+    "Handstand Pushups":[{name:"Wall Headstand",type:"rep",sets:3,per:30},{name:"Crow",type:"rep",sets:3,per:30},{name:"Wall Handstand",type:"sec",sets:3,per:30},{name:"Half HSPU",type:"rep",sets:3,per:20},{name:"HSPU",type:"rep",sets:3,per:15},{name:"Close HSPU",type:"rep",sets:3,per:12},{name:"Uneven HSPU",type:"rep",sets:3,per:10},{name:"Half 1-Arm HSPU",type:"rep",sets:3,per:6},{name:"Assist 1-Arm HSPU",type:"rep",sets:3,per:4},{name:"1-Arm HSPU",type:"rep",sets:3,per:2}],
   };
-  const RANKS=[{minAvg:1,badge:"RANK: WEAK"},{minAvg:3,badge:"RANK: ROOKIE"},{minAvg:5,badge:"RANK: STRONG"},{minAvg:7,badge:"RANK: BEAST"},{minAvg:9,badge:"RANK: MONSTER"},{minAvg:10,badge:"RANK: GOD MODE"}];
 
-  const $=(id)=>document.getElementById(id);
-  const toastEl=$("toast");
-  const toast=(msg)=>{
+  const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  const $=sel=>document.querySelector(sel);
+  const $$=sel=>Array.from(document.querySelectorAll(sel));
+
+  const toastEl=$("#toast");
+  function toast(msg){
     toastEl.textContent=msg;
     toastEl.style.display="block";
     clearTimeout(toastEl._t);
     toastEl._t=setTimeout(()=>toastEl.style.display="none",1400);
-  };
+  }
 
-  const LS={save:(o)=>localStorage.setItem(LS_KEY,JSON.stringify(o)),load:()=>{try{return JSON.parse(localStorage.getItem(LS_KEY)||"")}catch(e){return null}}};
+  function load(){
+    try{
+      const raw=localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){ return null; }
+  }
+  function save(state){
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+  }
 
-  const state=LS.load()||{
-    profile:{name:"Athlete"},
-    steps:Object.fromEntries(MOVES.map(m=>{const s=LADDERS[m][0];return[m,{step:1,tempo:"",targetType:s.type,targetSets:s.sets,targetPerSet:s.per}];})),
-    log:[]
-  };
-  const persist=()=>LS.save(state);
-
-  const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d;};
-  const isoDate=(d)=>d.toISOString().slice(0,10);
-  const parseISO=(s)=>{const [y,m,da]=s.split("-").map(n=>parseInt(n,10));return new Date(y,m-1,da);};
-  const monthTitleStr=(d)=>["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]+" "+d.getFullYear();
-  const clampStep=(n)=>{n=parseInt(n,10);if(!Number.isFinite(n))n=1;return Math.max(1,Math.min(10,n));};
-  const clampSets=(n)=>{n=parseInt(n,10);if(!Number.isFinite(n))n=3;return Math.max(1,Math.min(10,n));};
-
-  const parseTimeToSeconds=(raw)=>{
-    if(raw==null) return null;
-    let s=(""+raw).trim().toLowerCase();
-    if(!s) return null;
-    s=s.replace(/\s+/g,"");
+  function iso(d){ return d.toISOString().slice(0,10); }
+  function parseHold(s){
+    if(!s) return 0;
+    s=(""+s).trim().toLowerCase();
+    if(!s) return 0;
     if(/^\d+$/.test(s)) return parseInt(s,10);
-    if(/^\d+(s|sec|secs|second|seconds)$/.test(s)) return parseInt(s.match(/^\d+/)[0],10);
+    if(/^\d+\s*s$/.test(s)) return parseInt(s,10);
     if(/^\d+:\d{1,2}$/.test(s)){
-      const [mm,ss]=s.split(":").map(x=>parseInt(x,10));
-      if(!Number.isFinite(mm)||!Number.isFinite(ss)) return null;
-      if(ss<0||ss>59) return null;
-      return mm*60+ss;
+      const [m,sec]=s.split(":").map(x=>parseInt(x,10));
+      return m*60+sec;
     }
-    if(/^\d+m(\d+s)?$/.test(s)){
-      const mm=parseInt(s.match(/^\d+/)[0],10);
-      const ssMatch=s.match(/(\d+)s$/);
-      const ss=ssMatch?parseInt(ssMatch[1],10):0;
-      if(ss>59) return null;
-      return mm*60+ss;
-    }
-    return null;
+    if(/^\d+\s*m$/.test(s)) return parseInt(s,10)*60;
+    if(/^\d+\s*min$/.test(s)) return parseInt(s,10)*60;
+    return 0;
+  }
+
+  const defaultState=()=>({
+    profile:{name:"Athlete"},
+    steps:Object.fromEntries(MOVES.map(m=>[m,{step:1,tempo:"3-1-2-1"}])),
+    schedule:{}, // date -> { move: true, rest: bool }
+    logs:[] // {date,move,tempo,type,sets:[n,n,n],note}
+  });
+
+  let S=load()||defaultState();
+
+  // UI refs
+  const views={
+    Guide:$("#viewGuide"),
+    Calendar:$("#viewCalendar"),
+    Steps:$("#viewSteps"),
+    Data:$("#viewData")
+  };
+  const navBtns={
+    Guide:$("#navGuide"),
+    Calendar:$("#navCalendar"),
+    Steps:$("#navSteps"),
+    Data:$("#navData")
   };
 
-  const fmtSec=(sec)=>{
-    sec=Math.max(0,sec|0);
-    if(sec<60) return sec+"s";
-    const m=Math.floor(sec/60);
-    const s=sec%60;
-    return m+":"+(s<10?("0"+s):s);
+  function showView(name){
+    Object.keys(views).forEach(k=>views[k].style.display=(k===name?"block":"none"));
+    Object.keys(navBtns).forEach(k=>navBtns[k].classList.toggle("active", k===name));
+  }
+
+  // Profile
+  const profileModal=$("#profileModal");
+  $("#btnEditProfile").onclick=()=>{
+    $("#profileName").value=S.profile.name||"";
+    profileModal.style.display="flex";
+    $("#profileName").focus();
   };
-
-  const logsForDate=(dateISO)=>(state.log||[]).filter(x=>x.date===dateISO).sort((a,b)=>(a.ts||0)-(b.ts||0));
-  const recentLogsForMove=(move,n=14)=>(state.log||[]).filter(x=>x.move===move).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,n);
-
-  const entryCountsTowardStandard=(entry,cfg)=>{
-    if(!entry||!cfg) return false;
-    if(entry.step!==cfg.step) return false;
-    if((entry.tempo||"")!==(cfg.tempo||"")) return false;
-    const needSets=clampSets(cfg.targetSets||3);
-    if(!entry.sets || entry.sets.length<needSets) return false;
-
-    for(let i=0;i<needSets;i++){
-      const s=(""+(entry.sets[i]||"")).trim().toLowerCase();
-      if(cfg.targetType==="sec"){
-        const sec=parseTimeToSeconds(s);
-        if(sec==null) return false;
-        if(sec < cfg.targetPerSet) return false;
-      }else{
-        if(!/^\d+$/.test(s)) return false;
-        if(parseInt(s,10) < cfg.targetPerSet) return false;
-      }
-    }
-    return true;
+  $("#btnCloseProfile").onclick=()=>profileModal.style.display="none";
+  $("#btnSaveProfile").onclick=()=>{
+    S.profile.name=($("#profileName").value||"Athlete").trim()||"Athlete";
+    $("#helloPill").textContent=S.profile.name;
+    save(S);
+    toast("Saved profile");
+    profileModal.style.display="none";
   };
+  $("#helloPill").textContent=S.profile.name;
 
-  // 6 days training, 1 rest day/week (Sunday rest).
-  // Pairing: Mon/Thu pushups+leg raises; Tue/Fri pullups+bridges; Wed/Sat squats+handstand.
-  const scheduledForDate=(d)=>{
-    const dow=d.getDay();
-    if(dow===0) return {type:"Rest",items:[]};
-    if(dow===1||dow===4) return {type:"Train",items:["Pushups","Leg Raises"]};
-    if(dow===2||dow===5) return {type:"Train",items:["Pullups","Bridges"]};
-    return {type:"Train",items:["Squats","Handstand Pushups"]};
-  };
-
-  const globalRank=()=>{
-    const steps=MOVES.map(m=>clampStep(state.steps[m]?.step||1));
-    const avg=steps.reduce((a,b)=>a+b,0)/steps.length;
-    let r=RANKS[0];
-    for(const x of RANKS){ if(avg>=x.minAvg) r=x; }
-    return r.badge;
-  };
-
-  // NAV
-  const navGuide=$("navGuide"),navCalendar=$("navCalendar"),navSteps=$("navSteps"),navData=$("navData");
-  const viewGuide=$("viewGuide"),viewCalendar=$("viewCalendar"),viewSteps=$("viewSteps"),viewData=$("viewData");
-  const helloPill=$("helloPill"),rankPill=$("rankPill");
-  const show=(v)=>{
-    [viewGuide,viewCalendar,viewSteps,viewData].forEach(x=>x.style.display="none");
-    [navGuide,navCalendar,navSteps,navData].forEach(b=>b.classList.remove("active"));
-    if(v==="guide"){viewGuide.style.display="block";navGuide.classList.add("active");}
-    if(v==="calendar"){viewCalendar.style.display="block";navCalendar.classList.add("active");}
-    if(v==="steps"){viewSteps.style.display="block";navSteps.classList.add("active");}
-    if(v==="data"){viewData.style.display="block";navData.classList.add("active");}
-  };
-  const refreshHeader=()=>{helloPill.textContent=(state.profile?.name||"Athlete");rankPill.textContent=globalRank();};
-  navGuide.onclick=()=>show("guide");
-  navCalendar.onclick=()=>{renderCalendar();show("calendar");};
-  navSteps.onclick=()=>{renderStepsForm();show("steps");};
-  navData.onclick=()=>show("data");
-
-  // PROFILE
-  const profileModal=$("profileModal"),btnEditProfile=$("btnEditProfile"),btnCloseProfile=$("btnCloseProfile"),profileName=$("profileName"),btnSaveProfile=$("btnSaveProfile");
-  btnEditProfile.onclick=()=>{profileName.value=state.profile?.name||"";profileModal.style.display="flex";};
-  btnCloseProfile.onclick=()=>profileModal.style.display="none";
-  profileModal.addEventListener("click",(e)=>{if(e.target===profileModal)profileModal.style.display="none";});
-  btnSaveProfile.onclick=()=>{const n=(profileName.value||"").trim()||"Athlete";state.profile={name:n};persist();refreshHeader();profileModal.style.display="none";toast("Saved");};
-
-  // STEPS
-  const stepsForm=$("stepsForm"),btnSaveSteps=$("btnSaveSteps"),btnResetSteps=$("btnResetSteps");
-  const renderStepsForm=()=>{
-    stepsForm.innerHTML="";
-    MOVES.forEach(m=>{
-      const cfg=state.steps[m];
-      const step=clampStep(cfg.step);
-      const ladder=LADDERS[m];
-      const def=ladder[step-1];
-      const stepOpts=ladder.map((x,i)=>`<option value="${i+1}" ${(i+1)===step?"selected":""}>Step ${i+1}: ${x.name}</option>`).join("");
-      const tempoOpts=TEMPO_PRESETS.map(t=>`<option value="${t}">${t===""?"Off (controlled)":t}</option>`).join("");
-      const div=document.createElement("div");
-      div.className="item";
-      div.innerHTML=`
-        <div class="row">
-          <div style="flex:2 1 260px;min-width:220px">
-            <div style="font-weight:950">${m}</div>
-            <div class="tiny">Default target: ${def.sets} x ${def.per} ${def.type==="sec"?"sec":"reps"}</div>
-          </div>
-          <div><label>Step</label><select data-m="${m}" data-k="step">${stepOpts}</select></div>
+  // Steps form
+  function makeSteps(){
+    const wrap=$("#stepsForm"); wrap.innerHTML="";
+    MOVES.forEach(move=>{
+      const curr=S.steps[move]||{step:1,tempo:"3-1-2-1"};
+      const ladder=LADDERS[move]||[];
+      const card=document.createElement("div");
+      card.className="item";
+      card.innerHTML=`
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap">
+          <div><b>${move}</b><div class="tiny">Progression: <span class="mono">${ladder.length?ladder.map((x,i)=>`${i+1}:${x.name}`).join(" | "):"n/a"}</span></div></div>
+          <span class="pill w mono" id="pill_${move}">STEP ${curr.step}</span>
         </div>
         <div class="hr"></div>
         <div class="row">
-          <div><label>Official Tempo</label><select data-m="${m}" data-k="tempo">${tempoOpts}</select></div>
-          <div><label>Target Type</label>
-            <select data-m="${m}" data-k="targetType">
-              <option value="rep" ${cfg.targetType==="rep"?"selected":""}>Reps</option>
-              <option value="sec" ${cfg.targetType==="sec"?"selected":""}>Seconds</option>
+          <div>
+            <label>Step</label>
+            <select id="step_${move}"></select>
+          </div>
+          <div>
+            <label>Official tempo</label>
+            <select id="tempo_${move}">
+              ${TEMPO_PRESETS.map(t=>`<option value="${t}">${t||"(none)"}</option>`).join("")}
             </select>
           </div>
-          <div><label>Target Sets</label><input type="number" min="1" max="10" inputmode="numeric" value="${clampSets(cfg.targetSets)}" data-m="${m}" data-k="targetSets"/></div>
-          <div><label>Target Per Set</label><input type="number" min="1" inputmode="numeric" value="${cfg.targetPerSet}" data-m="${m}" data-k="targetPerSet"/></div>
-        </div>`;
-      stepsForm.appendChild(div);
-      div.querySelector('select[data-k="tempo"]').value=cfg.tempo||"";
-    });
-
-    [...stepsForm.querySelectorAll('select[data-k="step"]')].forEach(sel=>{
-      sel.onchange=()=>{
-        const m=sel.getAttribute("data-m");
-        const step=clampStep(sel.value);
-        const def=LADDERS[m][step-1];
-        state.steps[m].step=step;
-        state.steps[m].targetType=def.type;
-        state.steps[m].targetSets=def.sets;
-        state.steps[m].targetPerSet=def.per;
-        persist();refreshHeader();renderStepsForm();
-      };
-    });
-  };
-
-  btnSaveSteps.onclick=()=>{
-    [...stepsForm.querySelectorAll("input[data-m], select[data-m]")].forEach(el=>{
-      const m=el.getAttribute("data-m"),k=el.getAttribute("data-k");
-      if(k==="tempo") state.steps[m].tempo=(el.value||"");
-      if(k==="targetType") state.steps[m].targetType=el.value;
-      if(k==="targetSets") state.steps[m].targetSets=clampSets(el.value);
-      if(k==="targetPerSet"){
-        const v=parseInt(el.value,10);
-        if(Number.isFinite(v)&&v>0) state.steps[m].targetPerSet=v;
+        </div>
+      `;
+      wrap.appendChild(card);
+      const stepSel=card.querySelector(`#step_${CSS.escape(move)}`);
+      for(let i=1;i<=Math.max(10,ladder.length);i++){
+        const opt=document.createElement("option");
+        opt.value=i; opt.textContent=i+(ladder[i-1]?` - ${ladder[i-1].name}`:"");
+        stepSel.appendChild(opt);
       }
+      stepSel.value=String(curr.step||1);
+      const tempoSel=card.querySelector(`#tempo_${CSS.escape(move)}`);
+      tempoSel.value=curr.tempo||"";
+      stepSel.onchange=()=>{ card.querySelector(`#pill_${CSS.escape(move)}`).textContent=`STEP ${stepSel.value}`; };
     });
-    persist();refreshHeader();toast("Saved");
+  }
+  makeSteps();
+
+  $("#btnResetSteps").onclick=()=>{
+    if(!confirm("Reset all steps to 1?")) return;
+    MOVES.forEach(m=>S.steps[m]={step:1,tempo:"3-1-2-1"});
+    save(S); makeSteps(); toast("Reset steps");
+  };
+  $("#btnSaveSteps").onclick=()=>{
+    MOVES.forEach(m=>{
+      const step=+($(`#step_${CSS.escape(m)}`).value||1);
+      const tempo=($(`#tempo_${CSS.escape(m)}`).value||"");
+      S.steps[m]={step,tempo};
+    });
+    save(S);
+    toast("Saved steps");
+    renderCalendar();
   };
 
-  btnResetSteps.onclick=()=>{
-    MOVES.forEach(m=>{const s=LADDERS[m][0];state.steps[m]={step:1,tempo:"",targetType:s.type,targetSets:s.sets,targetPerSet:s.per};});
-    persist();refreshHeader();renderStepsForm();toast("Reset");
-  };
+  // Calendar
+  const dowRow=$("#dowRow");
+  DOW.forEach(d=>{
+    const div=document.createElement("div");
+    div.className="dow";
+    div.textContent=d;
+    dowRow.appendChild(div);
+  });
 
-  // CALENDAR
-  const monthTitleBig=$("monthTitleBig"),btnPrevMonth=$("btnPrevMonth"),btnNextMonth=$("btnNextMonth"),btnThisMonth=$("btnThisMonth");
-  const dowRow=$("dowRow"),calGrid=$("calGrid");
-  const renderDow=()=>{dowRow.innerHTML="";["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(n=>{const d=document.createElement("div");d.className="dow";d.textContent=n;dowRow.appendChild(d);});};
-  let calMonth=new Date(today().getFullYear(),today().getMonth(),1);
+  let calCursor=new Date();
+  function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+  function fmtMonth(d){
+    return d.toLocaleString(undefined,{month:"long",year:"numeric"});
+  }
 
-  const renderCalendar=()=>{
-    monthTitleBig.textContent=monthTitleStr(calMonth);
-    const first=new Date(calMonth.getFullYear(),calMonth.getMonth(),1);
-    const start=new Date(first);start.setDate(1-first.getDay());
-    calGrid.innerHTML="";
-    for(let i=0;i<42;i++){
-      const d=new Date(start);d.setDate(start.getDate()+i);
-      const dateISO=isoDate(d);
-      const inMonth=d.getMonth()===calMonth.getMonth();
-      const sch=scheduledForDate(d);
-      const logs=logsForDate(dateISO);
+  function getDayMeta(dateStr){
+    const meta=S.schedule[dateStr]||{};
+    const hasLog=S.logs.some(x=>x.date===dateStr);
+    const isRest=!!meta.rest;
+    const isScheduled=!!meta.scheduled;
+    return {hasLog,isRest,isScheduled};
+  }
 
-      const cell=document.createElement("div");
-      cell.className="day";
-      cell.style.opacity=inMonth?"1":".45";
+  function renderCalendar(){
+    $("#monthTitleBig").textContent=fmtMonth(calCursor);
+    const grid=$("#calGrid");
+    grid.innerHTML="";
+    const first=startOfMonth(calCursor);
+    const last=endOfMonth(calCursor);
+    const lead=first.getDay();
+    const days=last.getDate();
 
-      let chips="";
-      chips += (sch.type==="Train")
-        ? sch.items.map(x=>`<span class="chip sch">${x}</span>`).join("")
-        : `<span class="chip rest">Rest</span>`;
-      chips += logs.slice(0,3).map(L=>`<span class="chip log">${L.move}</span>`).join("");
-
-      const isToday=(dateISO===isoDate(today()));
-      cell.innerHTML=`<div class="n"><span>${d.getDate()}</span>${isToday?'<span class="pill a">TODAY</span>':""}</div><div class="chips">${chips}</div>`;
-      cell.onclick=()=>openDayModal(dateISO);
-      calGrid.appendChild(cell);
+    // prev month blanks
+    for(let i=0;i<lead;i++){
+      const blank=document.createElement("div");
+      blank.className="day";
+      blank.style.opacity=".25";
+      blank.style.pointerEvents="none";
+      grid.appendChild(blank);
     }
-  };
-  btnPrevMonth.onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);renderCalendar();};
-  btnNextMonth.onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCalendar();};
-  btnThisMonth.onclick=()=>{calMonth=new Date(today().getFullYear(),today().getMonth(),1);renderCalendar();};
+    // days
+    for(let d=1; d<=days; d++){
+      const dt=new Date(calCursor.getFullYear(), calCursor.getMonth(), d);
+      const ds=iso(dt);
+      const meta=getDayMeta(ds);
+      const div=document.createElement("div");
+      div.className="day";
+      div.innerHTML=`
+        <div class="n"><span>${d}</span>
+          <span class="mono" style="font-size:10px;color:var(--muted)">${ds.slice(5)}</span>
+        </div>
+        <div class="chips" id="chips_${ds}"></div>
+      `;
+      const chips=div.querySelector(`#chips_${CSS.escape(ds)}`);
+      if(meta.isScheduled){
+        const c=document.createElement("span"); c.className="chip sch"; c.textContent="SCHED"; chips.appendChild(c);
+      }
+      if(meta.hasLog){
+        const c=document.createElement("span"); c.className="chip log"; c.textContent="LOG"; chips.appendChild(c);
+      }
+      if(meta.isRest){
+        const c=document.createElement("span"); c.className="chip rest"; c.textContent="REST"; chips.appendChild(c);
+      }
+      div.onclick=()=>openDay(ds);
+      grid.appendChild(div);
+    }
+  }
 
-  // MODAL + LOGGING
-  const modal=$("modal"),btnCloseModal=$("btnCloseModal"),modalDatePill=$("modalDatePill");
-  const dayScheduleLine=$("dayScheduleLine"),logDate=$("logDate"),logMove=$("logMove"),logTempo=$("logTempo"),logType=$("logType");
-  const s1i=$("s1i"),s2i=$("s2i"),s3i=$("s3i"),stepSize=$("stepSize"),logNote=$("logNote");
-  const s1m=$("s1m"),s2m=$("s2m"),s3m=$("s3m"),s1p=$("s1p"),s2p=$("s2p"),s3p=$("s3p"),s1clr=$("s1clr"),s2clr=$("s2clr"),s3clr=$("s3clr");
-  const btnSaveLog=$("btnSaveLog"),dayLogs=$("dayLogs"),progressBox=$("progressBox"),btnAdvanceStep=$("btnAdvanceStep"),setHint=$("setHint");
+  $("#btnPrevMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); };
+  $("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); };
+  $("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); };
 
-  const fillSelect=(sel,arr)=>{sel.innerHTML="";arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o);});};
-  fillSelect(logMove,MOVES);
+  // Modal day logging
+  const modal=$("#modal");
+  const modalDatePill=$("#modalDatePill");
+  const dayScheduleLine=$("#dayScheduleLine");
+  const logDate=$("#logDate");
+  const logMove=$("#logMove");
+  const logTempo=$("#logTempo");
+  const logType=$("#logType");
+  const setHint=$("#setHint");
+  const s1i=$("#s1i"), s2i=$("#s2i"), s3i=$("#s3i");
+  const stepSize=$("#stepSize");
+  const logNote=$("#logNote");
+  const progressBox=$("#progressBox");
+  const btnAdvance=$("#btnAdvanceStep");
 
-  const renderTempoOptions=()=>{
+  function fillMoves(){
+    logMove.innerHTML="";
+    MOVES.forEach(m=>{
+      const opt=document.createElement("option");
+      opt.value=m; opt.textContent=m;
+      logMove.appendChild(opt);
+    });
+  }
+  fillMoves();
+
+  function fillTempo(){
     logTempo.innerHTML="";
     TEMPO_PRESETS.forEach(t=>{
-      const o=document.createElement("option");
-      o.value=t;
-      o.textContent=(t===""?"Off (controlled)":t);
-      logTempo.appendChild(o);
+      const opt=document.createElement("option");
+      opt.value=t; opt.textContent=t||"(none)";
+      logTempo.appendChild(opt);
     });
-  };
-  renderTempoOptions();
+  }
+  fillTempo();
 
-  let setVals=[0,0,0]; // reps OR seconds
-  const getStepInc=()=>parseInt(stepSize.value||"1",10)||1;
-
-  const syncInputsFromVals=()=>{
-    if(logType.value==="sec"){
-      s1i.value=setVals[0]?fmtSec(setVals[0]):"";
-      s2i.value=setVals[1]?fmtSec(setVals[1]):"";
-      s3i.value=setVals[2]?fmtSec(setVals[2]):"";
+  function updateSetHint(){
+    const move=logMove.value;
+    const step=+(S.steps[move]?.step||1);
+    const ladder=LADDERS[move]||[];
+    const stepInfo=ladder[step-1];
+    const type=logType.value;
+    const tempo=logTempo.value||S.steps[move]?.tempo||"";
+    let txt=`Target: Step ${step}${stepInfo?` (${stepInfo.name})`:``}. `;
+    if(stepInfo){
+      txt += (type==="sec" || stepInfo.type==="sec")
+        ? `Goal holds: ${stepInfo.sets} x ${stepInfo.per} sec.`
+        : `Goal reps: ${stepInfo.sets} x ${stepInfo.per} reps.`;
     }else{
-      s1i.value=setVals[0]?String(setVals[0]):"";
-      s2i.value=setVals[1]?String(setVals[1]):"";
-      s3i.value=setVals[2]?String(setVals[2]):"";
+      txt += `No ladder data.`;
     }
-  };
+    if(tempo) txt += ` Official tempo: ${tempo}.`;
+    setHint.textContent=txt;
+  }
 
-  const applyInputToVal=(idx,raw)=>{
-    if(logType.value==="sec"){
-      const sec=parseTimeToSeconds(raw);
-      if(sec==null) return false;
-      setVals[idx]=Math.max(0,sec|0);
-      return true;
+  function sumSets(type, sets){
+    if(type==="sec"){
+      return sets.reduce((a,v)=>a+parseHold(v),0);
     }
-    const s=(""+raw).trim();
-    if(!s){ setVals[idx]=0; return true; }
-    if(!/^\d+$/.test(s)) return false;
-    setVals[idx]=Math.max(0,parseInt(s,10));
-    return true;
-  };
+    return sets.reduce((a,v)=>a+(+v||0),0);
+  }
 
-  const bindSetInput=(inp,idx)=>{
-    inp.addEventListener("input",()=>{
-      const ok=applyInputToVal(idx, inp.value);
-      inp.style.borderColor = ok ? "var(--line)" : "rgba(242,204,96,.75)";
-    });
-    inp.addEventListener("blur",()=>{
-      const ok=applyInputToVal(idx, inp.value);
-      inp.style.borderColor="var(--line)";
-      if(ok) syncInputsFromVals();
-    });
-    inp.addEventListener("keydown",(e)=>{
-      if(e.key==="Enter"){ e.preventDefault(); inp.blur(); }
-    });
-  };
-  bindSetInput(s1i,0);bindSetInput(s2i,1);bindSetInput(s3i,2);
+  function getLogsForDay(ds){
+    return S.logs.filter(x=>x.date===ds);
+  }
 
-  const setMode=(mode)=>{
-    if(mode==="sec"){
-      setHint.textContent="Holds: type 20 / 20s / 0:30 / 1:15. Buttons adjust seconds.";
-      [s1i,s2i,s3i].forEach(i=>{i.placeholder="0:30";i.inputMode="text";});
-    }else{
-      setHint.textContent="Reps: type a number. Buttons adjust reps.";
-      [s1i,s2i,s3i].forEach(i=>{i.placeholder="0";i.inputMode="numeric";});
-    }
-    setVals=[0,0,0];
-    [s1i,s2i,s3i].forEach(i=>i.style.borderColor="var(--line)");
-    syncInputsFromVals();
-  };
-  logType.onchange=()=>setMode(logType.value);
+  function getProgress(move){
+    const step=+(S.steps[move]?.step||1);
+    const tempo=(S.steps[move]?.tempo||"");
+    const ladder=LADDERS[move]||[];
+    const stepInfo=ladder[step-1];
+    const sameTempoLogs=S.logs.filter(x=>x.move===move && (x.tempo||"")===tempo);
+    const recent=sameTempoLogs.slice(-10);
+    return {step,tempo,stepInfo,recent};
+  }
 
-  const bump=(i,delta)=>{setVals[i]=Math.max(0,(setVals[i]||0)+delta);syncInputsFromVals();};
-  const clearSet=(i)=>{setVals[i]=0;syncInputsFromVals();};
-  s1m.onclick=()=>bump(0,-getStepInc());s2m.onclick=()=>bump(1,-getStepInc());s3m.onclick=()=>bump(2,-getStepInc());
-  s1p.onclick=()=>bump(0,+getStepInc());s2p.onclick=()=>bump(1,+getStepInc());s3p.onclick=()=>bump(2,+getStepInc());
-  s1clr.onclick=()=>clearSet(0);s2clr.onclick=()=>clearSet(1);s3clr.onclick=()=>clearSet(2);
-
-  btnCloseModal.onclick=()=>{modal.style.display="none";};
-  modal.addEventListener("click",(e)=>{if(e.target===modal)modal.style.display="none";});
-
-  const renderDayLogs=(dateISO)=>{
-    const logs=logsForDate(dateISO).slice().reverse();
-    dayLogs.innerHTML="";
-    if(!logs.length){ dayLogs.innerHTML='<div class="tiny">No logs yet.</div>'; return; }
-    logs.forEach(L=>{
-      const div=document.createElement("div");div.className="item";
-      div.innerHTML=`
-        <div class="right">
-          <span class="pill a">${L.move}</span>
-          <span class="pill">Step ${L.step}</span>
-          <span class="pill mono">Tempo ${L.tempo?L.tempo:"Off"}</span>
-          <button class="btn2" data-del="${L.id}">Delete</button>
-        </div>
-        <div class="tiny mono">Sets: ${(L.sets||[]).join(" | ")}</div>
-        ${L.note?`<div class="tiny">${(L.note||"").replace(/</g,"&lt;")}</div>`:""}
-      `;
-      dayLogs.appendChild(div);
-    });
-    [...dayLogs.querySelectorAll("button[data-del]")].forEach(b=>b.onclick=()=>{
-      const id=b.getAttribute("data-del");
-      state.log=(state.log||[]).filter(x=>x.id!==id);
-      persist();
-      renderDayLogs(dateISO);
-      renderCalendar();
-      renderProgress(logMove.value);
-      toast("Deleted");
-    });
-  };
-
-  const renderProgress=(move)=>{
-    const cfg=state.steps[move];
-    const step=clampStep(cfg.step);
-    const def=LADDERS[move][step-1];
-    const recent=recentLogsForMove(move,14);
-    const met=recent.filter(e=>entryCountsTowardStandard(e,cfg)).length;
-    btnAdvanceStep.disabled=!(met>=2);
-    progressBox.textContent=
-      `${move}\n`+
-      `step ${step}: ${def.name}\n`+
-      `target: ${cfg.targetSets} x ${cfg.targetPerSet} ${cfg.targetType==="sec"?"sec":"reps"} @ ${cfg.tempo?cfg.tempo:"Off"}\n`+
-      `met standard (recent): ${met}\n`+
-      `status: ${(met>=2)?"READY (advance step)":"BUILD (log clean work sets)"}`;
-  };
-
-  btnAdvanceStep.onclick=()=>{
-    const mv=logMove.value;
-    const cfg=state.steps[mv];
-    cfg.step=clampStep(cfg.step+1);
-    const def=LADDERS[mv][cfg.step-1];
-    cfg.targetType=def.type;
-    cfg.targetSets=def.sets;
-    cfg.targetPerSet=def.per;
-    persist();refreshHeader();renderStepsForm();renderProgress(mv);renderCalendar();
-    toast("Advanced");
-  };
-
-  const openDayModal=(dateISO)=>{
+  function openDay(ds){
     modal.style.display="flex";
-    modalDatePill.textContent=dateISO;
-    logDate.value=dateISO;
-
-    const sch=scheduledForDate(parseISO(dateISO));
-    dayScheduleLine.textContent=(sch.type==="Rest")?"Rest day (recovery)":"Scheduled: "+sch.items.join(" + ");
-
-    logMove.value=(sch.type==="Train")?sch.items[0]:"Pullups";
-    const cfg=state.steps[logMove.value];
-    renderTempoOptions();
-    logTempo.value=cfg.tempo||"";
-    logType.value=cfg.targetType||"rep";
-    setMode(logType.value);
-
+    modalDatePill.textContent=ds;
+    logDate.value=ds;
+    logMove.value=MOVES[0];
+    logTempo.value=(S.steps[logMove.value]?.tempo||"");
+    logType.value="rep";
     logNote.value="";
-    renderDayLogs(dateISO);
-    renderProgress(logMove.value);
-  };
+    s1i.value="0"; s2i.value="0"; s3i.value="0";
+    stepSize.value="1";
+    updateSetHint();
+    renderDayLogs(ds);
+    renderProgress();
+    dayScheduleLine.textContent = "Tap Save Log when done. (Schedule markers are optional.)";
+  }
+
+  $("#btnCloseModal").onclick=()=>modal.style.display="none";
+
+  function renderDayLogs(ds){
+    const container=$("#dayLogs");
+    container.innerHTML="";
+    const logs=getLogsForDay(ds);
+    if(!logs.length){
+      const div=document.createElement("div");
+      div.className="tiny";
+      div.textContent="No logs yet for this day.";
+      container.appendChild(div);
+      return;
+    }
+    logs.slice().reverse().forEach((x,idx)=>{
+      const div=document.createElement("div");
+      div.className="item";
+      const sets=x.sets||[];
+      const sum= sumSets(x.type||"rep", sets);
+      div.innerHTML=`
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap">
+          <div><b>${x.move}</b> <span class="tiny mono">${x.tempo||""}</span></div>
+          <span class="pill a mono">${x.type==="sec"?"SEC":"REPS"} ${sum}</span>
+        </div>
+        <div class="tiny mono">Sets: ${sets.map(v=>v||"0").join(" / ")}${x.note?` | Note: ${x.note}`:""}</div>
+        <div class="hr"></div>
+        <div class="right">
+          <button class="btn2 mini" data-del="${S.logs.indexOf(x)}">Delete</button>
+        </div>
+      `;
+      div.querySelector("[data-del]").onclick=(e)=>{
+        const i=+e.target.getAttribute("data-del");
+        if(!confirm("Delete this log?")) return;
+        S.logs.splice(i,1);
+        save(S);
+        renderDayLogs(ds);
+        renderCalendar();
+        renderProgress();
+        toast("Deleted");
+      };
+      container.appendChild(div);
+    });
+  }
+
+  function renderProgress(){
+    const move=logMove.value;
+    const {step,tempo,stepInfo,recent}=getProgress(move);
+    const ladder=LADDERS[move]||[];
+    const next=ladder[step]||null;
+    const need=stepInfo?`${stepInfo.sets} x ${stepInfo.per} ${stepInfo.type==="sec"?"sec":"reps"}`:"n/a";
+    const last = recent.slice(-3).map(x=>{
+      const sum=sumSets(x.type||"rep", x.sets||[]);
+      return `${x.date} | ${x.type==="sec"?"sec":"reps"} ${sum} | ${x.sets.join("/")}`;
+    }).join("\n") || "(no recent logs at this tempo)";
+    progressBox.textContent =
+`MOVE: ${move}
+STEP: ${step}${stepInfo?` (${stepInfo.name})`:``}
+OFFICIAL TEMPO: ${tempo||"(none)"}
+TARGET: ${need}
+NEXT: ${next?`Step ${step+1} (${next.name})`:"(top step)"}
+
+RECENT (same tempo):
+${last}
+`;
+    // Advance enabled if we have 2 logs meeting or exceeding goal at same tempo
+    let okCount=0;
+    if(stepInfo){
+      recent.forEach(x=>{
+        const sets=x.sets||[];
+        if(stepInfo.type==="sec" || x.type==="sec"){
+          const secs = sets.map(v=>parseHold(v));
+          const good = secs.filter(v=>v>=stepInfo.per).length;
+          if(good>=stepInfo.sets) okCount++;
+        }else{
+          const reps = sets.map(v=>+v||0);
+          const good = reps.filter(v=>v>=stepInfo.per).length;
+          if(good>=stepInfo.sets) okCount++;
+        }
+      });
+    }
+    btnAdvance.disabled = !(okCount>=2 && step < (ladder.length||10));
+    btnAdvance.textContent = btnAdvance.disabled ? "Advance Step +1" : "Advance Step +1 (ready)";
+  }
 
   logMove.onchange=()=>{
-    const cfg=state.steps[logMove.value];
-    renderTempoOptions();
-    logTempo.value=cfg.tempo||"";
-    logType.value=cfg.targetType||"rep";
-    setMode(logType.value);
-    renderProgress(logMove.value);
-  };
-
-  btnSaveLog.onclick=()=>{
-    const dateISO=logDate.value;
+    logTempo.value=(S.steps[logMove.value]?.tempo||"");
     const move=logMove.value;
-    const cfg=state.steps[move];
-    const step=clampStep(cfg.step);
-    const tempo=logTempo.value||"";
+    const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
+    logType.value = (stepInfo?.type==="sec") ? "sec" : "rep";
+    updateSetHint();
+    renderProgress();
+  };
+  logTempo.onchange=()=>{ updateSetHint(); renderProgress(); };
+  logType.onchange=()=>{ updateSetHint(); };
+
+  function bump(input, delta){
     const type=logType.value;
-
-    const ok1=applyInputToVal(0,s1i.value);
-    const ok2=applyInputToVal(1,s2i.value);
-    const ok3=applyInputToVal(2,s3i.value);
-    if(!(ok1&&ok2&&ok3)){
-      toast("Fix set input");
-      return;
+    const ss=+stepSize.value||1;
+    if(type==="sec"){
+      const v=parseHold(input.value||"0");
+      const nv=Math.max(0, v + delta*ss);
+      input.value=String(nv);
+    }else{
+      const v=+input.value||0;
+      const nv=Math.max(0, v + delta*ss);
+      input.value=String(nv);
     }
+  }
+  function bindSet(id){
+    const i=$("#"+id+"i");
+    $("#"+id+"p").onclick=()=>{ bump(i,+1); };
+    $("#"+id+"m").onclick=()=>{ bump(i,-1); };
+    $("#"+id+"clr").onclick=()=>{ i.value="0"; };
+  }
+  bindSet("s1"); bindSet("s2"); bindSet("s3");
 
-    const sets=setVals.map(v=>{
-      if(!v||v<=0) return null;
-      return (type==="sec") ? fmtSec(v) : (""+v);
-    }).filter(Boolean);
-
-    if(sets.length===0 && !(logNote.value||"").trim()){
-      toast("Nothing to save");
-      return;
-    }
-
-    state.log.push({
-      id:"L"+Math.random().toString(16).slice(2)+Date.now().toString(16),
-      ts:Date.now(),
-      date:dateISO,
-      move,
-      step,
-      tempo,
-      sets,
-      note:(logNote.value||"").trim()
-    });
-
-    persist();
-    renderDayLogs(dateISO);
+  $("#btnSaveLog").onclick=()=>{
+    const date=logDate.value;
+    const move=logMove.value;
+    const tempo=logTempo.value || (S.steps[move]?.tempo||"");
+    const type=logType.value;
+    const sets=[s1i.value||"0", s2i.value||"0", s3i.value||"0"];
+    const note=(logNote.value||"").trim();
+    if(!date){ toast("Pick a date"); return; }
+    S.logs.push({date,move,tempo,type,sets,note});
+    save(S);
+    toast("Saved log");
+    renderDayLogs(date);
     renderCalendar();
-    renderProgress(move);
-    toast("Saved");
+    renderProgress();
   };
 
-  // DATA
-  const dataBox=$("dataBox"),btnExport=$("btnExport"),btnCopy=$("btnCopy"),btnImport=$("btnImport");
-  btnExport.onclick=()=>{dataBox.value=JSON.stringify(state,null,2);toast("Exported");};
-  btnCopy.onclick=async()=>{
-    try{await navigator.clipboard.writeText(dataBox.value||"");toast("Copied");}
-    catch(e){toast("Copy blocked");}
+  btnAdvance.onclick=()=>{
+    const move=logMove.value;
+    const ladder=LADDERS[move]||[];
+    const curr=S.steps[move]?.step||1;
+    if(curr >= (ladder.length||10)) return;
+    S.steps[move].step = curr+1;
+    save(S);
+    makeSteps();
+    renderProgress();
+    toast(`Advanced to Step ${curr+1}`);
   };
-  btnImport.onclick=()=>{
+
+  // Data import/export
+  $("#btnExport").onclick=()=>{
+    $("#dataBox").value = JSON.stringify(S,null,2);
+    toast("Exported");
+  };
+  $("#btnCopy").onclick=async()=>{
     try{
-      const obj=JSON.parse(dataBox.value||"");
-      if(!obj||typeof obj!=="object"||!obj.steps||!obj.log){toast("Bad JSON");return;}
-      localStorage.setItem(LS_KEY,JSON.stringify(obj));
-      location.reload();
-    }catch(e){toast("Bad JSON");}
+      await navigator.clipboard.writeText($("#dataBox").value||"");
+      toast("Copied");
+    }catch(e){
+      toast("Copy failed");
+    }
+  };
+  $("#btnImport").onclick=()=>{
+    const raw=$("#dataBox").value||"";
+    if(!raw.trim()){ toast("Paste JSON first"); return; }
+    if(!confirm("Import will REPLACE current data on this device. Continue?")) return;
+    try{
+      const obj=JSON.parse(raw);
+      S=obj;
+      save(S);
+      $("#helloPill").textContent=S.profile?.name||"Athlete";
+      makeSteps();
+      renderCalendar();
+      toast("Imported");
+    }catch(e){
+      toast("Invalid JSON");
+    }
   };
 
-  // INIT
-  refreshHeader();
-  renderDow();
+  // Nav buttons
+  navBtns.Guide.onclick=()=>showView("Guide");
+  navBtns.Calendar.onclick=()=>{ showView("Calendar"); renderCalendar(); };
+  navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); };
+  navBtns.Data.onclick=()=>showView("Data");
+
+  // Init
+  showView("Guide");
   renderCalendar();
-  show("guide");
 })();
 </script>
 </body>
