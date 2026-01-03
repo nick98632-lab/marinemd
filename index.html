@@ -159,6 +159,11 @@ body{
   display:block;
 }
 
+.brandGroup{
+  display:flex;
+  align-items:center;
+  gap:2px; /* change to 0, 2, or 4 to taste */
+}
 
 /* HERO SECTION */
 .heroCopy{position:relative;z-index:3;padding:6px 8px 20px 8px;}
@@ -394,12 +399,14 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
     <div class="heroInner">
 
       <div class="brandbar">
-        <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
-        <div class="brandLeft">
-          <p class="brandName">MarineMD</p>
-          <p class="brandTag">Bridging innovation and inclusion for a better tomorrow.</p>
-        </div>
-      </div>
+        <div class="brandGroup">
+         <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
+         <div class="brandLeft">
+           <p class="brandName">MarineMD</p>
+           <p class="brandTag">Bridging innovation and inclusion for a better tomorrow.</p>
+         </div>
+       </div>
+     </div>
 
       <div class="heroCopy">
         <h1>Judgment under uncertainty. Standards that hold.</h1>
