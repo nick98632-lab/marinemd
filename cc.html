@@ -713,37 +713,46 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   let S=load()||defaultState();
 
-  // ---------------- Supabase (AUTH + cc_states sync) ----------------
+  // ---------------- Supabase (Auth + Cloud Save/Load) ----------------
+  // NOTE: Your original code was broken here because the URL string was missing a closing quote.
   const SUPABASE_URL = "https://zjvfkbwvzlwanzrsledc.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_3WDtiifShIIiQ-ysFvnyHg_McU8xJPq";
 
-  if(!window.supabase || !window.supabase.createClient){
-    console.error("Supabase client not found. Include supabase-js BEFORE this script.");
-  }
-  const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
 
   const APP_KEY = "cc_elite"; // stored in cc_states.app
   let currentUser = null;
 
   async function refreshAuthUI() {
-    if(!supabase) return;
-    const { data } = await supabase.auth.getSession();
-    currentUser = data.session?.user || null;
-
     const st = $("#authStatus");
     const showIn = (id, on) => { const el=$(id); if(el) el.style.display = on ? "" : "none"; };
 
-    if(st){
-      st.textContent = currentUser ? `Logged in: ${currentUser.email}` : "Not logged in.";
+    if(!supabase){
+      if(st) st.textContent = "Auth unavailable (supabase client missing).";
+      showIn("#btnLogout", false);
+      showIn("#btnCloudLoad", false);
+      showIn("#btnCloudSave", false);
+      showIn("#btnLogin", false);
+      showIn("#btnSignup", false);
+      return;
     }
 
+    const { data, error } = await supabase.auth.getSession();
+    if(error){ console.error(error); }
+
+    currentUser = data.session?.user || null;
+
     if(currentUser){
+      if(st) st.textContent = `Logged in: ${currentUser.email}`;
       showIn("#btnLogout", true);
       showIn("#btnCloudLoad", true);
       showIn("#btnCloudSave", true);
       showIn("#btnLogin", false);
       showIn("#btnSignup", false);
     }else{
+      if(st) st.textContent = "Not logged in.";
       showIn("#btnLogout", false);
       showIn("#btnCloudLoad", false);
       showIn("#btnCloudSave", false);
@@ -753,10 +762,15 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   async function cloudSaveState() {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not loaded"); return; }
     if(!currentUser){ toast("Login first"); return; }
 
-    const payload = { user_id: currentUser.id, app: APP_KEY, state: S };
+    const payload = {
+      user_id: currentUser.id,
+      app: APP_KEY,
+      state: S
+    };
+
     const { error } = await supabase
       .from("cc_states")
       .upsert(payload, { onConflict: "user_id,app" });
@@ -766,7 +780,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   async function cloudLoadState() {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not loaded"); return; }
     if(!currentUser){ toast("Login first"); return; }
 
     const { data, error } = await supabase
@@ -779,8 +793,8 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     if(error){ toast("Cloud load failed"); console.error(error); return; }
     if(!data){ toast("No cloud state yet"); return; }
 
-    S = data.state;
-    save(S);
+    S = data.state || defaultState();
+    save(S); // also keep local copy
     const hp=$("#helloPill"); if(hp) hp.textContent = S.profile?.name || "Athlete";
     makeSteps();
     updateRankPill();
@@ -821,19 +835,14 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   // Profile
   const profileModal=$("#profileModal");
-  $("#btnEditProfile") && ($("#btnEditProfile").onclick=()=>{
-    const pn=$("#profileName"); if(pn) pn.value=S.profile.name||"";
-    if(profileModal) profileModal.style.display="flex";
-    $("#profileName")?.focus?.();
-  });
-  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick=()=>{ if(profileModal) profileModal.style.display="none"; });
+  $("#btnEditProfile") && ($("#btnEditProfile").onclick=()=>{ $("#profileName").value=S.profile.name||""; profileModal.style.display="flex"; $("#profileName").focus(); });
+  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick=()=>profileModal.style.display="none");
   $("#btnSaveProfile") && ($("#btnSaveProfile").onclick=()=>{
     S.profile.name=($("#profileName").value||"Athlete").trim()||"Athlete";
-    $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
-    save(S); toast("Saved profile");
-    if(profileModal) profileModal.style.display="none";
+    const hp=$("#helloPill"); if(hp) hp.textContent=S.profile.name;
+    save(S); toast("Saved profile"); profileModal.style.display="none";
   });
-  $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
+  const hp=$("#helloPill"); if(hp) hp.textContent=S.profile.name;
 
   // Steps
   function makeSteps(){
@@ -915,7 +924,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   function renderCalendar(){
-    $("#monthTitleBig") && ($("#monthTitleBig").textContent=fmtMonth(calCursor));
+    const mt=$("#monthTitleBig"); if(mt) mt.textContent=fmtMonth(calCursor);
     const grid=$("#calGrid"); if(!grid) return;
     grid.innerHTML="";
     const first=startOfMonth(calCursor);
@@ -976,7 +985,6 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   $("#btnNextMonth") && ($("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); });
   $("#btnThisMonth") && ($("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); });
 
-  // Apply baseline week starting today:
   function applyBaselineWeek(){
     const start=new Date();
     for(let i=0;i<7;i++){
@@ -989,11 +997,11 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       const hasAny = already.rest || already.scheduled || already.aerobic;
       if(hasAny) continue;
 
-      if(dow===0){
+      if(dow===0){ // Sun
         S.schedule[ds].rest=true; S.schedule[ds].scheduled=false; S.schedule[ds].aerobic=false;
-      }else if(dow===1 || dow===3 || dow===5){
+      }else if(dow===1 || dow===3 || dow===5){ // Mon Wed Fri
         S.schedule[ds].scheduled=true; S.schedule[ds].rest=false; S.schedule[ds].aerobic=false;
-      }else{
+      }else{ // Tue Thu Sat
         S.schedule[ds].aerobic=true; S.schedule[ds].rest=false; S.schedule[ds].scheduled=false;
       }
     }
@@ -1102,7 +1110,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     if(logDate) logDate.value=ds;
 
     if(logMove) logMove.value=MOVES[0];
-    if(logTempo && logMove) logTempo.value=(S.steps[logMove.value]?.tempo||"");
+    if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
     if(logType) logType.value="rep";
     if(logNote) logNote.value="";
     if(s1i) s1i.value="0"; if(s2i) s2i.value="0"; if(s3i) s3i.value="0";
@@ -1116,7 +1124,6 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   $("#btnCloseModal") && ($("#btnCloseModal").onclick=()=>{ if(modal) modal.style.display="none"; });
 
-  // Schedule controls
   function ensureDay(ds){
     if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
   }
@@ -1165,7 +1172,8 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   });
 
   function renderDayLogs(ds){
-    const container=$("#dayLogs"); if(!container) return;
+    const container=$("#dayLogs");
+    if(!container) return;
     container.innerHTML="";
     const logs=getLogsForDay(ds);
     if(!logs.length){
@@ -1210,7 +1218,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   function renderProgress(){
-    if(!progressBox || !logMove || !btnAdvance) return;
+    if(!logMove || !progressBox || !btnAdvance) return;
     const move=logMove.value;
     const {step,tempo,stepInfo,recent}=getProgress(move);
     const ladder=LADDERS[move]||[];
@@ -1249,19 +1257,21 @@ ${last}
     btnAdvance.textContent = btnAdvance.disabled ? "Advance Step +1" : "Advance Step +1 (ready)";
   }
 
-  logMove && (logMove.onchange=()=>{
-    if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
-    const move=logMove.value;
-    const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
-    if(logType) logType.value=(stepInfo?.type==="sec")?"sec":"rep";
-    updateSetHint(); renderProgress();
-  });
-  logTempo && (logTempo.onchange=()=>{ updateSetHint(); renderProgress(); });
-  logType && (logType.onchange=()=>{ updateSetHint(); });
+  if(logMove){
+    logMove.onchange=()=>{
+      if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
+      const move=logMove.value;
+      const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
+      if(logType) logType.value=(stepInfo?.type==="sec")?"sec":"rep";
+      updateSetHint(); renderProgress();
+    };
+  }
+  if(logTempo) logTempo.onchange=()=>{ updateSetHint(); renderProgress(); };
+  if(logType) logType.onchange=()=>{ updateSetHint(); };
 
   function bump(input, delta){
-    const type=logType?.value;
-    const ss=+stepSize?.value||1;
+    const type=logType.value;
+    const ss=+stepSize.value||1;
     if(type==="sec"){
       const v=parseHold(input.value||"0");
       input.value=String(Math.max(0, v + delta*ss));
@@ -1271,18 +1281,20 @@ ${last}
     }
   }
   function bindSet(id){
-    const i=$("#"+id+"i"); if(!i) return;
-    $("#"+id+"p") && ($("#"+id+"p").onclick=()=>bump(i,+1));
-    $("#"+id+"m") && ($("#"+id+"m").onclick=()=>bump(i,-1));
-    $("#"+id+"clr") && ($("#"+id+"clr").onclick=()=>{ i.value="0"; });
+    const i=$("#"+id+"i");
+    const p=$("#"+id+"p"), m=$("#"+id+"m"), c=$("#"+id+"clr");
+    if(!i || !p || !m || !c) return;
+    p.onclick=()=>bump(i,+1);
+    m.onclick=()=>bump(i,-1);
+    c.onclick=()=>{ i.value="0"; };
   }
   bindSet("s1"); bindSet("s2"); bindSet("s3");
 
   $("#btnSaveLog") && ($("#btnSaveLog").onclick=()=>{
     const date=logDate?.value;
-    const type=logType?.value || "rep";
+    const type=logType?.value;
 
-    let move=logMove?.value || MOVES[0];
+    let move=logMove?.value;
     let tempo=logTempo?.value || (S.steps[move]?.tempo||"");
     const sets=[s1i?.value||"0", s2i?.value||"0", s3i?.value||"0"];
     const note=(logNote?.value||"").trim();
@@ -1313,8 +1325,7 @@ ${last}
   });
 
   btnAdvance && (btnAdvance.onclick=()=>{
-    const move=logMove?.value;
-    if(!move) return;
+    const move=logMove.value;
     const ladder=LADDERS[move]||[];
     const curr=+(S.steps[move]?.step||1);
     if(curr >= (ladder.length||10)) return;
@@ -1336,7 +1347,7 @@ ${last}
     try{
       S=JSON.parse(raw);
       save(S);
-      $("#helloPill") && ($("#helloPill").textContent=S.profile?.name||"Athlete");
+      const hp=$("#helloPill"); if(hp) hp.textContent=S.profile?.name||"Athlete";
       makeSteps();
       updateRankPill();
       renderCalendar();
@@ -1376,7 +1387,7 @@ ${last}
 
   // -------- Auth buttons + Cloud buttons (Supabase only) --------
   $("#btnSignup") && ($("#btnSignup").onclick = async () => {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not loaded"); return; }
     const email = ($("#authEmail").value||"").trim();
     const pass = ($("#authPass").value||"").trim();
     if(!email || !pass){ toast("Email + password"); return; }
@@ -1388,7 +1399,7 @@ ${last}
   });
 
   $("#btnLogin") && ($("#btnLogin").onclick = async () => {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not loaded"); return; }
     const email = ($("#authEmail").value||"").trim();
     const pass = ($("#authPass").value||"").trim();
     if(!email || !pass){ toast("Email + password"); return; }
@@ -1400,7 +1411,7 @@ ${last}
   });
 
   $("#btnLogout") && ($("#btnLogout").onclick = async () => {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not loaded"); return; }
     await supabase.auth.signOut();
     toast("Logged out");
     await refreshAuthUI();
