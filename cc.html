@@ -309,6 +309,9 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 }
 .baselineTile b{ display:block; margin-bottom:3px; }
 </style>
+
+<!-- Supabase (Auth + DB) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -335,6 +338,30 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       <b>Tempo:</b> Down-Bottom-Up-Top seconds (e.g., <b>3-1-2-1</b>).
       <br>
       <b>Hold input:</b> <b>20</b>, <b>20s</b>, <b>0:30</b>, <b>1:15</b>, <b>90s</b>.
+    </div>
+
+    <!-- ACCOUNT (Supabase-only) -->
+    <div class="card" id="authCard" style="margin-top:10px;">
+      <h2>Account</h2>
+      <div class="tiny">Login to sync your data across devices.</div>
+      <div class="hr"></div>
+
+      <div class="row">
+        <div><label>Email</label><input id="authEmail" type="email" placeholder="you@email.com"></div>
+        <div><label>Password</label><input id="authPass" type="password" placeholder="password"></div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="right">
+        <button class="btn2" id="btnSignup">Sign up</button>
+        <button class="btn" id="btnLogin">Login</button>
+        <button class="btn2" id="btnLogout" style="display:none;">Logout</button>
+        <button class="btn" id="btnCloudLoad" style="display:none;">Cloud Load</button>
+        <button class="btn2" id="btnCloudSave" style="display:none;">Cloud Save</button>
+      </div>
+
+      <div class="hr"></div>
+      <div class="tiny mono" id="authStatus">Not logged in.</div>
     </div>
 
     <div class="hr"></div>
@@ -482,6 +509,10 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   <!-- DATA -->
   <div class="card" id="viewData" style="display:none;">
     <h2>Data</h2>
+
+    <!-- (REMOVED) deviceKey / /api cloud sync block -->
+    <!-- You requested Supabase-only; so the old device-key cloud sync UI is removed. -->
+
     <div class="row">
       <div><label>&nbsp;</label><button id="btnExport" class="btn">Export JSON</button></div>
       <div><label>&nbsp;</label><button id="btnCopy" class="btn2">Copy</button></div>
@@ -519,6 +550,18 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
         </div>
         <div><label>&nbsp;</label><button id="btnSaveProfile" class="btn">Save</button></div>
       </div>
+
+      <div class="hr"></div>
+      <h2>Subscribe</h2>
+      <div class="tiny">Optional: add your email so you can get updates when MarineMD launches membership.</div>
+      <div class="row" style="margin-top:6px;">
+        <div style="flex:2 1 260px;min-width:220px">
+          <label>Email</label>
+          <input id="profileEmail" placeholder="you@example.com"/>
+        </div>
+        <div><label>&nbsp;</label><button id="btnSubscribe" class="btn">Subscribe</button></div>
+      </div>
+      <div class="tiny" id="subStatus" style="margin-top:6px;"></div>
     </div>
   </div>
 </div>
@@ -638,6 +681,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   const toastEl=$("#toast");
   function toast(msg){
+    if(!toastEl) return;
     toastEl.textContent=msg;
     toastEl.style.display="block";
     clearTimeout(toastEl._t);
@@ -669,6 +713,81 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   let S=load()||defaultState();
 
+  // ---------------- Supabase (AUTH + cc_states sync) ----------------
+  const SUPABASE_URL = "https://zjvfkbwvzlwanzrsledc.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_3WDtiifShIIiQ-ysFvnyHg_McU8xJPq";
+
+  if(!window.supabase || !window.supabase.createClient){
+    console.error("Supabase client not found. Include supabase-js BEFORE this script.");
+  }
+  const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const APP_KEY = "cc_elite"; // stored in cc_states.app
+  let currentUser = null;
+
+  async function refreshAuthUI() {
+    if(!supabase) return;
+    const { data } = await supabase.auth.getSession();
+    currentUser = data.session?.user || null;
+
+    const st = $("#authStatus");
+    const showIn = (id, on) => { const el=$(id); if(el) el.style.display = on ? "" : "none"; };
+
+    if(st){
+      st.textContent = currentUser ? `Logged in: ${currentUser.email}` : "Not logged in.";
+    }
+
+    if(currentUser){
+      showIn("#btnLogout", true);
+      showIn("#btnCloudLoad", true);
+      showIn("#btnCloudSave", true);
+      showIn("#btnLogin", false);
+      showIn("#btnSignup", false);
+    }else{
+      showIn("#btnLogout", false);
+      showIn("#btnCloudLoad", false);
+      showIn("#btnCloudSave", false);
+      showIn("#btnLogin", true);
+      showIn("#btnSignup", true);
+    }
+  }
+
+  async function cloudSaveState() {
+    if(!supabase) return;
+    if(!currentUser){ toast("Login first"); return; }
+
+    const payload = { user_id: currentUser.id, app: APP_KEY, state: S };
+    const { error } = await supabase
+      .from("cc_states")
+      .upsert(payload, { onConflict: "user_id,app" });
+
+    if(error){ toast("Cloud save failed"); console.error(error); return; }
+    toast("Cloud saved");
+  }
+
+  async function cloudLoadState() {
+    if(!supabase) return;
+    if(!currentUser){ toast("Login first"); return; }
+
+    const { data, error } = await supabase
+      .from("cc_states")
+      .select("state")
+      .eq("user_id", currentUser.id)
+      .eq("app", APP_KEY)
+      .maybeSingle();
+
+    if(error){ toast("Cloud load failed"); console.error(error); return; }
+    if(!data){ toast("No cloud state yet"); return; }
+
+    S = data.state;
+    save(S);
+    const hp=$("#helloPill"); if(hp) hp.textContent = S.profile?.name || "Athlete";
+    makeSteps();
+    updateRankPill();
+    renderCalendar();
+    toast("Cloud loaded");
+  }
+
   // Rank (recomputed from steps; updates on save/advance/import)
   function earnedStepPoints(){
     let pts=0;
@@ -696,24 +815,30 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   const views={Guide:$("#viewGuide"),Calendar:$("#viewCalendar"),Steps:$("#viewSteps"),Data:$("#viewData")};
   const navBtns={Guide:$("#navGuide"),Calendar:$("#navCalendar"),Steps:$("#navSteps"),Data:$("#navData")};
   function showView(name){
-    Object.keys(views).forEach(k=>views[k].style.display=(k===name?"block":"none"));
-    Object.keys(navBtns).forEach(k=>navBtns[k].classList.toggle("active",k===name));
+    Object.keys(views).forEach(k=>{ if(views[k]) views[k].style.display=(k===name?"block":"none"); });
+    Object.keys(navBtns).forEach(k=>{ if(navBtns[k]) navBtns[k].classList.toggle("active",k===name); });
   }
 
   // Profile
   const profileModal=$("#profileModal");
-  $("#btnEditProfile").onclick=()=>{ $("#profileName").value=S.profile.name||""; profileModal.style.display="flex"; $("#profileName").focus(); };
-  $("#btnCloseProfile").onclick=()=>profileModal.style.display="none";
-  $("#btnSaveProfile").onclick=()=>{
+  $("#btnEditProfile") && ($("#btnEditProfile").onclick=()=>{
+    const pn=$("#profileName"); if(pn) pn.value=S.profile.name||"";
+    if(profileModal) profileModal.style.display="flex";
+    $("#profileName")?.focus?.();
+  });
+  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick=()=>{ if(profileModal) profileModal.style.display="none"; });
+  $("#btnSaveProfile") && ($("#btnSaveProfile").onclick=()=>{
     S.profile.name=($("#profileName").value||"Athlete").trim()||"Athlete";
-    $("#helloPill").textContent=S.profile.name;
-    save(S); toast("Saved profile"); profileModal.style.display="none";
-  };
-  $("#helloPill").textContent=S.profile.name;
+    $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
+    save(S); toast("Saved profile");
+    if(profileModal) profileModal.style.display="none";
+  });
+  $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
 
   // Steps
   function makeSteps(){
-    const wrap=$("#stepsForm"); wrap.innerHTML="";
+    const wrap=$("#stepsForm"); if(!wrap) return;
+    wrap.innerHTML="";
     MOVES.forEach(move=>{
       const curr=S.steps[move]||{step:1,tempo:"3-1-2-1"};
       const ladder=LADDERS[move]||[];
@@ -749,13 +874,13 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
   makeSteps();
 
-  $("#btnResetSteps").onclick=()=>{
+  $("#btnResetSteps") && ($("#btnResetSteps").onclick=()=>{
     if(!confirm("Reset all steps to 1?")) return;
     MOVES.forEach(m=>S.steps[m]={step:1,tempo:"3-1-2-1"});
     save(S); makeSteps(); updateRankPill(); toast("Reset steps");
-  };
+  });
 
-  $("#btnSaveSteps").onclick=()=>{
+  $("#btnSaveSteps") && ($("#btnSaveSteps").onclick=()=>{
     MOVES.forEach(m=>{
       const step=+($(`#step_${CSS.escape(m)}`).value||1);
       const tempo=($(`#tempo_${CSS.escape(m)}`).value||"");
@@ -765,11 +890,11 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     updateRankPill();
     toast("Saved steps");
     renderCalendar();
-  };
+  });
 
   // Calendar header DOW
   const dowRow=$("#dowRow");
-  if(!dowRow.dataset.ready){
+  if(dowRow && !dowRow.dataset.ready){
     DOW.forEach(d=>{ const div=document.createElement("div"); div.className="dow"; div.textContent=d; dowRow.appendChild(div); });
     dowRow.dataset.ready="1";
   }
@@ -790,8 +915,9 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   function renderCalendar(){
-    $("#monthTitleBig").textContent=fmtMonth(calCursor);
-    const grid=$("#calGrid"); grid.innerHTML="";
+    $("#monthTitleBig") && ($("#monthTitleBig").textContent=fmtMonth(calCursor));
+    const grid=$("#calGrid"); if(!grid) return;
+    grid.innerHTML="";
     const first=startOfMonth(calCursor);
     const last=endOfMonth(calCursor);
     const lead=first.getDay();
@@ -846,14 +972,11 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     }
   }
 
-  $("#btnPrevMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); };
-  $("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); };
-  $("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); };
+  $("#btnPrevMonth") && ($("#btnPrevMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); });
+  $("#btnNextMonth") && ($("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); });
+  $("#btnThisMonth") && ($("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); });
 
-  // Apply a baseline week starting today:
-  // Mon/Wed/Fri = strength scheduled (green)
-  // Tue/Thu/Sat = aerobic scheduled (pink)
-  // Sun = rest (yellow)
+  // Apply baseline week starting today:
   function applyBaselineWeek(){
     const start=new Date();
     for(let i=0;i<7;i++){
@@ -862,17 +985,15 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
 
       const dow=dt.getDay(); // 0 Sun .. 6 Sat
-      // Default clear but preserve if user already marked something:
-      // If user already set rest/scheduled/aerobic, keep it.
       const already = S.schedule[ds];
       const hasAny = already.rest || already.scheduled || already.aerobic;
       if(hasAny) continue;
 
-      if(dow===0){ // Sun
+      if(dow===0){
         S.schedule[ds].rest=true; S.schedule[ds].scheduled=false; S.schedule[ds].aerobic=false;
-      }else if(dow===1 || dow===3 || dow===5){ // Mon Wed Fri
+      }else if(dow===1 || dow===3 || dow===5){
         S.schedule[ds].scheduled=true; S.schedule[ds].rest=false; S.schedule[ds].aerobic=false;
-      }else{ // Tue Thu Sat
+      }else{
         S.schedule[ds].aerobic=true; S.schedule[ds].rest=false; S.schedule[ds].scheduled=false;
       }
     }
@@ -880,7 +1001,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     renderCalendar();
     toast("Applied baseline week");
   }
-  $("#btnBaselineWeek").onclick=()=>applyBaselineWeek();
+  $("#btnBaselineWeek") && ($("#btnBaselineWeek").onclick=()=>applyBaselineWeek());
 
   // Day modal
   const modal=$("#modal");
@@ -904,17 +1025,21 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   const btnAdvance=$("#btnAdvanceStep");
 
   function fillMoves(){
+    if(!logMove) return;
     logMove.innerHTML="";
     MOVES.forEach(m=>{ const opt=document.createElement("option"); opt.value=m; opt.textContent=m; logMove.appendChild(opt); });
   }
   fillMoves();
+
   function fillTempo(){
+    if(!logTempo) return;
     logTempo.innerHTML="";
     TEMPO_PRESETS.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; opt.textContent=t||"(none)"; logTempo.appendChild(opt); });
   }
   fillTempo();
 
   function updateSetHint(){
+    if(!setHint || !logMove || !logType || !logTempo) return;
     const move=logMove.value;
     const step=+(S.steps[move]?.step||1);
     const ladder=LADDERS[move]||[];
@@ -972,77 +1097,75 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   function openDay(ds){
     activeDay=ds;
-    modal.style.display="flex";
-    modalDatePill.textContent=ds;
-    logDate.value=ds;
+    if(modal) modal.style.display="flex";
+    if(modalDatePill) modalDatePill.textContent=ds;
+    if(logDate) logDate.value=ds;
 
-    logMove.value=MOVES[0];
-    logTempo.value=(S.steps[logMove.value]?.tempo||"");
-    logType.value="rep";
-    logNote.value="";
-    s1i.value="0"; s2i.value="0"; s3i.value="0";
-    stepSize.value="1";
+    if(logMove) logMove.value=MOVES[0];
+    if(logTempo && logMove) logTempo.value=(S.steps[logMove.value]?.tempo||"");
+    if(logType) logType.value="rep";
+    if(logNote) logNote.value="";
+    if(s1i) s1i.value="0"; if(s2i) s2i.value="0"; if(s3i) s3i.value="0";
+    if(stepSize) stepSize.value="1";
 
     updateSetHint();
     renderDayLogs(ds);
     renderProgress();
-    dayScheduleLine.textContent=scheduleLine(ds);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
   }
 
-  $("#btnCloseModal").onclick=()=>modal.style.display="none";
+  $("#btnCloseModal") && ($("#btnCloseModal").onclick=()=>{ if(modal) modal.style.display="none"; });
 
   // Schedule controls
   function ensureDay(ds){
     if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
   }
 
-  btnMarkScheduled.onclick=()=>{
+  btnMarkScheduled && (btnMarkScheduled.onclick=()=>{
     if(!activeDay) return;
     ensureDay(activeDay);
     S.schedule[activeDay].scheduled=true;
     S.schedule[activeDay].rest=false;
-    // allow aerobic to also be true if user wants both that day (keep as-is)
     save(S);
-    dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
     renderCalendar();
     toast("Marked scheduled (strength)");
-  };
+  });
 
-  btnMarkAerobic.onclick=()=>{
+  btnMarkAerobic && (btnMarkAerobic.onclick=()=>{
     if(!activeDay) return;
     ensureDay(activeDay);
     S.schedule[activeDay].aerobic=true;
     S.schedule[activeDay].rest=false;
-    // scheduled strength may also be true (two-a-day)
     save(S);
-    dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
     renderCalendar();
     toast("Marked scheduled (aerobic)");
-  };
+  });
 
-  btnMarkRest.onclick=()=>{
+  btnMarkRest && (btnMarkRest.onclick=()=>{
     if(!activeDay) return;
     ensureDay(activeDay);
     S.schedule[activeDay].rest=true;
     S.schedule[activeDay].scheduled=false;
     S.schedule[activeDay].aerobic=false;
     save(S);
-    dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
     renderCalendar();
     toast("Marked rest");
-  };
+  });
 
-  btnClearMarks.onclick=()=>{
+  btnClearMarks && (btnClearMarks.onclick=()=>{
     if(!activeDay) return;
     delete S.schedule[activeDay];
     save(S);
-    dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
     renderCalendar();
     toast("Cleared markers");
-  };
+  });
 
   function renderDayLogs(ds){
-    const container=$("#dayLogs");
+    const container=$("#dayLogs"); if(!container) return;
     container.innerHTML="";
     const logs=getLogsForDay(ds);
     if(!logs.length){
@@ -1077,7 +1200,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
         S.logs.splice(i,1);
         save(S);
         renderDayLogs(ds);
-        dayScheduleLine.textContent=scheduleLine(ds);
+        if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
         renderCalendar();
         renderProgress();
         toast("Deleted");
@@ -1087,6 +1210,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   function renderProgress(){
+    if(!progressBox || !logMove || !btnAdvance) return;
     const move=logMove.value;
     const {step,tempo,stepInfo,recent}=getProgress(move);
     const ladder=LADDERS[move]||[];
@@ -1125,19 +1249,19 @@ ${last}
     btnAdvance.textContent = btnAdvance.disabled ? "Advance Step +1" : "Advance Step +1 (ready)";
   }
 
-  logMove.onchange=()=>{
-    logTempo.value=(S.steps[logMove.value]?.tempo||"");
+  logMove && (logMove.onchange=()=>{
+    if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
     const move=logMove.value;
     const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
-    logType.value=(stepInfo?.type==="sec")?"sec":"rep";
+    if(logType) logType.value=(stepInfo?.type==="sec")?"sec":"rep";
     updateSetHint(); renderProgress();
-  };
-  logTempo.onchange=()=>{ updateSetHint(); renderProgress(); };
-  logType.onchange=()=>{ updateSetHint(); };
+  });
+  logTempo && (logTempo.onchange=()=>{ updateSetHint(); renderProgress(); });
+  logType && (logType.onchange=()=>{ updateSetHint(); });
 
   function bump(input, delta){
-    const type=logType.value;
-    const ss=+stepSize.value||1;
+    const type=logType?.value;
+    const ss=+stepSize?.value||1;
     if(type==="sec"){
       const v=parseHold(input.value||"0");
       input.value=String(Math.max(0, v + delta*ss));
@@ -1147,26 +1271,25 @@ ${last}
     }
   }
   function bindSet(id){
-    const i=$("#"+id+"i");
-    $("#"+id+"p").onclick=()=>bump(i,+1);
-    $("#"+id+"m").onclick=()=>bump(i,-1);
-    $("#"+id+"clr").onclick=()=>{ i.value="0"; };
+    const i=$("#"+id+"i"); if(!i) return;
+    $("#"+id+"p") && ($("#"+id+"p").onclick=()=>bump(i,+1));
+    $("#"+id+"m") && ($("#"+id+"m").onclick=()=>bump(i,-1));
+    $("#"+id+"clr") && ($("#"+id+"clr").onclick=()=>{ i.value="0"; });
   }
   bindSet("s1"); bindSet("s2"); bindSet("s3");
 
-  $("#btnSaveLog").onclick=()=>{
-    const date=logDate.value;
-    const type=logType.value;
+  $("#btnSaveLog") && ($("#btnSaveLog").onclick=()=>{
+    const date=logDate?.value;
+    const type=logType?.value || "rep";
 
-    let move=logMove.value;
-    let tempo=logTempo.value || (S.steps[move]?.tempo||"");
-    const sets=[s1i.value||"0", s2i.value||"0", s3i.value||"0"];
-    const note=(logNote.value||"").trim();
+    let move=logMove?.value || MOVES[0];
+    let tempo=logTempo?.value || (S.steps[move]?.tempo||"");
+    const sets=[s1i?.value||"0", s2i?.value||"0", s3i?.value||"0"];
+    const note=(logNote?.value||"").trim();
 
     if(!date){ toast("Pick a date"); return; }
 
     if(type==="cardio"){
-      // Aerobic minutes
       move="Aerobic";
       tempo="";
       sets[0]=String(Math.max(0, +sets[0]||0));
@@ -1175,11 +1298,8 @@ ${last}
       if((+sets[0]||0)===0 && (+sets[1]||0)===0 && (+sets[2]||0)===0){
         toast("Enter aerobic minutes"); return;
       }
-      // Auto mark day as aerobic scheduled if it isn't already (keeps it pink)
-      if(date){
-        if(!S.schedule[date]) S.schedule[date]={scheduled:false,rest:false,aerobic:false};
-        if(!S.schedule[date].rest) S.schedule[date].aerobic=true;
-      }
+      if(!S.schedule[date]) S.schedule[date]={scheduled:false,rest:false,aerobic:false};
+      if(!S.schedule[date].rest) S.schedule[date].aerobic=true;
     }
 
     S.logs.push({date,move,tempo,type,sets,note});
@@ -1187,13 +1307,14 @@ ${last}
     toast("Saved log");
 
     renderDayLogs(date);
-    if(activeDay===date) dayScheduleLine.textContent=scheduleLine(date);
+    if(activeDay===date && dayScheduleLine) dayScheduleLine.textContent=scheduleLine(date);
     renderCalendar();
     renderProgress();
-  };
+  });
 
-  btnAdvance.onclick=()=>{
-    const move=logMove.value;
+  btnAdvance && (btnAdvance.onclick=()=>{
+    const move=logMove?.value;
+    if(!move) return;
     const ladder=LADDERS[move]||[];
     const curr=+(S.steps[move]?.step||1);
     if(curr >= (ladder.length||10)) return;
@@ -1203,31 +1324,31 @@ ${last}
     updateRankPill();
     renderProgress();
     toast(`Advanced to Step ${curr+1}`);
-  };
+  });
 
   // Data
-  $("#btnExport").onclick=()=>{ $("#dataBox").value=JSON.stringify(S,null,2); toast("Exported"); };
-  $("#btnCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#dataBox").value||""); toast("Copied"); }catch(e){ toast("Copy failed"); } };
-  $("#btnImport").onclick=()=>{
+  $("#btnExport") && ($("#btnExport").onclick=()=>{ $("#dataBox").value=JSON.stringify(S,null,2); toast("Exported"); });
+  $("#btnCopy") && ($("#btnCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#dataBox").value||""); toast("Copied"); }catch(e){ toast("Copy failed"); } });
+  $("#btnImport") && ($("#btnImport").onclick=()=>{
     const raw=$("#dataBox").value||"";
     if(!raw.trim()){ toast("Paste JSON first"); return; }
     if(!confirm("Import will REPLACE current data on this device. Continue?")) return;
     try{
       S=JSON.parse(raw);
       save(S);
-      $("#helloPill").textContent=S.profile?.name||"Athlete";
+      $("#helloPill") && ($("#helloPill").textContent=S.profile?.name||"Athlete");
       makeSteps();
       updateRankPill();
       renderCalendar();
       toast("Imported");
     }catch(e){ toast("Invalid JSON"); }
-  };
+  });
 
   // Nav
-  navBtns.Guide.onclick=()=>showView("Guide");
-  navBtns.Calendar.onclick=()=>{ showView("Calendar"); renderCalendar(); };
-  navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); };
-  navBtns.Data.onclick=()=>showView("Data");
+  navBtns.Guide && (navBtns.Guide.onclick=()=>showView("Guide"));
+  navBtns.Calendar && (navBtns.Calendar.onclick=()=>{ showView("Calendar"); renderCalendar(); });
+  navBtns.Steps && (navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); });
+  navBtns.Data && (navBtns.Data.onclick=()=>showView("Data"));
 
   // Neon panels
   function initNeonGuide(){
@@ -1253,11 +1374,51 @@ ${last}
     });
   }
 
+  // -------- Auth buttons + Cloud buttons (Supabase only) --------
+  $("#btnSignup") && ($("#btnSignup").onclick = async () => {
+    if(!supabase) return;
+    const email = ($("#authEmail").value||"").trim();
+    const pass = ($("#authPass").value||"").trim();
+    if(!email || !pass){ toast("Email + password"); return; }
+
+    const { error } = await supabase.auth.signUp({ email, password: pass });
+    if(error){ toast("Sign up failed"); console.error(error); return; }
+    toast("Signed up. Check email if required.");
+    await refreshAuthUI();
+  });
+
+  $("#btnLogin") && ($("#btnLogin").onclick = async () => {
+    if(!supabase) return;
+    const email = ($("#authEmail").value||"").trim();
+    const pass = ($("#authPass").value||"").trim();
+    if(!email || !pass){ toast("Email + password"); return; }
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if(error){ toast("Login failed"); console.error(error); return; }
+    toast("Logged in");
+    await refreshAuthUI();
+  });
+
+  $("#btnLogout") && ($("#btnLogout").onclick = async () => {
+    if(!supabase) return;
+    await supabase.auth.signOut();
+    toast("Logged out");
+    await refreshAuthUI();
+  });
+
+  $("#btnCloudSave") && ($("#btnCloudSave").onclick = () => cloudSaveState());
+  $("#btnCloudLoad") && ($("#btnCloudLoad").onclick = () => cloudLoadState());
+
+  if(supabase){
+    supabase.auth.onAuthStateChange(() => refreshAuthUI());
+  }
+
   // Init
   showView("Guide");
   renderCalendar();
   initNeonGuide();
   updateRankPill();
+  refreshAuthUI();
 })();
 </script>
 </body>
