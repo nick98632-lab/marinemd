@@ -657,17 +657,17 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
 <script>
 (() => {
-  const MOVES=["Pushups","Pullups","Squats","Bridges","Leg Raises","Handstand Pushups"];
-  const LS_KEY="marinemd_cc_elite_final_vFINAL";
-  const TEMPO_PRESETS=["","2-0-2-0","3-1-2-1","5-1-5-1"];
+  const MOVES = ["Pushups","Pullups","Squats","Bridges","Leg Raises","Handstand Pushups"];
+  const LS_KEY = "marinemd_cc_elite_final_vFINAL";
+  const TEMPO_PRESETS = ["","2-0-2-0","3-1-2-1","5-1-5-1"];
 
   // Rank = total earned progression across Big Six: sum(step-1), max 54.
-  const RANKS=[
+  const RANKS = [
     {name:"CADET",min:0},{name:"RECRUIT",min:6},{name:"PRIVATE",min:14},{name:"CORPORAL",min:22},
     {name:"SERGEANT",min:30},{name:"GUNNY",min:38},{name:"MASTER",min:46},{name:"ELITE",min:54}
   ];
 
-  const LADDERS={
+  const LADDERS = {
     "Pushups":[{name:"Wall",type:"rep",sets:3,per:20},{name:"Incline",type:"rep",sets:3,per:20},{name:"Knee",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Arm",type:"rep",sets:3,per:10},{name:"Lever",type:"rep",sets:3,per:8},{name:"1-Arm",type:"rep",sets:3,per:5}],
     "Pullups":[{name:"Vertical Rows",type:"rep",sets:3,per:20},{name:"Horizontal Rows",type:"rep",sets:3,per:20},{name:"Jackknife",type:"rep",sets:3,per:20},{name:"Half Pullup",type:"rep",sets:3,per:15},{name:"Full Pullup",type:"rep",sets:3,per:10},{name:"Close Pullup",type:"rep",sets:3,per:10},{name:"Uneven Pullup",type:"rep",sets:3,per:8},{name:"Half 1-Arm",type:"rep",sets:3,per:6},{name:"Assist 1-Arm",type:"rep",sets:3,per:5},{name:"1-Arm",type:"rep",sets:3,per:3}],
     "Squats":[{name:"Shoulderstand",type:"rep",sets:3,per:25},{name:"Jackknife",type:"rep",sets:3,per:25},{name:"Supported",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Leg",type:"rep",sets:3,per:10},{name:"Assist 1-Leg",type:"rep",sets:3,per:8},{name:"1-Leg",type:"rep",sets:3,per:5}],
@@ -676,44 +676,56 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     "Handstand Pushups":[{name:"Wall Headstand",type:"rep",sets:3,per:30},{name:"Crow",type:"rep",sets:3,per:30},{name:"Wall Handstand",type:"sec",sets:3,per:30},{name:"Half HSPU",type:"rep",sets:3,per:20},{name:"HSPU",type:"rep",sets:3,per:15},{name:"Close HSPU",type:"rep",sets:3,per:12},{name:"Uneven HSPU",type:"rep",sets:3,per:10},{name:"Half 1-Arm HSPU",type:"rep",sets:3,per:6},{name:"Assist 1-Arm HSPU",type:"rep",sets:3,per:4},{name:"1-Arm HSPU",type:"rep",sets:3,per:2}],
   };
 
-  const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const $=sel=>document.querySelector(sel);
+  const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const $ = (sel) => document.querySelector(sel);
 
-  const toastEl=$("#toast");
+  // ---------------- Toast ----------------
+  const toastEl = $("#toast");
   function toast(msg){
     if(!toastEl) return;
-    toastEl.textContent=msg;
-    toastEl.style.display="block";
+    toastEl.textContent = msg;
+    toastEl.style.display = "block";
     clearTimeout(toastEl._t);
-    toastEl._t=setTimeout(()=>toastEl.style.display="none",1400);
+    toastEl._t = setTimeout(()=>toastEl.style.display="none", 1600);
   }
 
-  function load(){ try{ const raw=localStorage.getItem(LS_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+  // ---------------- Local state ----------------
+  function load(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
   function save(state){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
   function iso(d){ return d.toISOString().slice(0,10); }
+
   function parseHold(s){
     if(!s) return 0;
-    s=(""+s).trim().toLowerCase();
+    s = (""+s).trim().toLowerCase();
     if(!s) return 0;
     if(/^\d+$/.test(s)) return parseInt(s,10);
     if(/^\d+\s*s$/.test(s)) return parseInt(s,10);
-    if(/^\d+:\d{1,2}$/.test(s)){ const [m,sec]=s.split(":").map(x=>parseInt(x,10)); return m*60+sec; }
+    if(/^\d+:\d{1,2}$/.test(s)){
+      const [m,sec] = s.split(":").map(x=>parseInt(x,10));
+      return m*60 + sec;
+    }
     if(/^\d+\s*m$/.test(s)) return parseInt(s,10)*60;
     if(/^\d+\s*min$/.test(s)) return parseInt(s,10)*60;
     return 0;
   }
 
-  const defaultState=()=>({
+  const defaultState = () => ({
     profile:{name:"Athlete"},
     steps:Object.fromEntries(MOVES.map(m=>[m,{step:1,tempo:"3-1-2-1"}])),
     schedule:{}, // { "YYYY-MM-DD": {scheduled:true, rest:false, aerobic:false} }
     logs:[]
   });
 
-  let S=load()||defaultState();
+  let S = load() || defaultState();
 
   // ---------------- Supabase (AUTH + cc_states sync) ----------------
+  // IMPORTANT: browser code must ONLY use the anon/public key. Do NOT use your secret key here.
   const SUPABASE_URL = "https://zjvfkbwvzlwanzrsledc.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_3WDtiifShIIiQ-ysFvnyHg_McU8xJPq";
 
@@ -727,8 +739,11 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
 
   async function refreshAuthUI() {
     if(!supabase) return;
-    const { data } = await supabase.auth.getSession();
-    currentUser = data.session?.user || null;
+
+    const { data, error } = await supabase.auth.getSession();
+    if(error) console.error("getSession error:", error);
+
+    currentUser = data?.session?.user || null;
 
     const st = $("#authStatus");
     const showIn = (id, on) => { const el=$(id); if(el) el.style.display = on ? "" : "none"; };
@@ -753,7 +768,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   }
 
   async function cloudSaveState() {
-    if(!supabase) return;
+    if(!supabase) { toast("Supabase not ready"); return; }
     if(!currentUser){ toast("Login first"); return; }
 
     const payload = { user_id: currentUser.id, app: APP_KEY, state: S };
@@ -761,12 +776,12 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       .from("cc_states")
       .upsert(payload, { onConflict: "user_id,app" });
 
-    if(error){ toast("Cloud save failed"); console.error(error); return; }
+    if(error){ console.error("Cloud save error:", error); toast(error.message || "Cloud save failed"); return; }
     toast("Cloud saved");
   }
 
   async function cloudLoadState() {
-    if(!supabase) return;
+    if(!supabase) { toast("Supabase not ready"); return; }
     if(!currentUser){ toast("Login first"); return; }
 
     const { data, error } = await supabase
@@ -776,10 +791,10 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       .eq("app", APP_KEY)
       .maybeSingle();
 
-    if(error){ toast("Cloud load failed"); console.error(error); return; }
+    if(error){ console.error("Cloud load error:", error); toast(error.message || "Cloud load failed"); return; }
     if(!data){ toast("No cloud state yet"); return; }
 
-    S = data.state;
+    S = data.state || defaultState();
     save(S);
     const hp=$("#helloPill"); if(hp) hp.textContent = S.profile?.name || "Athlete";
     makeSteps();
@@ -788,65 +803,94 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     toast("Cloud loaded");
   }
 
-  // Rank (recomputed from steps; updates on save/advance/import)
+  // ---------------- Rank ----------------
   function earnedStepPoints(){
-    let pts=0;
+    let pts = 0;
     for(const m of MOVES){
-      const st=Math.max(1,Math.min(10,+(S.steps?.[m]?.step||1)));
-      pts += (st-1);
+      const st = Math.max(1, Math.min(10, +(S.steps?.[m]?.step || 1)));
+      pts += (st - 1);
     }
     return pts;
   }
+
   function computeRank(){
-    const pts=earnedStepPoints();
-    const maxPts=MOVES.length*9;
-    let name=RANKS[0].name;
-    for(const r of RANKS){ if(pts>=r.min) name=r.name; }
-    const pct=maxPts?Math.round((pts/maxPts)*100):0;
-    return {name,pts,maxPts,pct};
+    const pts = earnedStepPoints();
+    const maxPts = MOVES.length * 9;
+    let name = RANKS[0].name;
+    for(const r of RANKS){ if(pts >= r.min) name = r.name; }
+    const pct = maxPts ? Math.round((pts / maxPts) * 100) : 0;
+    return {name, pts, maxPts, pct};
   }
+
   function updateRankPill(){
-    const rp=$("#rankPill"); if(!rp) return;
-    const {name,pts,maxPts,pct}=computeRank();
-    rp.textContent=`${name} ${pts}/${maxPts} (${pct}%)`;
+    const rp = $("#rankPill"); if(!rp) return;
+    const {name, pts, maxPts, pct} = computeRank();
+    rp.textContent = `${name} ${pts}/${maxPts} (${pct}%)`;
   }
 
-  // Views
-  const views={Guide:$("#viewGuide"),Calendar:$("#viewCalendar"),Steps:$("#viewSteps"),Data:$("#viewData")};
-  const navBtns={Guide:$("#navGuide"),Calendar:$("#navCalendar"),Steps:$("#navSteps"),Data:$("#navData")};
+  // ---------------- Views ----------------
+  const views = {
+    Guide: $("#viewGuide"),
+    Calendar: $("#viewCalendar"),
+    Steps: $("#viewSteps"),
+    Data: $("#viewData"),
+  };
+  const navBtns = {
+    Guide: $("#navGuide"),
+    Calendar: $("#navCalendar"),
+    Steps: $("#navSteps"),
+    Data: $("#navData"),
+  };
+
   function showView(name){
-    Object.keys(views).forEach(k=>{ if(views[k]) views[k].style.display=(k===name?"block":"none"); });
-    Object.keys(navBtns).forEach(k=>{ if(navBtns[k]) navBtns[k].classList.toggle("active",k===name); });
+    Object.keys(views).forEach(k=>{
+      if(views[k]) views[k].style.display = (k===name ? "block" : "none");
+    });
+    Object.keys(navBtns).forEach(k=>{
+      if(navBtns[k]) navBtns[k].classList.toggle("active", k===name);
+    });
   }
 
-  // Profile
-  const profileModal=$("#profileModal");
-  $("#btnEditProfile") && ($("#btnEditProfile").onclick=()=>{
-    const pn=$("#profileName"); if(pn) pn.value=S.profile.name||"";
-    if(profileModal) profileModal.style.display="flex";
+  // ---------------- Profile ----------------
+  const profileModal = $("#profileModal");
+
+  $("#btnEditProfile") && ($("#btnEditProfile").onclick = () => {
+    const pn=$("#profileName"); if(pn) pn.value = S.profile?.name || "";
+    if(profileModal) profileModal.style.display = "flex";
     $("#profileName")?.focus?.();
   });
-  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick=()=>{ if(profileModal) profileModal.style.display="none"; });
-  $("#btnSaveProfile") && ($("#btnSaveProfile").onclick=()=>{
-    S.profile.name=($("#profileName").value||"Athlete").trim()||"Athlete";
-    $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
-    save(S); toast("Saved profile");
+
+  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick = () => {
+    if(profileModal) profileModal.style.display = "none";
+  });
+
+  $("#btnSaveProfile") && ($("#btnSaveProfile").onclick = () => {
+    S.profile.name = ($("#profileName").value || "Athlete").trim() || "Athlete";
+    $("#helloPill") && ($("#helloPill").textContent = S.profile.name);
+    save(S);
+    toast("Saved profile");
     if(profileModal) profileModal.style.display="none";
   });
-  $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
 
-  // Steps
+  $("#helloPill") && ($("#helloPill").textContent = S.profile?.name || "Athlete");
+
+  // ---------------- Steps UI ----------------
   function makeSteps(){
-    const wrap=$("#stepsForm"); if(!wrap) return;
-    wrap.innerHTML="";
+    const wrap = $("#stepsForm"); if(!wrap) return;
+    wrap.innerHTML = "";
+
     MOVES.forEach(move=>{
-      const curr=S.steps[move]||{step:1,tempo:"3-1-2-1"};
-      const ladder=LADDERS[move]||[];
-      const card=document.createElement("div");
-      card.className="item";
-      card.innerHTML=`
+      const curr = S.steps?.[move] || {step:1, tempo:"3-1-2-1"};
+      const ladder = LADDERS[move] || [];
+
+      const card = document.createElement("div");
+      card.className = "item";
+      card.innerHTML = `
         <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap">
-          <div><b>${move}</b><div class="tiny">Progression: <span class="mono">${ladder.length?ladder.map((x,i)=>`${i+1}:${x.name}`).join(" | "):"n/a"}</span></div></div>
+          <div>
+            <b>${move}</b>
+            <div class="tiny">Progression: <span class="mono">${ladder.length ? ladder.map((x,i)=>`${i+1}:${x.name}`).join(" | ") : "n/a"}</span></div>
+          </div>
           <span class="pill w mono" id="pill_${move}">STEP ${curr.step}</span>
         </div>
         <div class="hr"></div>
@@ -860,31 +904,41 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
         </div>
       `;
       wrap.appendChild(card);
-      const stepSel=card.querySelector(`#step_${CSS.escape(move)}`);
-      for(let i=1;i<=Math.max(10,ladder.length);i++){
+
+      const stepSel = card.querySelector(`#step_${CSS.escape(move)}`);
+      for(let i=1;i<=Math.max(10, ladder.length); i++){
         const opt=document.createElement("option");
-        opt.value=i; opt.textContent=i+(ladder[i-1]?` - ${ladder[i-1].name}`:"");
+        opt.value=i;
+        opt.textContent = i + (ladder[i-1] ? ` - ${ladder[i-1].name}` : "");
         stepSel.appendChild(opt);
       }
-      stepSel.value=String(curr.step||1);
-      const tempoSel=card.querySelector(`#tempo_${CSS.escape(move)}`);
-      tempoSel.value=curr.tempo||"";
-      stepSel.onchange=()=>{ card.querySelector(`#pill_${CSS.escape(move)}`).textContent=`STEP ${stepSel.value}`; };
+      stepSel.value = String(curr.step || 1);
+
+      const tempoSel = card.querySelector(`#tempo_${CSS.escape(move)}`);
+      tempoSel.value = curr.tempo || "";
+
+      stepSel.onchange = () => {
+        const pill = card.querySelector(`#pill_${CSS.escape(move)}`);
+        if(pill) pill.textContent = `STEP ${stepSel.value}`;
+      };
     });
   }
   makeSteps();
 
-  $("#btnResetSteps") && ($("#btnResetSteps").onclick=()=>{
+  $("#btnResetSteps") && ($("#btnResetSteps").onclick = () => {
     if(!confirm("Reset all steps to 1?")) return;
-    MOVES.forEach(m=>S.steps[m]={step:1,tempo:"3-1-2-1"});
-    save(S); makeSteps(); updateRankPill(); toast("Reset steps");
+    MOVES.forEach(m=>S.steps[m] = {step:1, tempo:"3-1-2-1"});
+    save(S);
+    makeSteps();
+    updateRankPill();
+    toast("Reset steps");
   });
 
-  $("#btnSaveSteps") && ($("#btnSaveSteps").onclick=()=>{
+  $("#btnSaveSteps") && ($("#btnSaveSteps").onclick = () => {
     MOVES.forEach(m=>{
-      const step=+($(`#step_${CSS.escape(m)}`).value||1);
-      const tempo=($(`#tempo_${CSS.escape(m)}`).value||"");
-      S.steps[m]={step,tempo};
+      const step = +($(`#step_${CSS.escape(m)}`).value || 1);
+      const tempo = ($(`#tempo_${CSS.escape(m)}`).value || "");
+      S.steps[m] = {step, tempo};
     });
     save(S);
     updateRankPill();
@@ -892,36 +946,42 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     renderCalendar();
   });
 
-  // Calendar header DOW
-  const dowRow=$("#dowRow");
+  // ---------------- Calendar ----------------
+  const dowRow = $("#dowRow");
   if(dowRow && !dowRow.dataset.ready){
-    DOW.forEach(d=>{ const div=document.createElement("div"); div.className="dow"; div.textContent=d; dowRow.appendChild(div); });
+    DOW.forEach(d=>{
+      const div=document.createElement("div");
+      div.className="dow";
+      div.textContent=d;
+      dowRow.appendChild(div);
+    });
     dowRow.dataset.ready="1";
   }
 
-  let calCursor=new Date();
+  let calCursor = new Date();
   function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
   function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
   function fmtMonth(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
 
   function getDayMeta(dateStr){
-    const meta=S.schedule[dateStr]||{};
-    const hasStrength=S.logs.some(x=>x.date===dateStr && x.type!=="cardio");
-    const hasCardioLog=S.logs.some(x=>x.date===dateStr && x.type==="cardio");
-    const isRest=!!meta.rest;
-    const isScheduled=!!meta.scheduled;
-    const isAerobic=!!meta.aerobic;
+    const meta = S.schedule?.[dateStr] || {};
+    const hasStrength = S.logs.some(x=>x.date===dateStr && x.type!=="cardio");
+    const hasCardioLog = S.logs.some(x=>x.date===dateStr && x.type==="cardio");
+    const isRest = !!meta.rest;
+    const isScheduled = !!meta.scheduled;
+    const isAerobic = !!meta.aerobic;
     return {hasStrength,hasCardioLog,isRest,isScheduled,isAerobic};
   }
 
   function renderCalendar(){
-    $("#monthTitleBig") && ($("#monthTitleBig").textContent=fmtMonth(calCursor));
-    const grid=$("#calGrid"); if(!grid) return;
-    grid.innerHTML="";
-    const first=startOfMonth(calCursor);
-    const last=endOfMonth(calCursor);
-    const lead=first.getDay();
-    const days=last.getDate();
+    $("#monthTitleBig") && ($("#monthTitleBig").textContent = fmtMonth(calCursor));
+    const grid = $("#calGrid"); if(!grid) return;
+    grid.innerHTML = "";
+
+    const first = startOfMonth(calCursor);
+    const last = endOfMonth(calCursor);
+    const lead = first.getDay();
+    const days = last.getDate();
 
     for(let i=0;i<lead;i++){
       const blank=document.createElement("div");
@@ -932,13 +992,15 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     }
 
     for(let d=1; d<=days; d++){
-      const dt=new Date(calCursor.getFullYear(), calCursor.getMonth(), d);
-      const ds=iso(dt);
-      const meta=getDayMeta(ds);
+      const dt = new Date(calCursor.getFullYear(), calCursor.getMonth(), d);
+      const ds = iso(dt);
+      const meta = getDayMeta(ds);
+
       const div=document.createElement("div");
       div.className="day";
 
-      // Border/Glow priority: Rest (yellow) > Logged strength (blue) > Logged cardio (pink) > Scheduled strength (green) > Scheduled aerobic (pink)
+      // Border/Glow priority:
+      // Rest (yellow) > Logged strength (blue) > Logged cardio (pink) > Scheduled strength (green) > Scheduled aerobic (pink)
       if(meta.isRest){
         div.style.borderColor="rgba(242,204,96,.50)";
         div.style.boxShadow="inset 0 0 0 1px rgba(242,204,96,.12), 0 0 14px rgba(242,204,96,.06)";
@@ -956,35 +1018,36 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
         div.style.boxShadow="inset 0 0 0 1px rgba(255,59,212,.08), 0 0 14px rgba(255,59,212,.08)";
       }
 
-      div.innerHTML=`
+      div.innerHTML = `
         <div class="n"><span>${d}</span><span class="mono" style="font-size:10px;color:var(--muted)">${ds.slice(5)}</span></div>
         <div class="chips" id="chips_${ds}"></div>
       `;
-      const chips=div.querySelector(`#chips_${CSS.escape(ds)}`);
+
+      const chips = div.querySelector(`#chips_${CSS.escape(ds)}`);
       if(meta.isScheduled){ const c=document.createElement("span"); c.className="chip sch"; c.textContent="SCHED"; chips.appendChild(c); }
       if(meta.hasStrength){ const c=document.createElement("span"); c.className="chip log"; c.textContent="LOG"; chips.appendChild(c); }
       if(meta.isAerobic){ const c=document.createElement("span"); c.className="chip cardio"; c.textContent="AEROBIC"; chips.appendChild(c); }
       if(meta.hasCardioLog){ const c=document.createElement("span"); c.className="chip cardio"; c.textContent="CARDIO"; chips.appendChild(c); }
       if(meta.isRest){ const c=document.createElement("span"); c.className="chip rest"; c.textContent="REST"; chips.appendChild(c); }
 
-      div.onclick=()=>openDay(ds);
+      div.onclick = () => openDay(ds);
       grid.appendChild(div);
     }
   }
 
-  $("#btnPrevMonth") && ($("#btnPrevMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); });
-  $("#btnNextMonth") && ($("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); });
-  $("#btnThisMonth") && ($("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); });
+  $("#btnPrevMonth") && ($("#btnPrevMonth").onclick = () => { calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); });
+  $("#btnNextMonth") && ($("#btnNextMonth").onclick = () => { calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); });
+  $("#btnThisMonth") && ($("#btnThisMonth").onclick = () => { calCursor=new Date(); renderCalendar(); });
 
-  // Apply baseline week starting today:
+  // Apply baseline week starting today
   function applyBaselineWeek(){
-    const start=new Date();
+    const start = new Date();
     for(let i=0;i<7;i++){
-      const dt=new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
-      const ds=iso(dt);
-      if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
+      const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+      const ds = iso(dt);
+      if(!S.schedule[ds]) S.schedule[ds] = {scheduled:false,rest:false,aerobic:false};
 
-      const dow=dt.getDay(); // 0 Sun .. 6 Sat
+      const dow = dt.getDay(); // 0 Sun .. 6 Sat
       const already = S.schedule[ds];
       const hasAny = already.rest || already.scheduled || already.aerobic;
       if(hasAny) continue;
@@ -1001,65 +1064,76 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
     renderCalendar();
     toast("Applied baseline week");
   }
-  $("#btnBaselineWeek") && ($("#btnBaselineWeek").onclick=()=>applyBaselineWeek());
+  $("#btnBaselineWeek") && ($("#btnBaselineWeek").onclick = () => applyBaselineWeek());
 
-  // Day modal
-  const modal=$("#modal");
-  const modalDatePill=$("#modalDatePill");
-  const dayScheduleLine=$("#dayScheduleLine");
+  // ---------------- Day modal ----------------
+  const modal = $("#modal");
+  const modalDatePill = $("#modalDatePill");
+  const dayScheduleLine = $("#dayScheduleLine");
 
-  const btnMarkScheduled=$("#btnMarkScheduled");
-  const btnMarkAerobic=$("#btnMarkAerobic");
-  const btnMarkRest=$("#btnMarkRest");
-  const btnClearMarks=$("#btnClearMarks");
+  const btnMarkScheduled = $("#btnMarkScheduled");
+  const btnMarkAerobic = $("#btnMarkAerobic");
+  const btnMarkRest = $("#btnMarkRest");
+  const btnClearMarks = $("#btnClearMarks");
 
-  const logDate=$("#logDate");
-  const logMove=$("#logMove");
-  const logTempo=$("#logTempo");
-  const logType=$("#logType");
-  const setHint=$("#setHint");
-  const s1i=$("#s1i"), s2i=$("#s2i"), s3i=$("#s3i");
-  const stepSize=$("#stepSize");
-  const logNote=$("#logNote");
-  const progressBox=$("#progressBox");
-  const btnAdvance=$("#btnAdvanceStep");
+  const logDate = $("#logDate");
+  const logMove = $("#logMove");
+  const logTempo = $("#logTempo");
+  const logType = $("#logType");
+  const setHint = $("#setHint");
+  const s1i = $("#s1i"), s2i = $("#s2i"), s3i = $("#s3i");
+  const stepSize = $("#stepSize");
+  const logNote = $("#logNote");
+  const progressBox = $("#progressBox");
+  const btnAdvance = $("#btnAdvanceStep");
 
   function fillMoves(){
     if(!logMove) return;
-    logMove.innerHTML="";
-    MOVES.forEach(m=>{ const opt=document.createElement("option"); opt.value=m; opt.textContent=m; logMove.appendChild(opt); });
+    logMove.innerHTML = "";
+    MOVES.forEach(m=>{
+      const opt=document.createElement("option");
+      opt.value=m; opt.textContent=m;
+      logMove.appendChild(opt);
+    });
   }
   fillMoves();
 
   function fillTempo(){
     if(!logTempo) return;
-    logTempo.innerHTML="";
-    TEMPO_PRESETS.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; opt.textContent=t||"(none)"; logTempo.appendChild(opt); });
+    logTempo.innerHTML = "";
+    TEMPO_PRESETS.forEach(t=>{
+      const opt=document.createElement("option");
+      opt.value=t; opt.textContent=t || "(none)";
+      logTempo.appendChild(opt);
+    });
   }
   fillTempo();
 
   function updateSetHint(){
     if(!setHint || !logMove || !logType || !logTempo) return;
-    const move=logMove.value;
-    const step=+(S.steps[move]?.step||1);
-    const ladder=LADDERS[move]||[];
-    const stepInfo=ladder[step-1];
-    const type=logType.value;
-    const tempo=logTempo.value||S.steps[move]?.tempo||"";
 
-    if(type==="cardio"){
-      setHint.textContent="Aerobic log: enter minutes in Set 1 (Set 2/3 optional). Example: 30. Notes: incline/speed/HR/intervals/ruck weight.";
+    const move = logMove.value;
+    const step = +(S.steps?.[move]?.step || 1);
+    const ladder = LADDERS[move] || [];
+    const stepInfo = ladder[step-1];
+    const type = logType.value;
+    const tempo = logTempo.value || S.steps?.[move]?.tempo || "";
+
+    if(type === "cardio"){
+      setHint.textContent = "Aerobic log: enter minutes in Set 1 (Set 2/3 optional). Example: 30. Notes: incline/speed/HR/intervals/ruck weight.";
       return;
     }
 
-    let txt=`Target: Step ${step}${stepInfo?` (${stepInfo.name})`:``}. `;
+    let txt = `Target: Step ${step}${stepInfo ? ` (${stepInfo.name})` : ""}. `;
     if(stepInfo){
       txt += (type==="sec" || stepInfo.type==="sec")
         ? `Goal holds: ${stepInfo.sets} x ${stepInfo.per} sec.`
         : `Goal reps: ${stepInfo.sets} x ${stepInfo.per} reps.`;
-    }else txt += `No ladder data.`;
+    }else{
+      txt += "No ladder data.";
+    }
     if(tempo) txt += ` Official tempo: ${tempo}.`;
-    setHint.textContent=txt;
+    setHint.textContent = txt;
   }
 
   function sumSets(type, sets){
@@ -1071,103 +1145,106 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
   function getLogsForDay(ds){ return S.logs.filter(x=>x.date===ds); }
 
   function getProgress(move){
-    const step=+(S.steps[move]?.step||1);
-    const tempo=(S.steps[move]?.tempo||"");
-    const ladder=LADDERS[move]||[];
-    const stepInfo=ladder[step-1];
-    const sameTempoLogs=S.logs.filter(x=>x.move===move && (x.tempo||"")===tempo && x.type!=="cardio");
-    const recent=sameTempoLogs.slice(-10);
-    return {step,tempo,stepInfo,recent};
+    const step = +(S.steps?.[move]?.step || 1);
+    const tempo = (S.steps?.[move]?.tempo || "");
+    const ladder = LADDERS[move] || [];
+    const stepInfo = ladder[step-1];
+    const sameTempoLogs = S.logs.filter(x => x.move===move && (x.tempo||"")===tempo && x.type!=="cardio");
+    const recent = sameTempoLogs.slice(-10);
+    return {step, tempo, stepInfo, recent};
   }
 
   function scheduleLine(ds){
-    const meta=S.schedule[ds]||{};
-    const parts=[];
+    const meta = S.schedule?.[ds] || {};
+    const parts = [];
     if(meta.scheduled) parts.push("Scheduled strength (green)");
     if(meta.aerobic) parts.push("Scheduled aerobic (pink)");
     if(meta.rest) parts.push("Rest (yellow)");
-    const hasStrength=S.logs.some(x=>x.date===ds && x.type!=="cardio");
-    const hasCardio=S.logs.some(x=>x.date===ds && x.type==="cardio");
+    const hasStrength = S.logs.some(x=>x.date===ds && x.type!=="cardio");
+    const hasCardio = S.logs.some(x=>x.date===ds && x.type==="cardio");
     if(hasStrength) parts.push("Logged strength (blue)");
     if(hasCardio) parts.push("Logged aerobic (pink)");
-    return parts.length?parts.join(" | "):"No markers yet. Use buttons below.";
+    return parts.length ? parts.join(" | ") : "No markers yet. Use buttons below.";
   }
 
-  let activeDay=null;
+  let activeDay = null;
 
   function openDay(ds){
-    activeDay=ds;
-    if(modal) modal.style.display="flex";
-    if(modalDatePill) modalDatePill.textContent=ds;
-    if(logDate) logDate.value=ds;
+    activeDay = ds;
+    if(modal) modal.style.display = "flex";
+    if(modalDatePill) modalDatePill.textContent = ds;
+    if(logDate) logDate.value = ds;
 
-    if(logMove) logMove.value=MOVES[0];
-    if(logTempo && logMove) logTempo.value=(S.steps[logMove.value]?.tempo||"");
-    if(logType) logType.value="rep";
-    if(logNote) logNote.value="";
-    if(s1i) s1i.value="0"; if(s2i) s2i.value="0"; if(s3i) s3i.value="0";
-    if(stepSize) stepSize.value="1";
+    if(logMove) logMove.value = MOVES[0];
+    if(logTempo && logMove) logTempo.value = (S.steps?.[logMove.value]?.tempo || "");
+    if(logType) logType.value = "rep";
+    if(logNote) logNote.value = "";
+    if(s1i) s1i.value = "0"; if(s2i) s2i.value = "0"; if(s3i) s3i.value = "0";
+    if(stepSize) stepSize.value = "1";
 
     updateSetHint();
     renderDayLogs(ds);
     renderProgress();
-    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
+    if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(ds);
   }
 
-  $("#btnCloseModal") && ($("#btnCloseModal").onclick=()=>{ if(modal) modal.style.display="none"; });
+  $("#btnCloseModal") && ($("#btnCloseModal").onclick = () => {
+    if(modal) modal.style.display = "none";
+  });
 
   // Schedule controls
   function ensureDay(ds){
-    if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
+    if(!S.schedule[ds]) S.schedule[ds] = {scheduled:false,rest:false,aerobic:false};
   }
 
-  btnMarkScheduled && (btnMarkScheduled.onclick=()=>{
+  btnMarkScheduled && (btnMarkScheduled.onclick = () => {
     if(!activeDay) return;
     ensureDay(activeDay);
-    S.schedule[activeDay].scheduled=true;
-    S.schedule[activeDay].rest=false;
+    S.schedule[activeDay].scheduled = true;
+    S.schedule[activeDay].rest = false;
     save(S);
-    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(activeDay);
     renderCalendar();
     toast("Marked scheduled (strength)");
   });
 
-  btnMarkAerobic && (btnMarkAerobic.onclick=()=>{
+  btnMarkAerobic && (btnMarkAerobic.onclick = () => {
     if(!activeDay) return;
     ensureDay(activeDay);
-    S.schedule[activeDay].aerobic=true;
-    S.schedule[activeDay].rest=false;
+    S.schedule[activeDay].aerobic = true;
+    S.schedule[activeDay].rest = false;
     save(S);
-    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(activeDay);
     renderCalendar();
     toast("Marked scheduled (aerobic)");
   });
 
-  btnMarkRest && (btnMarkRest.onclick=()=>{
+  btnMarkRest && (btnMarkRest.onclick = () => {
     if(!activeDay) return;
     ensureDay(activeDay);
-    S.schedule[activeDay].rest=true;
-    S.schedule[activeDay].scheduled=false;
-    S.schedule[activeDay].aerobic=false;
+    S.schedule[activeDay].rest = true;
+    S.schedule[activeDay].scheduled = false;
+    S.schedule[activeDay].aerobic = false;
     save(S);
-    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(activeDay);
     renderCalendar();
     toast("Marked rest");
   });
 
-  btnClearMarks && (btnClearMarks.onclick=()=>{
+  btnClearMarks && (btnClearMarks.onclick = () => {
     if(!activeDay) return;
     delete S.schedule[activeDay];
     save(S);
-    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(activeDay);
     renderCalendar();
     toast("Cleared markers");
   });
 
   function renderDayLogs(ds){
-    const container=$("#dayLogs"); if(!container) return;
-    container.innerHTML="";
-    const logs=getLogsForDay(ds);
+    const container = $("#dayLogs"); if(!container) return;
+    container.innerHTML = "";
+    const logs = getLogsForDay(ds);
+
     if(!logs.length){
       const div=document.createElement("div");
       div.className="tiny";
@@ -1175,6 +1252,7 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
       container.appendChild(div);
       return;
     }
+
     logs.slice().reverse().forEach((x)=>{
       const div=document.createElement("div");
       div.className="item";
@@ -1185,107 +1263,118 @@ details summary{ cursor:pointer; font-weight:950; color:var(--a); }
         ? `<span class="pill p mono">AEROBIC ${sum} min</span>`
         : `<span class="pill a mono">${(x.type==="sec"?"SEC":"REPS")} ${sum}</span>`;
 
-      div.innerHTML=`
+      div.innerHTML = `
         <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap">
-          <div><b>${x.type==="cardio"?"Aerobic":x.move}</b> <span class="tiny mono">${x.type==="cardio"?"":(x.tempo||"")}</span></div>
+          <div><b>${x.type==="cardio" ? "Aerobic" : x.move}</b> <span class="tiny mono">${x.type==="cardio" ? "" : (x.tempo||"")}</span></div>
           ${tag}
         </div>
-        <div class="tiny mono">Sets: ${sets.map(v=>v||"0").join(" / ")}${x.note?` | Note: ${x.note}`:""}</div>
+        <div class="tiny mono">Sets: ${sets.map(v=>v||"0").join(" / ")}${x.note ? ` | Note: ${x.note}` : ""}</div>
         <div class="hr"></div>
         <div class="right"><button class="btn2 mini" data-del="${S.logs.indexOf(x)}">Delete</button></div>
       `;
-      div.querySelector("[data-del]").onclick=(e)=>{
-        const i=+e.target.getAttribute("data-del");
+
+      div.querySelector("[data-del]").onclick = (e) => {
+        const i = +e.target.getAttribute("data-del");
         if(!confirm("Delete this log?")) return;
         S.logs.splice(i,1);
         save(S);
         renderDayLogs(ds);
-        if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
+        if(dayScheduleLine) dayScheduleLine.textContent = scheduleLine(ds);
         renderCalendar();
         renderProgress();
         toast("Deleted");
       };
+
       container.appendChild(div);
     });
   }
 
   function renderProgress(){
     if(!progressBox || !logMove || !btnAdvance) return;
-    const move=logMove.value;
-    const {step,tempo,stepInfo,recent}=getProgress(move);
-    const ladder=LADDERS[move]||[];
-    const next=ladder[step]||null;
-    const need=stepInfo?`${stepInfo.sets} x ${stepInfo.per} ${stepInfo.type==="sec"?"sec":"reps"}`:"n/a";
+
+    const move = logMove.value;
+    const {step, tempo, stepInfo, recent} = getProgress(move);
+    const ladder = LADDERS[move] || [];
+    const next = ladder[step] || null;
+
+    const need = stepInfo ? `${stepInfo.sets} x ${stepInfo.per} ${stepInfo.type==="sec"?"sec":"reps"}` : "n/a";
+
     const last = recent.slice(-3).map(x=>{
-      const sum=sumSets(x.type||"rep", x.sets||[]);
+      const sum = sumSets(x.type||"rep", x.sets||[]);
       return `${x.date} | ${x.type==="sec"?"sec":"reps"} ${sum} | ${x.sets.join("/")}`;
     }).join("\n") || "(no recent strength logs at this tempo)";
+
     progressBox.textContent =
 `MOVE: ${move}
-STEP: ${step}${stepInfo?` (${stepInfo.name})`:``}
-OFFICIAL TEMPO: ${tempo||"(none)"}
+STEP: ${step}${stepInfo ? ` (${stepInfo.name})` : ""}
+OFFICIAL TEMPO: ${tempo || "(none)"}
 TARGET: ${need}
-NEXT: ${next?`Step ${step+1} (${next.name})`:"(top step)"}
+NEXT: ${next ? `Step ${step+1} (${next.name})` : "(top step)"}
 
 RECENT (same tempo):
 ${last}
 `;
-    let okCount=0;
+
+    let okCount = 0;
     if(stepInfo){
       recent.forEach(x=>{
         const sets=x.sets||[];
         if(stepInfo.type==="sec" || x.type==="sec"){
-          const secs=sets.map(v=>parseHold(v));
-          const good=secs.filter(v=>v>=stepInfo.per).length;
+          const secs = sets.map(v=>parseHold(v));
+          const good = secs.filter(v=>v>=stepInfo.per).length;
           if(good>=stepInfo.sets) okCount++;
         }else{
-          const reps=sets.map(v=>+v||0);
-          const good=reps.filter(v=>v>=stepInfo.per).length;
+          const reps = sets.map(v=>+v||0);
+          const good = reps.filter(v=>v>=stepInfo.per).length;
           if(good>=stepInfo.sets) okCount++;
         }
       });
     }
+
     btnAdvance.disabled = !(okCount>=2 && step < (ladder.length||10));
     btnAdvance.textContent = btnAdvance.disabled ? "Advance Step +1" : "Advance Step +1 (ready)";
   }
 
-  logMove && (logMove.onchange=()=>{
-    if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
-    const move=logMove.value;
-    const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
-    if(logType) logType.value=(stepInfo?.type==="sec")?"sec":"rep";
-    updateSetHint(); renderProgress();
+  logMove && (logMove.onchange = () => {
+    if(logTempo) logTempo.value = (S.steps?.[logMove.value]?.tempo || "");
+    const move = logMove.value;
+    const stepInfo = (LADDERS[move]||[])[(S.steps?.[move]?.step || 1) - 1];
+    if(logType) logType.value = (stepInfo?.type==="sec") ? "sec" : "rep";
+    updateSetHint();
+    renderProgress();
   });
-  logTempo && (logTempo.onchange=()=>{ updateSetHint(); renderProgress(); });
-  logType && (logType.onchange=()=>{ updateSetHint(); });
+
+  logTempo && (logTempo.onchange = () => { updateSetHint(); renderProgress(); });
+  logType && (logType.onchange = () => { updateSetHint(); });
 
   function bump(input, delta){
-    const type=logType?.value;
-    const ss=+stepSize?.value||1;
+    const type = logType?.value;
+    const ss = +stepSize?.value || 1;
     if(type==="sec"){
-      const v=parseHold(input.value||"0");
-      input.value=String(Math.max(0, v + delta*ss));
+      const v = parseHold(input.value || "0");
+      input.value = String(Math.max(0, v + delta*ss));
     }else{
-      const v=+input.value||0;
-      input.value=String(Math.max(0, v + delta*ss));
+      const v = +input.value || 0;
+      input.value = String(Math.max(0, v + delta*ss));
     }
   }
+
   function bindSet(id){
-    const i=$("#"+id+"i"); if(!i) return;
-    $("#"+id+"p") && ($("#"+id+"p").onclick=()=>bump(i,+1));
-    $("#"+id+"m") && ($("#"+id+"m").onclick=()=>bump(i,-1));
-    $("#"+id+"clr") && ($("#"+id+"clr").onclick=()=>{ i.value="0"; });
+    const i = $("#"+id+"i"); if(!i) return;
+    $("#"+id+"p") && ($("#"+id+"p").onclick = () => bump(i, +1));
+    $("#"+id+"m") && ($("#"+id+"m").onclick = () => bump(i, -1));
+    $("#"+id+"clr") && ($("#"+id+"clr").onclick = () => { i.value="0"; });
   }
   bindSet("s1"); bindSet("s2"); bindSet("s3");
 
-  $("#btnSaveLog") && ($("#btnSaveLog").onclick=()=>{
-    const date=logDate?.value;
-    const type=logType?.value || "rep";
+  $("#btnSaveLog") && ($("#btnSaveLog").onclick = () => {
+    const date = logDate?.value;
+    const type = logType?.value || "rep";
 
-    let move=logMove?.value || MOVES[0];
-    let tempo=logTempo?.value || (S.steps[move]?.tempo||"");
-    const sets=[s1i?.value||"0", s2i?.value||"0", s3i?.value||"0"];
-    const note=(logNote?.value||"").trim();
+    let move = logMove?.value || MOVES[0];
+    let tempo = logTempo?.value || (S.steps?.[move]?.tempo || "");
+    const sets = [s1i?.value||"0", s2i?.value||"0", s3i?.value||"0"];
+    const note = (logNote?.value || "").trim();
 
     if(!date){ toast("Pick a date"); return; }
 
@@ -1298,8 +1387,8 @@ ${last}
       if((+sets[0]||0)===0 && (+sets[1]||0)===0 && (+sets[2]||0)===0){
         toast("Enter aerobic minutes"); return;
       }
-      if(!S.schedule[date]) S.schedule[date]={scheduled:false,rest:false,aerobic:false};
-      if(!S.schedule[date].rest) S.schedule[date].aerobic=true;
+      if(!S.schedule[date]) S.schedule[date] = {scheduled:false,rest:false,aerobic:false};
+      if(!S.schedule[date].rest) S.schedule[date].aerobic = true;
     }
 
     S.logs.push({date,move,tempo,type,sets,note});
@@ -1307,18 +1396,18 @@ ${last}
     toast("Saved log");
 
     renderDayLogs(date);
-    if(activeDay===date && dayScheduleLine) dayScheduleLine.textContent=scheduleLine(date);
+    if(activeDay===date && dayScheduleLine) dayScheduleLine.textContent = scheduleLine(date);
     renderCalendar();
     renderProgress();
   });
 
-  btnAdvance && (btnAdvance.onclick=()=>{
-    const move=logMove?.value;
+  btnAdvance && (btnAdvance.onclick = () => {
+    const move = logMove?.value;
     if(!move) return;
-    const ladder=LADDERS[move]||[];
-    const curr=+(S.steps[move]?.step||1);
+    const ladder = LADDERS[move] || [];
+    const curr = +(S.steps?.[move]?.step || 1);
     if(curr >= (ladder.length||10)) return;
-    S.steps[move].step=curr+1;
+    S.steps[move].step = curr + 1;
     save(S);
     makeSteps();
     updateRankPill();
@@ -1326,47 +1415,61 @@ ${last}
     toast(`Advanced to Step ${curr+1}`);
   });
 
-  // Data
-  $("#btnExport") && ($("#btnExport").onclick=()=>{ $("#dataBox").value=JSON.stringify(S,null,2); toast("Exported"); });
-  $("#btnCopy") && ($("#btnCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#dataBox").value||""); toast("Copied"); }catch(e){ toast("Copy failed"); } });
-  $("#btnImport") && ($("#btnImport").onclick=()=>{
-    const raw=$("#dataBox").value||"";
+  // ---------------- Data ----------------
+  $("#btnExport") && ($("#btnExport").onclick = () => {
+    $("#dataBox").value = JSON.stringify(S, null, 2);
+    toast("Exported");
+  });
+
+  $("#btnCopy") && ($("#btnCopy").onclick = async () => {
+    try{
+      await navigator.clipboard.writeText($("#dataBox").value || "");
+      toast("Copied");
+    }catch(e){
+      toast("Copy failed");
+    }
+  });
+
+  $("#btnImport") && ($("#btnImport").onclick = () => {
+    const raw = $("#dataBox").value || "";
     if(!raw.trim()){ toast("Paste JSON first"); return; }
     if(!confirm("Import will REPLACE current data on this device. Continue?")) return;
     try{
-      S=JSON.parse(raw);
+      S = JSON.parse(raw);
       save(S);
-      $("#helloPill") && ($("#helloPill").textContent=S.profile?.name||"Athlete");
+      $("#helloPill") && ($("#helloPill").textContent = S.profile?.name || "Athlete");
       makeSteps();
       updateRankPill();
       renderCalendar();
       toast("Imported");
-    }catch(e){ toast("Invalid JSON"); }
+    }catch(e){
+      toast("Invalid JSON");
+    }
   });
 
-  // Nav
-  navBtns.Guide && (navBtns.Guide.onclick=()=>showView("Guide"));
-  navBtns.Calendar && (navBtns.Calendar.onclick=()=>{ showView("Calendar"); renderCalendar(); });
-  navBtns.Steps && (navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); });
-  navBtns.Data && (navBtns.Data.onclick=()=>showView("Data"));
+  // ---------------- Nav ----------------
+  navBtns.Guide && (navBtns.Guide.onclick = () => showView("Guide"));
+  navBtns.Calendar && (navBtns.Calendar.onclick = () => { showView("Calendar"); renderCalendar(); });
+  navBtns.Steps && (navBtns.Steps.onclick = () => { showView("Steps"); makeSteps(); });
+  navBtns.Data && (navBtns.Data.onclick = () => showView("Data"));
 
-  // Neon panels
+  // ---------------- Neon panels ----------------
   function initNeonGuide(){
-    const btns=Array.from(document.querySelectorAll(".neonBtn[data-open]"));
+    const btns = Array.from(document.querySelectorAll(".neonBtn[data-open]"));
     if(!btns.length) return;
 
     function closeAll(exceptId){
       document.querySelectorAll(".neonPanel").forEach(p=>{
-        if(p.id!==exceptId) p.classList.remove("show");
+        if(p.id !== exceptId) p.classList.remove("show");
       });
     }
 
     btns.forEach(b=>{
       b.addEventListener("click", ()=>{
-        const id=b.getAttribute("data-open");
-        const panel=document.getElementById(id);
+        const id = b.getAttribute("data-open");
+        const panel = document.getElementById(id);
         if(!panel) return;
-        const willShow=!panel.classList.contains("show");
+        const willShow = !panel.classList.contains("show");
         closeAll(id);
         panel.classList.toggle("show", willShow);
         if(willShow) panel.scrollIntoView({behavior:"smooth", block:"start"});
@@ -1374,34 +1477,55 @@ ${last}
     });
   }
 
-  // -------- Auth buttons + Cloud buttons (Supabase only) --------
+  // ---------------- AUTH + CLOUD BUTTONS (with real error messages) ----------------
   $("#btnSignup") && ($("#btnSignup").onclick = async () => {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not ready"); return; }
+
     const email = ($("#authEmail").value||"").trim();
-    const pass = ($("#authPass").value||"").trim();
+    const pass  = ($("#authPass").value||"").trim();
     if(!email || !pass){ toast("Email + password"); return; }
 
-    const { error } = await supabase.auth.signUp({ email, password: pass });
-    if(error){ toast("Sign up failed"); console.error(error); return; }
-    toast("Signed up. Check email if required.");
+    const { data, error } = await supabase.auth.signUp({ email, password: pass });
+
+    if(error){
+      console.error("SIGNUP ERROR:", error);
+      toast(error.message || "Sign up failed");
+      return;
+    }
+
+    // If email confirmations are ON, there may be no session yet.
+    const hasSession = !!data?.session;
+    toast(hasSession ? "Signed up + logged in" : "Signed up. Check email to confirm.");
     await refreshAuthUI();
   });
 
   $("#btnLogin") && ($("#btnLogin").onclick = async () => {
-    if(!supabase) return;
+    if(!supabase){ toast("Supabase not ready"); return; }
+
     const email = ($("#authEmail").value||"").trim();
-    const pass = ($("#authPass").value||"").trim();
+    const pass  = ($("#authPass").value||"").trim();
     if(!email || !pass){ toast("Email + password"); return; }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-    if(error){ toast("Login failed"); console.error(error); return; }
+
+    if(error){
+      console.error("LOGIN ERROR:", error);
+      toast(error.message || "Login failed");
+      return;
+    }
+
     toast("Logged in");
     await refreshAuthUI();
   });
 
   $("#btnLogout") && ($("#btnLogout").onclick = async () => {
-    if(!supabase) return;
-    await supabase.auth.signOut();
+    if(!supabase){ toast("Supabase not ready"); return; }
+    const { error } = await supabase.auth.signOut();
+    if(error){
+      console.error("LOGOUT ERROR:", error);
+      toast(error.message || "Logout failed");
+      return;
+    }
     toast("Logged out");
     await refreshAuthUI();
   });
@@ -1413,7 +1537,37 @@ ${last}
     supabase.auth.onAuthStateChange(() => refreshAuthUI());
   }
 
-  // Init
+  // ---------------- SUBSCRIBE (OPTIONAL) ----------------
+  // Your HTML currently has btnSubscribe but no handler. This is a safe, minimal client-side stub:
+  // - It saves to a Supabase table named "cc_subscribers" with column "email".
+  // - You MUST create the table + allow inserts (RLS policy) if you want this to work.
+  $("#btnSubscribe") && ($("#btnSubscribe").onclick = async () => {
+    const email = ($("#profileEmail").value || "").trim();
+    const out = $("#subStatus");
+    if(!email){ if(out) out.textContent="Enter email."; toast("Enter email"); return; }
+    if(!supabase){ if(out) out.textContent="Supabase not ready."; toast("Supabase not ready"); return; }
+
+    // OPTIONAL: require login for subscribe
+    // if(!currentUser){ if(out) out.textContent="Login required."; toast("Login required"); return; }
+
+    try{
+      const { error } = await supabase.from("cc_subscribers").insert([{ email }]);
+      if(error){
+        console.error("SUBSCRIBE ERROR:", error);
+        if(out) out.textContent = error.message || "Subscribe failed.";
+        toast(error.message || "Subscribe failed");
+        return;
+      }
+      if(out) out.textContent = "Subscribed.";
+      toast("Subscribed");
+    }catch(e){
+      console.error("SUBSCRIBE EXCEPTION:", e);
+      if(out) out.textContent = "Subscribe failed.";
+      toast("Subscribe failed");
+    }
+  });
+
+  // ---------------- Init ----------------
   showView("Guide");
   renderCalendar();
   initNeonGuide();
