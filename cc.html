@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>MarineMD | CC Elite Tracker</title>
+
+<!-- iPhone/Edge-safe margins + no horizontal overflow + responsive container -->
+<style>
+:root{
+  --pad:8px;
+
+  --bg:#0b0f16;
+  --card:#0f1622;
+  --ink:#e6edf3;
+  --muted:#a9b4c0;
+  --line:#233042;
+
+  --a:#79c0ff;         /* blue */
+  --ok:#7ee787;        /* green */
+  --warn:#f2cc60;      /* yellow */
+  --pink:#ff3bd4;      /* aerobic pink */
+
+  --btn:#152033;
+  --btn2:#0d1320;
+}
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  overflow-x:hidden;
+  background:var(--bg);
+  color:var(--ink);
+  font:12px/1.25 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+}
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:var(--pad) var(--pad) 76px;
+}
+img,video,canvas,svg{ max-width:100%; height:auto; }
+@media (max-width:420px){ :root{ --pad:6px; } }
+
+b,h2{ font-weight:950; }
+h2{ font-size:12px; margin:0 0 6px; letter-spacing:.2px; }
+.tiny{ font-size:11px; color:var(--muted); }
+.mono{ font-family:ui-monospace,Menlo,Consolas,monospace; }
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px calc(10px + env(safe-area-inset-right)) 10px calc(10px + env(safe-area-inset-left));
+  border-bottom:1px solid var(--line);
+  background:rgba(15,22,34,.55);
+  position:sticky; top:0; z-index:20;
+  backdrop-filter:blur(10px);
+}
+.brand{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 1 auto; }
+.brand .t{ font-weight:950; font-size:12px; letter-spacing:.2px; overflow-wrap:anywhere; }
+.brand .s{ font-size:11px; color:var(--muted); overflow-wrap:anywhere; }
+
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  margin:10px 0;
+}
+.hr{ height:1px; background:var(--line); margin:8px 0; }
+.row{ display:flex; gap:8px; flex-wrap:wrap; align-items:end; }
+.row>div{ flex:1 1 140px; min-width:140px; }
+label{ display:block; color:var(--muted); font-size:11px; margin:0 0 3px; }
+
+select,input,textarea{
+  width:100%;
+  background:#0b1220;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px;
+  font-size:12px;
+}
+textarea{ min-height:64px; resize:vertical; }
+
+.btn,.btn2{
+  border:1px solid var(--line);
+  background:var(--btn);
+  color:var(--ink);
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:950;
+  cursor:pointer;
+}
+.btn2{ background:var(--btn2); }
+.btn:active,.btn2:active{ transform:translateY(1px); }
+
+details{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:8px;
+  background:rgba(7,10,15,.22);
+}
+details summary{ cursor:pointer; font-weight:950; color:var(--a); }
+
+.pill{
+  display:inline-block;
+  padding:3px 7px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-size:11px;
+  font-weight:950;
+}
+.pill.ok{ border-color:rgba(126,231,135,.65); color:var(--ok); }
+.pill.a{ border-color:rgba(121,192,255,.65); color:var(--a); }
+.pill.w{ border-color:rgba(242,204,96,.65); color:var(--warn); }
+.pill.p{ border-color:rgba(255,59,212,.75); color:rgba(255,180,245,.95); }
+
+.footerNav{
+  position:fixed; left:0; right:0; bottom:0;
+  background:rgba(11,15,22,.92);
+  backdrop-filter:blur(8px);
+  border-top:1px solid var(--line);
+}
+.footerNav .bar{
+  max-width:980px; margin:0 auto;
+  display:flex; gap:6px;
+  padding:8px calc(10px + env(safe-area-inset-right)) 8px calc(10px + env(safe-area-inset-left));
+}
+.footerNav button{
+  flex:1;
+  padding:10px 0;
+  border-radius:12px;
+  background:#0d1320;
+  border:1px solid var(--line);
+  color:var(--ink);
+  font-weight:950;
+  font-size:12px;
+}
+.footerNav button.active{ border-color:rgba(121,192,255,.7); color:var(--a); }
+
+.calHead{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.calTitle{ font-weight:950; font-size:14px; letter-spacing:.2px; }
+.calBtns{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+
+.grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.dow{ font-size:11px; color:var(--muted); text-align:center; }
+
+.day{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:6px;
+  min-height:104px;
+  background:rgba(7,10,15,.32);
+  cursor:pointer;
+}
+.day:hover{ border-color:rgba(121,192,255,.5); }
+.day .n{
+  font-weight:950;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.chips{ margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
+.chip{
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  color:var(--muted);
+}
+.chip.sch{ border-color:rgba(126,231,135,.55); color:var(--ok); background:rgba(126,231,135,.10); }
+.chip.log{ border-color:rgba(121,192,255,.65); color:var(--a); background:rgba(121,192,255,.10); }
+.chip.rest{ border-color:rgba(242,204,96,.55); color:var(--warn); background:rgba(242,204,96,.10); }
+.chip.cardio{
+  border-color:rgba(255,59,212,.70);
+  color:rgba(255,180,245,.98);
+  background:rgba(255,59,212,.12);
+}
+
+.list{ display:flex; flex-direction:column; gap:8px; }
+.item{ border:1px solid var(--line); border-radius:12px; padding:8px; background:rgba(7,10,15,.28); }
+.right{ display:flex; gap:8px; justify-content:flex-end; align-items:center; flex-wrap:wrap; }
+
+.modal{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center; justify-content:center;
+  padding:12px;
+  z-index:50;
+}
+.modal .box{
+  width:min(980px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+}
+
+.split{ display:grid; grid-template-columns:1fr; gap:8px; }
+@media (min-width:860px){ .split{ grid-template-columns:1.15fr .85fr; } }
+
+.setbox{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.setbox input{ width:120px; max-width:120px; padding:8px; font-family:ui-monospace,Menlo,Consolas,monospace; text-align:center; }
+.mini{ padding:7px 9px; }
+
+.toast{
+  position:fixed; left:50%; transform:translateX(-50%);
+  bottom:76px;
+  background:#0d1320;
+  border:1px solid var(--line);
+  padding:8px 10px;
+  border-radius:12px;
+  font-weight:950;
+  font-size:12px;
+  display:none;
+  z-index:60;
+}
+
+/* Neon Guide */
+.neonCard{
+  border:1px solid rgba(121,192,255,.35);
+  box-shadow:0 0 18px rgba(47,123,255,.18), 0 0 28px rgba(255,59,212,.10);
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(47,123,255,.10), transparent 55%),
+    radial-gradient(900px 500px at 90% 30%, rgba(255,59,212,.12), transparent 55%),
+    radial-gradient(700px 420px at 50% 100%, rgba(40,240,167,.08), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+}
+.neonTitle{ font-weight:950; font-size:12px; letter-spacing:.25px; margin:0 0 6px; }
+.neonBtns{ display:flex; gap:6px; flex-wrap:wrap; }
+
+.neonBtn{
+  border:1px solid rgba(121,192,255,.35);
+  background:linear-gradient(180deg, rgba(13,19,32,.95), rgba(7,10,18,.92));
+  color:var(--ink);
+  padding:8px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:950;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(47,123,255,.12);
+  line-height:1.1;
+}
+.neonBtn:hover{
+  border-color:rgba(121,192,255,.65);
+  box-shadow:0 0 14px rgba(47,123,255,.18);
+}
+.neonBtn.pink{
+  border-color:rgba(255,59,212,.55);
+  box-shadow:0 0 10px rgba(255,59,212,.14);
+}
+.neonBtn.pink:hover{
+  border-color:rgba(255,59,212,.80);
+  box-shadow:0 0 14px rgba(255,59,212,.20);
+}
+.neonBtn.green{
+  border-color:rgba(40,240,167,.35);
+  box-shadow:0 0 10px rgba(40,240,167,.12);
+}
+.neonBtn.green:hover{
+  border-color:rgba(40,240,167,.60);
+  box-shadow:0 0 14px rgba(40,240,167,.18);
+}
+.neonBtn.amber{
+  border-color:rgba(255,204,87,.35);
+  box-shadow:0 0 10px rgba(255,204,87,.10);
+}
+.neonBtn.amber:hover{
+  border-color:rgba(255,204,87,.60);
+  box-shadow:0 0 14px rgba(255,204,87,.16);
+}
+
+.neonPanel{
+  display:none;
+  margin-top:8px;
+  border:1px solid rgba(35,48,66,.9);
+  border-radius:12px;
+  padding:10px;
+  background:rgba(7,10,15,.28);
+}
+.neonPanel.show{ display:block; }
+.neonPanel.cardio{
+  border-color:rgba(255,59,212,.55);
+  box-shadow:0 0 16px rgba(255,59,212,.12);
+}
+
+/* Extra: baseline schedule panel layout */
+.baselineGrid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:6px;
+}
+@media (min-width:740px){
+  .baselineGrid{ grid-template-columns:repeat(2,1fr); }
+}
+.baselineTile{
+  border:1px solid rgba(35,48,66,.9);
+  border-radius:12px;
+  padding:8px;
+  background:rgba(7,10,15,.22);
+}
+.baselineTile b{ display:block; margin-bottom:3px; }
+</style>
+</head>
+
+<body>
+<div class="topbar">
+  <div class="brand">
+		 <div class="right">
+    <span class="pill ok" id="helloPill">Athlete</span>
+    <span class="pill w mono" id="rankPill">RANK</span>
+    <button class="btn2" id="btnEditProfile">Profile</button>
+  </div>
+
+    <div class="t">MarineMD LLC | CC Elite Tracker</div>
+    <div class="s">Free to use without an account. Your data stays on your device. Optional sign-in enables cloud backup and sync.Your small contribution helps support this project and expand access to medical education and tools.
+			</div>
+		</div>
+  </div>
+
+<div class="wrap">
+  <!-- GUIDE -->
+  <div class="card" id="viewGuide">
+    <h2>Purpose</h2>
+    <div class="tiny">
+      Build <b>elite</b> strength with progressive bodyweight training (Big Six).
+      Tracks: <b>steps</b>, <b>tempo</b>, <b>holds</b>, and <b>aerobic minutes</b>.
+      <br><br>
+      <b>Tempo:</b> Down-Bottom-Up-Top seconds (e.g., <b>3-1-2-1</b>).
+      <br>
+      <b>Hold input:</b> <b>20</b>, <b>20s</b>, <b>0:30</b>, <b>1:15</b>, <b>90s</b>.
+    </div>
+
+    <!-- ACCOUNT (Supabase-only) -->
+    <div class="card" id="authCard" style="margin-top:10px;">
+      <h2>Account</h2>
+      <div class="tiny">Login to sync your data across devices.</div>
+      <div class="hr"></div>
+
+      <div class="row">
+        <div><label>Email</label><input id="authEmail" type="email" placeholder="you@email.com"></div>
+        <div><label>Password</label><input id="authPass" type="password" placeholder="password"></div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="right">
+        <button class="btn2" id="btnSignup">Sign up</button>
+        <button class="btn" id="btnLogin">Login</button>
+        <button class="btn2" id="btnLogout" style="display:none;">Logout</button>
+        <button class="btn" id="btnCloudLoad" style="display:none;">Cloud Load</button>
+        <button class="btn2" id="btnCloudSave" style="display:none;">Cloud Save</button>
+      </div>
+
+      <div class="hr"></div>
+      <div class="tiny mono" id="authStatus">Not logged in.</div>
+    </div>
+
+    <div class="hr"></div>
+    <details>
+      <summary>How to use</summary>
+      <div class="hr"></div>
+      <div class="tiny">
+        1) Set your current <b>Step</b> + <b>Official Tempo</b> (Steps tab).
+        <br>2) In Calendar, tap a day and mark it <b>Scheduled</b> (green), <b>Rest</b> (yellow), or <b>Aerobic</b> (pink).
+        <br>3) Tap a day -> log strength or aerobic minutes -> <b>Save Log</b>.
+        <br>4) Meet the target clean at the same official tempo at least twice -> <b>Advance Step</b>.
+      </div>
+    </details>
+
+    <div class="hr"></div>
+
+    <div class="card neonCard" style="margin:0;">
+      <div class="neonTitle">Why Convict Conditioning Works: a medical and physiological rationale</div>
+      <div class="tiny">
+        Convict Conditioning is often misunderstood as minimalist training, but its real strength lies in how closely its structure aligns with what modern medicine
+        recognizes as essential for long-term health, functional reserve, and survivability.
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="neonBtns">
+        <button class="neonBtn" data-open="panel_core">Core rationale</button>
+        <button class="neonBtn" data-open="panel_harrisons">Harrison’s</button>
+        <button class="neonBtn green" data-open="panel_wade">Coach Wade method</button>
+        <button class="neonBtn amber" data-open="panel_mets">METs + surgery/hospital</button>
+        <button class="neonBtn pink" data-open="panel_aerobic">Aerobic exercise</button>
+        <button class="neonBtn" data-open="panel_rules">Practical rules</button>
+        <button class="neonBtn pink" data-open="panel_baseline">Baseline schedule</button>
+      </div>
+
+      <div id="panel_core" class="neonPanel show">
+        <div class="tiny">
+          Convict Conditioning favors progressive bodyweight resistance with strict form and controlled tempo. That discipline builds joint integrity, spinal resilience,
+          neuromuscular control, and durable strength. Medicine values the same outcome: preserve functional capacity and reduce downstream morbidity. Pair this with daily
+          movement (like walking) to blunt the independent harms of sedentary time, and you get a simple system that is sustainable for years.
+        </div>
+      </div>
+
+      <div id="panel_harrisons" class="neonPanel">
+        <div class="tiny">
+          Harrison’s Principles of Internal Medicine is a flagship internal medicine textbook used worldwide to train physicians and guide evidence-based clinical thinking.
+          In its preventive and chronic disease frameworks, it treats physical activity like a dose-dependent therapy: regular movement reduces cardiometabolic disease,
+          musculoskeletal decline, depression, and all-cause mortality. It emphasizes that sedentary behavior is independently harmful, and that aerobic activity plus resistance
+          training provides the most reliable long-term benefit when it is sustainable and consistent.
+        </div>
+      </div>
+
+      <div id="panel_wade" class="neonPanel">
+        <div class="tiny">
+          Coach Wade’s method rejects shortcuts and gimmicks. It uses a fixed set of foundational movements (“Big Six”) and makes you earn progression through standards:
+          clean reps, controlled tempo, and patience. The goal is not flashy effort—it’s ownership of strength. That creates resilience rather than fragility and supports
+          lifelong training without requiring equipment or maximal loading.
+        </div>
+      </div>
+
+      <div id="panel_mets" class="neonPanel">
+        <div class="tiny">
+          In perioperative and inpatient medicine, clinicians often use functional capacity in METs (metabolic equivalents) as a proxy for physiologic reserve. A common threshold
+          is 4 METs—the ability to do tasks like brisk walking or climbing stairs. Patients below that threshold tend to have higher complication risk with acute illness and surgery.
+          Daily walking preserves aerobic reserve, and progressive strength training improves efficiency and tolerance to exertion—together supporting safer reserve when life gets stressful.
+        </div>
+      </div>
+
+      <div id="panel_aerobic" class="neonPanel cardio">
+        <div class="tiny">
+          Aerobic exercise is not optional for health; it is the primary driver of cardiovascular and metabolic reserve. A practical baseline threshold is approximately
+          <b>150 minutes per week</b> of moderate-intensity aerobic activity (such as brisk walking) or <b>75 minutes per week</b> of vigorous aerobic activity,
+          ideally distributed across the week.
+        </div>
+      </div>
+
+      <div id="panel_rules" class="neonPanel">
+        <div class="tiny">
+          Simple synthesis: Train the Big Six with standards. Add daily walking or other steady movement. Break up long sitting. Progress only when you can repeat the target cleanly at your
+          official tempo. The result is strength that holds, and reserve that shows up when you need it most.
+        </div>
+        <div class="hr"></div>
+        <div class="tiny">
+          <span class="pill ok">Green</span> scheduled
+          <span class="pill a" style="margin-left:6px;">Blue</span> logged
+          <span class="pill p" style="margin-left:6px;">Pink</span> aerobic
+				<div class="hr"></div>
+					<span class="pill w" style="margin-left:6px;">Yellow</span> rest
+        </div>
+      </div>
+
+      <div id="panel_baseline" class="neonPanel cardio">
+        <div class="tiny">
+          Baseline schedule (modifiable). This preserves Convict Conditioning standards while meeting evidence-based aerobic minimums over time.
+        </div>
+        <div class="hr"></div>
+        <div class="baselineGrid">
+          <div class="baselineTile"><b>3–4 days / week</b><div class="tiny">Big Six strength (schedule green; log blue).</div></div>
+          <div class="baselineTile"><b>Daily</b><div class="tiny">Walking or steady aerobic movement (schedule/log pink as desired).</div></div>
+          <div class="baselineTile"><b>1–2 days / week</b><div class="tiny">Intentional rest (yellow).</div></div>
+          <div class="baselineTile"><b>0–2 days / week</b><div class="tiny">Optional higher intensity aerobic (incline, hills, intervals, ruck).</div></div>
+        </div>
+        <div class="hr"></div>
+        <div class="tiny">
+          You can mark aerobic days in advance (pink) and log minutes anytime. No quotas—just reserve, consistency, and durability.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="card" id="viewCalendar" style="display:none;">
+    <div class="calHead">
+      <div class="calTitle" id="monthTitleBig">Month</div>
+      <div class="calBtns">
+        <button id="btnPrevMonth" class="btn2">Prev</button>
+        <button id="btnThisMonth" class="btn2">Today</button>
+        <button id="btnNextMonth" class="btn2">Next</button>
+        <button id="btnBaselineWeek" class="btn2">Apply Baseline Week</button>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <div class="grid" id="dowRow"></div>
+    <div class="grid" id="calGrid"></div>
+    <div class="hr"></div>
+    <div class="tiny">
+      Green = scheduled. Blue = logged. Yellow = rest. <span style="color:rgba(255,180,245,.98)">Pink = aerobic.</span> Tap any day to schedule/log.
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="card" id="viewSteps" style="display:none;">
+    <h2>Steps</h2>
+    <div class="tiny">Pick a Step and an official tempo for each movement.</div>
+    <div class="hr"></div>
+    <div id="stepsForm" class="list"></div>
+    <div class="hr"></div>
+    <div class="right">
+      <button id="btnResetSteps" class="btn2">Reset</button>
+      <button id="btnSaveSteps" class="btn">Save</button>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div class="card" id="viewData" style="display:none;">
+    <h2>Data</h2>
+    <div class="row">
+      <div><label>&nbsp;</label><button id="btnExport" class="btn">Export JSON</button></div>
+      <div><label>&nbsp;</label><button id="btnCopy" class="btn2">Copy</button></div>
+      <div><label>&nbsp;</label><button id="btnImport" class="btn">Import (replace)</button></div>
+    </div>
+    <div class="hr"></div>
+    <textarea id="dataBox" class="mono" placeholder="Export appears here. Paste JSON here to import."></textarea>
+		
+		<div class="hr"></div>
+			<!-- Storage/account blurb -->
+<div class="tiny" id="storageBlurb"></div>
+<!-- Preventive medicine / provider note -->
+<div id="guidePreventiveCopy"></div>
+		<div class="hr"></div>
+
+<button class="btn2" id="btnShare">Share with a friend</button>
+
+  </div>
+</div>
+
+<!-- FOOTER NAV -->
+<div class="footerNav">
+  <div class="bar">
+    <button id="navGuide" class="active">Guide</button>
+    <button id="navCalendar">Calendar</button>
+    <button id="navSteps">Steps</button>
+    <button id="navData">Data</button>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal">
+  <div class="box">
+    <div class="right">
+      <span class="pill a">Profile</span>
+      <button id="btnCloseProfile" class="btn2">Close</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="card" style="margin:0;">
+      <h2>Your Name</h2>
+      <div class="row">
+        <div style="flex:2 1 260px;min-width:220px">
+          <label>Name</label>
+          <input id="profileName" placeholder="Example: Nick">
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="btnSaveProfile" class="btn">Save</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <h2>Subscribe</h2>
+      <div class="tiny">
+        Optional: add your email so you can get updates when MarineMD launches membership.
+      </div>
+
+      <div class="row" style="margin-top:6px;">
+        <div style="flex:2 1 260px;min-width:220px">
+          <label>Email</label>
+          <input id="profileEmail" placeholder="you@example.com">
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="btnSubscribe" class="btn">Subscribe</button>
+        </div>
+      </div>
+
+      <div class="tiny" id="subStatus" style="margin-top:6px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY MODAL -->
+<div id="modal" class="modal">
+  <div class="box">
+
+    <div class="right">
+      <span class="pill a mono" id="modalDatePill"></span>
+      <button id="btnCloseModal" class="btn2">Close</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- SCHEDULE MARKERS -->
+    <div class="card" style="margin:0 0 8px;">
+      <h2>Schedule markers</h2>
+      <div class="tiny" id="dayScheduleLine"></div>
+
+      <div class="hr"></div>
+
+      <div class="right">
+        <button id="btnMarkScheduled" class="btn2"
+          style="border-color:rgba(126,231,135,.50);">
+          Mark Scheduled (green)
+        </button>
+
+        <button id="btnMarkAerobic" class="btn2"
+          style="border-color:rgba(255,59,212,.65);color:rgba(255,180,245,.98);">
+          Mark Aerobic (pink)
+        </button>
+
+        <button id="btnMarkRest" class="btn2"
+          style="border-color:rgba(242,204,96,.55);">
+          Mark Rest (yellow)
+        </button>
+
+        <button id="btnClearMarks" class="btn2">Clear</button>
+      </div>
+    </div>
+
+    <div class="split">
+
+      <!-- LOGGING -->
+      <div class="card" style="margin:0;">
+        <h2>Log</h2>
+        <div class="hr"></div>
+
+        <div class="row">
+          <div><label>Date</label><input id="logDate" type="date"></div>
+          <div><label>Movement</label><select id="logMove"></select></div>
+          <div><label>Tempo</label><select id="logTempo"></select></div>
+          <div>
+            <label>Type</label>
+            <select id="logType">
+              <option value="rep">Reps</option>
+              <option value="sec">Seconds (holds)</option>
+              <option value="cardio">Aerobic (minutes)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="tiny" id="setHint"></div>
+
+        <div class="row">
+          <div>
+            <label>Set 1</label>
+            <div class="setbox">
+              <input id="s1i" class="mono" placeholder="0">
+              <button class="btn2 mini" id="s1m">-</button>
+              <button class="btn2 mini" id="s1p">+</button>
+              <button class="btn2 mini" id="s1clr">Clear</button>
+            </div>
+          </div>
+
+          <div>
+            <label>Set 2</label>
+            <div class="setbox">
+              <input id="s2i" class="mono" placeholder="0">
+              <button class="btn2 mini" id="s2m">-</button>
+              <button class="btn2 mini" id="s2p">+</button>
+              <button class="btn2 mini" id="s2clr">Clear</button>
+            </div>
+          </div>
+
+          <div>
+            <label>Set 3</label>
+            <div class="setbox">
+              <input id="s3i" class="mono" placeholder="0">
+              <button class="btn2 mini" id="s3m">-</button>
+              <button class="btn2 mini" id="s3p">+</button>
+              <button class="btn2 mini" id="s3clr">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row">
+          <div>
+            <label>Step size</label>
+            <select id="stepSize">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div style="flex:2 1 260px;min-width:220px">
+            <label>Notes</label>
+            <input id="logNote"
+              placeholder="Optional (e.g., incline 3.0mph, HR 150, ruck 25lb)">
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="right">
+          <button id="btnSaveLog" class="btn">Save Log</button>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="card" style="margin:0;">
+        <h2>Progress</h2>
+        <div class="tiny mono" id="progressBox"></div>
+
+        <div class="hr"></div>
+        <div class="right">
+          <button id="btnAdvanceStep" class="btn2" disabled>
+            Advance Step +1
+          </button>
+        </div>
+
+        <div class="hr"></div>
+        <h2>This Day</h2>
+        <div id="dayLogs" class="list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+
+<script>
+(() => {
+  const MOVES=["Pushups","Pullups","Squats","Bridges","Leg Raises","Handstand Pushups"];
+  let LS_KEY="marinemd_cc_guest";
+  const TEMPO_PRESETS=["","2-0-2-0","3-1-2-1","5-1-5-1", "5-3-5-3"];
+
+  // Rank = total earned progression across Big Six: sum(step-1), max 54.
+  const RANKS=[
+    {name:"CADET",min:0},{name:"RECRUIT",min:6},{name:"PRIVATE",min:14},{name:"CORPORAL",min:22},
+    {name:"SERGEANT",min:30},{name:"GUNNY",min:38},{name:"MASTER",min:46},{name:"ELITE",min:54}
+  ];
+
+  const LADDERS={
+    "Pushups":[{name:"Wall",type:"rep",sets:3,per:20},{name:"Incline",type:"rep",sets:3,per:20},{name:"Knee",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Arm",type:"rep",sets:3,per:10},{name:"Lever",type:"rep",sets:3,per:8},{name:"1-Arm",type:"rep",sets:3,per:5}],
+    "Pullups":[{name:"Vertical Rows",type:"rep",sets:3,per:20},{name:"Horizontal Rows",type:"rep",sets:3,per:20},{name:"Jackknife",type:"rep",sets:3,per:20},{name:"Half Pullup",type:"rep",sets:3,per:15},{name:"Full Pullup",type:"rep",sets:3,per:10},{name:"Close Pullup",type:"rep",sets:3,per:10},{name:"Uneven Pullup",type:"rep",sets:3,per:8},{name:"Half 1-Arm",type:"rep",sets:3,per:6},{name:"Assist 1-Arm",type:"rep",sets:3,per:5},{name:"1-Arm",type:"rep",sets:3,per:3}],
+    "Squats":[{name:"Shoulderstand",type:"rep",sets:3,per:25},{name:"Jackknife",type:"rep",sets:3,per:25},{name:"Supported",type:"rep",sets:3,per:25},{name:"Half",type:"rep",sets:3,per:20},{name:"Full",type:"rep",sets:3,per:20},{name:"Close",type:"rep",sets:3,per:20},{name:"Uneven",type:"rep",sets:3,per:15},{name:"Half 1-Leg",type:"rep",sets:3,per:10},{name:"Assist 1-Leg",type:"rep",sets:3,per:8},{name:"1-Leg",type:"rep",sets:3,per:5}],
+    "Bridges":[{name:"Short",type:"rep",sets:3,per:25},{name:"Straight",type:"rep",sets:3,per:25},{name:"Angled",type:"rep",sets:3,per:20},{name:"Head",type:"rep",sets:3,per:15},{name:"Half",type:"rep",sets:3,per:15},{name:"Full",type:"rep",sets:3,per:10},{name:"Wall Walks",type:"rep",sets:3,per:8},{name:"Closing",type:"rep",sets:3,per:6},{name:"Sit-to-Stand (assist)",type:"rep",sets:3,per:3},{name:"Stand-to-Sit & Sit-to-Stand",type:"rep",sets:3,per:2}],
+    "Leg Raises":[{name:"Knee Tucks",type:"rep",sets:3,per:20},{name:"Flat Knee Raises",type:"rep",sets:3,per:20},{name:"Flat Bent Leg",type:"rep",sets:3,per:15},{name:"Flat Frog",type:"rep",sets:3,per:10},{name:"Flat Straight",type:"rep",sets:3,per:10},{name:"Hanging Knee",type:"rep",sets:3,per:15},{name:"Hanging Bent",type:"rep",sets:3,per:10},{name:"Hanging Frog",type:"rep",sets:3,per:8},{name:"Hanging Straight",type:"rep",sets:3,per:6},{name:"V-Raise",type:"rep",sets:3,per:5}],
+    "Handstand Pushups":[{name:"Wall Headstand",type:"rep",sets:3,per:30},{name:"Crow",type:"rep",sets:3,per:30},{name:"Wall Handstand",type:"sec",sets:3,per:30},{name:"Half HSPU",type:"rep",sets:3,per:20},{name:"HSPU",type:"rep",sets:3,per:15},{name:"Close HSPU",type:"rep",sets:3,per:12},{name:"Uneven HSPU",type:"rep",sets:3,per:10},{name:"Half 1-Arm HSPU",type:"rep",sets:3,per:6},{name:"Assist 1-Arm HSPU",type:"rep",sets:3,per:4},{name:"1-Arm HSPU",type:"rep",sets:3,per:2}],
+  };
+
+  const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const $=sel=>document.querySelector(sel);
+
+  const toastEl=$("#toast");
+  function toast(msg){
+    if(!toastEl) return;
+    toastEl.textContent=msg;
+    toastEl.style.display="block";
+    clearTimeout(toastEl._t);
+    toastEl._t=setTimeout(()=>toastEl.style.display="none",1400);
+  }
+
+  function load(){ try{ const raw=localStorage.getItem(LS_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+  function save(state){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+  function iso(d){ return d.toISOString().slice(0,10); }
+  function parseHold(s){
+    if(!s) return 0;
+    s=(""+s).trim().toLowerCase();
+    if(!s) return 0;
+    if(/^\d+$/.test(s)) return parseInt(s,10);
+    if(/^\d+\s*s$/.test(s)) return parseInt(s,10);
+    if(/^\d+:\d{1,2}$/.test(s)){ const [m,sec]=s.split(":").map(x=>parseInt(x,10)); return m*60+sec; }
+    if(/^\d+\s*m$/.test(s)) return parseInt(s,10)*60;
+    if(/^\d+\s*min$/.test(s)) return parseInt(s,10)*60;
+    return 0;
+  }
+
+  const defaultState=()=>({
+    profile:{name:"Athlete"},
+    steps:Object.fromEntries(MOVES.map(m=>[m,{step:1,tempo:"3-1-2-1"}])),
+    schedule:{}, // { "YYYY-MM-DD": {scheduled:true, rest:false, aerobic:false} }
+    logs:[]
+  });
+
+  let S=load()||defaultState();
+
+  // ---------------- Supabase (AUTH + cc_states sync) ----------------
+const SUPABASE_URL = "https://zjvfkbwvzlwanzrsledc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_3WDtiifShIIiQ-ysFvnyHg_McU8xJPq";
+
+if(!window.supabase || !window.supabase.createClient){
+  console.error("Supabase client not found. Include supabase-js BEFORE this script.");
+}
+const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const APP_KEY = "cc_elite"; // stored in cc_states.app
+let currentUser = null;
+
+// ===== Storage copy text (TOP-LEVEL, NOT INSIDE A FUNCTION) =====
+const STORAGE_COPY_LOGGED_IN  = "Logged in: cloud sync enabled.";
+const STORAGE_COPY_LOGGED_OUT = "Not logged in: data stays on this device.";
+
+// ===== Auth UI refresh =====
+async function refreshAuthUI() {
+  if(!supabase) return;
+
+  const { data } = await supabase.auth.getSession();
+  currentUser = data.session?.user || null;
+
+  // switch localStorage namespace per user (or guest)
+  const nextKey = currentUser ? `marinemd_cc_${currentUser.id}` : "marinemd_cc_guest";
+  const keyChanged = (LS_KEY !== nextKey);
+  LS_KEY = nextKey;
+
+  // reload local state when identity changes
+  if(keyChanged){
+    S = load() || defaultState();
+    save(S);
+
+    $("#helloPill") && ($("#helloPill").textContent = S.profile?.name || "Athlete");
+    if(typeof makeSteps === "function") makeSteps();
+    if(typeof renderCalendar === "function") renderCalendar();
+  }
+
+  // ALWAYS update rank
+  if(typeof updateRankPill === "function") updateRankPill();
+
+  const st = $("#authStatus");
+  const showIn = (id, on) => {
+    const el = $(id);
+    if(el) el.style.display = on ? "" : "none";
+  };
+
+  if(st){
+    st.textContent = currentUser
+      ? `Logged in: ${currentUser.email}`
+      : "Not logged in.";
+  }
+
+  if(currentUser){
+    showIn("#btnLogout", true);
+    showIn("#btnCloudLoad", true);
+    showIn("#btnCloudSave", true);
+    showIn("#btnLogin", false);
+    showIn("#btnSignup", false);
+  }else{
+    showIn("#btnLogout", false);
+    showIn("#btnCloudLoad", false);
+    showIn("#btnCloudSave", false);
+    showIn("#btnLogin", true);
+    showIn("#btnSignup", true);
+  }
+
+  if(typeof updateStorageCopy === "function") updateStorageCopy();
+
+  // auto-load cloud state AFTER we actually know who the user is
+  if(currentUser && typeof cloudLoadState === "function"){
+    cloudLoadState();
+  }
+}
+
+// ===== Storage copy UI =====
+function updateStorageCopy(){
+  const el = $("#storageCopy");
+  if(!el) return;
+  el.textContent = currentUser
+    ? STORAGE_COPY_LOGGED_IN
+    : STORAGE_COPY_LOGGED_OUT;
+}
+
+// auth listener + initial paint
+if(supabase){
+  supabase.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+    refreshAuthUI();
+  });
+}
+refreshAuthUI();
+
+  async function cloudSaveState() {
+    if(!supabase) return;
+    if(!currentUser){ toast("Login first"); return; }
+
+    const payload = { user_id: currentUser.id, app: APP_KEY, state: S };
+    const { error } = await supabase
+      .from("cc_states")
+      .upsert(payload, { onConflict: "user_id,app" });
+
+    if(error){ toast("Cloud save failed"); console.error(error); return; }
+    toast("Cloud saved");
+  }
+
+  async function cloudLoadState() {
+    if(!supabase) return;
+    if(!currentUser){ toast("Login first"); return; }
+
+    const { data, error } = await supabase
+      .from("cc_states")
+      .select("state")
+      .eq("user_id", currentUser.id)
+      .eq("app", APP_KEY)
+      .maybeSingle();
+
+    if(error){ toast("Cloud load failed"); console.error(error); return; }
+    if(!data){ toast("No cloud state yet"); return; }
+
+    S = data.state;
+    save(S);
+    const hp=$("#helloPill"); if(hp) hp.textContent = S.profile?.name || "Athlete";
+    makeSteps();
+    updateRankPill();
+    renderCalendar();
+    toast("Cloud loaded");
+  }
+
+  // Rank (recomputed from steps; updates on save/advance/import)
+  function earnedStepPoints(){
+    let pts=0;
+    for(const m of MOVES){
+      const st=Math.max(1,Math.min(10,+(S.steps?.[m]?.step||1)));
+      pts += (st-1);
+    }
+    return pts;
+  }
+  function computeRank(){
+    const pts=earnedStepPoints();
+    const maxPts=MOVES.length*9;
+    let name=RANKS[0].name;
+    for(const r of RANKS){ if(pts>=r.min) name=r.name; }
+    const pct=maxPts?Math.round((pts/maxPts)*100):0;
+    return {name,pts,maxPts,pct};
+  }
+  function updateRankPill(){
+    const rp=$("#rankPill"); if(!rp) return;
+    const {name,pts,maxPts,pct}=computeRank();
+    rp.textContent=`${name} ${pts}/${maxPts} (${pct}%)`;
+  }
+
+  // Views
+  const views={Guide:$("#viewGuide"),Calendar:$("#viewCalendar"),Steps:$("#viewSteps"),Data:$("#viewData")};
+  const navBtns={Guide:$("#navGuide"),Calendar:$("#navCalendar"),Steps:$("#navSteps"),Data:$("#navData")};
+  function showView(name){
+    Object.keys(views).forEach(k=>{ if(views[k]) views[k].style.display=(k===name?"block":"none"); });
+    Object.keys(navBtns).forEach(k=>{ if(navBtns[k]) navBtns[k].classList.toggle("active",k===name); });
+  }
+
+  // Profile
+  const profileModal=$("#profileModal");
+  $("#btnEditProfile") && ($("#btnEditProfile").onclick=()=>{
+    const pn=$("#profileName"); if(pn) pn.value=S.profile.name||"";
+    if(profileModal) profileModal.style.display="flex";
+    $("#profileName")?.focus?.();
+  });
+  $("#btnCloseProfile") && ($("#btnCloseProfile").onclick=()=>{ if(profileModal) profileModal.style.display="none"; });
+  $("#btnSaveProfile") && ($("#btnSaveProfile").onclick=()=>{
+    S.profile.name=($("#profileName").value||"Athlete").trim()||"Athlete";
+    $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
+    save(S); toast("Saved profile");
+    if(profileModal) profileModal.style.display="none";
+  });
+  $("#helloPill") && ($("#helloPill").textContent=S.profile.name);
+
+  // Steps
+  function makeSteps(){
+    const wrap=$("#stepsForm"); if(!wrap) return;
+    wrap.innerHTML="";
+    MOVES.forEach(move=>{
+      const curr=S.steps[move]||{step:1,tempo:"3-1-2-1"};
+      const ladder=LADDERS[move]||[];
+      const card=document.createElement("div");
+      card.className="item";
+      card.innerHTML=`
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap">
+          <div><b>${move}</b><div class="tiny">Progression: <span class="mono">${ladder.length?ladder.map((x,i)=>`${i+1}:${x.name}`).join(" | "):"n/a"}</span></div></div>
+          <span class="pill w mono" id="pill_${move}">STEP ${curr.step}</span>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <div><label>Step</label><select id="step_${move}"></select></div>
+          <div><label>Official tempo</label>
+            <select id="tempo_${move}">
+              ${TEMPO_PRESETS.map(t=>`<option value="${t}">${t||"(none)"}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+      `;
+      wrap.appendChild(card);
+      const stepSel=card.querySelector(`#step_${CSS.escape(move)}`);
+      for(let i=1;i<=Math.max(10,ladder.length);i++){
+        const opt=document.createElement("option");
+        opt.value=i; opt.textContent=i+(ladder[i-1]?` - ${ladder[i-1].name}`:"");
+        stepSel.appendChild(opt);
+      }
+      stepSel.value=String(curr.step||1);
+      const tempoSel=card.querySelector(`#tempo_${CSS.escape(move)}`);
+      tempoSel.value=curr.tempo||"";
+      stepSel.onchange=()=>{ card.querySelector(`#pill_${CSS.escape(move)}`).textContent=`STEP ${stepSel.value}`; };
+    });
+  }
+  makeSteps();
+
+  $("#btnResetSteps") && ($("#btnResetSteps").onclick=()=>{
+    if(!confirm("Reset all steps to 1?")) return;
+    MOVES.forEach(m=>S.steps[m]={step:1,tempo:"3-1-2-1"});
+    save(S); makeSteps(); updateRankPill(); toast("Reset steps");
+  });
+
+  $("#btnSaveSteps") && ($("#btnSaveSteps").onclick=()=>{
+    MOVES.forEach(m=>{
+      const step=+($(`#step_${CSS.escape(m)}`).value||1);
+      const tempo=($(`#tempo_${CSS.escape(m)}`).value||"");
+      S.steps[m]={step,tempo};
+    });
+    save(S);
+    updateRankPill();
+    toast("Saved steps");
+    renderCalendar();
+  });
+
+  // Calendar header DOW
+  const dowRow=$("#dowRow");
+  if(dowRow && !dowRow.dataset.ready){
+    DOW.forEach(d=>{ const div=document.createElement("div"); div.className="dow"; div.textContent=d; dowRow.appendChild(div); });
+    dowRow.dataset.ready="1";
+  }
+
+  let calCursor=new Date();
+  function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+  function fmtMonth(d){ return d.toLocaleString(undefined,{month:"long",year:"numeric"}); }
+
+  function getDayMeta(dateStr){
+    const meta=S.schedule[dateStr]||{};
+    const hasStrength=S.logs.some(x=>x.date===dateStr && x.type!=="cardio");
+    const hasCardioLog=S.logs.some(x=>x.date===dateStr && x.type==="cardio");
+    const isRest=!!meta.rest;
+    const isScheduled=!!meta.scheduled;
+    const isAerobic=!!meta.aerobic;
+    return {hasStrength,hasCardioLog,isRest,isScheduled,isAerobic};
+  }
+
+  function renderCalendar(){
+    $("#monthTitleBig") && ($("#monthTitleBig").textContent=fmtMonth(calCursor));
+    const grid=$("#calGrid"); if(!grid) return;
+    grid.innerHTML="";
+    const first=startOfMonth(calCursor);
+    const last=endOfMonth(calCursor);
+    const lead=first.getDay();
+    const days=last.getDate();
+
+    for(let i=0;i<lead;i++){
+      const blank=document.createElement("div");
+      blank.className="day";
+      blank.style.opacity=".25";
+      blank.style.pointerEvents="none";
+      grid.appendChild(blank);
+    }
+
+    for(let d=1; d<=days; d++){
+      const dt=new Date(calCursor.getFullYear(), calCursor.getMonth(), d);
+      const ds=iso(dt);
+      const meta=getDayMeta(ds);
+      const div=document.createElement("div");
+      div.className="day";
+
+      // Border/Glow priority: Rest (yellow) > Logged strength (blue) > Logged cardio (pink) > Scheduled strength (green) > Scheduled aerobic (pink)
+      if(meta.isRest){
+        div.style.borderColor="rgba(242,204,96,.50)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(242,204,96,.12), 0 0 14px rgba(242,204,96,.06)";
+      }else if(meta.hasStrength){
+        div.style.borderColor="rgba(121,192,255,.55)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(121,192,255,.12), 0 0 14px rgba(121,192,255,.08)";
+      }else if(meta.hasCardioLog){
+        div.style.borderColor="rgba(255,59,212,.65)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(255,59,212,.10), 0 0 14px rgba(255,59,212,.10)";
+      }else if(meta.isScheduled){
+        div.style.borderColor="rgba(126,231,135,.45)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(126,231,135,.10), 0 0 14px rgba(126,231,135,.06)";
+      }else if(meta.isAerobic){
+        div.style.borderColor="rgba(255,59,212,.55)";
+        div.style.boxShadow="inset 0 0 0 1px rgba(255,59,212,.08), 0 0 14px rgba(255,59,212,.08)";
+      }
+
+      div.innerHTML=`
+        <div class="n"><span>${d}</span><span class="mono" style="font-size:10px;color:var(--muted)">${ds.slice(5)}</span></div>
+        <div class="chips" id="chips_${ds}"></div>
+      `;
+      const chips=div.querySelector(`#chips_${CSS.escape(ds)}`);
+      if(meta.isScheduled){ const c=document.createElement("span"); c.className="chip sch"; c.textContent="SCHED"; chips.appendChild(c); }
+      if(meta.hasStrength){ const c=document.createElement("span"); c.className="chip log"; c.textContent="LOG"; chips.appendChild(c); }
+      if(meta.isAerobic){ const c=document.createElement("span"); c.className="chip cardio"; c.textContent="AEROBIC"; chips.appendChild(c); }
+      if(meta.hasCardioLog){ const c=document.createElement("span"); c.className="chip cardio"; c.textContent="CARDIO"; chips.appendChild(c); }
+      if(meta.isRest){ const c=document.createElement("span"); c.className="chip rest"; c.textContent="REST"; chips.appendChild(c); }
+
+      div.onclick=()=>openDay(ds);
+      grid.appendChild(div);
+    }
+  }
+
+  $("#btnPrevMonth") && ($("#btnPrevMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); renderCalendar(); });
+  $("#btnNextMonth") && ($("#btnNextMonth").onclick=()=>{ calCursor=new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); renderCalendar(); });
+  $("#btnThisMonth") && ($("#btnThisMonth").onclick=()=>{ calCursor=new Date(); renderCalendar(); });
+
+  // Apply baseline week starting today:
+  function applyBaselineWeek(){
+    const start=new Date();
+    for(let i=0;i<7;i++){
+      const dt=new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+      const ds=iso(dt);
+      if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
+
+      const dow=dt.getDay(); // 0 Sun .. 6 Sat
+      const already = S.schedule[ds];
+      const hasAny = already.rest || already.scheduled || already.aerobic;
+      if(hasAny) continue;
+
+      if(dow===0){
+        S.schedule[ds].rest=true; S.schedule[ds].scheduled=false; S.schedule[ds].aerobic=false;
+      }else if(dow===1 || dow===3 || dow===5){
+        S.schedule[ds].scheduled=true; S.schedule[ds].rest=false; S.schedule[ds].aerobic=false;
+      }else{
+        S.schedule[ds].aerobic=true; S.schedule[ds].rest=false; S.schedule[ds].scheduled=false;
+      }
+    }
+    save(S);
+    renderCalendar();
+    toast("Applied baseline week");
+  }
+  $("#btnBaselineWeek") && ($("#btnBaselineWeek").onclick=()=>applyBaselineWeek());
+
+  // Day modal
+  const modal=$("#modal");
+  const modalDatePill=$("#modalDatePill");
+  const dayScheduleLine=$("#dayScheduleLine");
+
+  const btnMarkScheduled=$("#btnMarkScheduled");
+  const btnMarkAerobic=$("#btnMarkAerobic");
+  const btnMarkRest=$("#btnMarkRest");
+  const btnClearMarks=$("#btnClearMarks");
+
+  const logDate=$("#logDate");
+  const logMove=$("#logMove");
+  const logTempo=$("#logTempo");
+  const logType=$("#logType");
+  const setHint=$("#setHint");
+  const s1i=$("#s1i"), s2i=$("#s2i"), s3i=$("#s3i");
+  const stepSize=$("#stepSize");
+  const logNote=$("#logNote");
+  const progressBox=$("#progressBox");
+  const btnAdvance=$("#btnAdvanceStep");
+
+  function fillMoves(){
+    if(!logMove) return;
+    logMove.innerHTML="";
+    MOVES.forEach(m=>{ const opt=document.createElement("option"); opt.value=m; opt.textContent=m; logMove.appendChild(opt); });
+  }
+  fillMoves();
+
+  function fillTempo(){
+    if(!logTempo) return;
+    logTempo.innerHTML="";
+    TEMPO_PRESETS.forEach(t=>{ const opt=document.createElement("option"); opt.value=t; opt.textContent=t||"(none)"; logTempo.appendChild(opt); });
+  }
+  fillTempo();
+
+  function updateSetHint(){
+    if(!setHint || !logMove || !logType || !logTempo) return;
+    const move=logMove.value;
+    const step=+(S.steps[move]?.step||1);
+    const ladder=LADDERS[move]||[];
+    const stepInfo=ladder[step-1];
+    const type=logType.value;
+    const tempo=logTempo.value||S.steps[move]?.tempo||"";
+
+    if(type==="cardio"){
+      setHint.textContent="Aerobic log: enter minutes in Set 1 (Set 2/3 optional). Example: 30. Notes: incline/speed/HR/intervals/ruck weight.";
+      return;
+    }
+
+    let txt=`Target: Step ${step}${stepInfo?` (${stepInfo.name})`:``}. `;
+    if(stepInfo){
+      txt += (type==="sec" || stepInfo.type==="sec")
+        ? `Goal holds: ${stepInfo.sets} x ${stepInfo.per} sec.`
+        : `Goal reps: ${stepInfo.sets} x ${stepInfo.per} reps.`;
+    }else txt += `No ladder data.`;
+    if(tempo) txt += ` Official tempo: ${tempo}.`;
+    setHint.textContent=txt;
+  }
+
+  function sumSets(type, sets){
+    if(type==="sec") return sets.reduce((a,v)=>a+parseHold(v),0);
+    if(type==="cardio") return sets.reduce((a,v)=>a+(+v||0),0);
+    return sets.reduce((a,v)=>a+(+v||0),0);
+  }
+
+  function getLogsForDay(ds){ return S.logs.filter(x=>x.date===ds); }
+
+  function getProgress(move){
+    const step=+(S.steps[move]?.step||1);
+    const tempo=(S.steps[move]?.tempo||"");
+    const ladder=LADDERS[move]||[];
+    const stepInfo=ladder[step-1];
+    const sameTempoLogs=S.logs.filter(x=>x.move===move && (x.tempo||"")===tempo && x.type!=="cardio");
+    const recent=sameTempoLogs.slice(-10);
+    return {step,tempo,stepInfo,recent};
+  }
+
+  function scheduleLine(ds){
+    const meta=S.schedule[ds]||{};
+    const parts=[];
+    if(meta.scheduled) parts.push("Scheduled strength (green)");
+    if(meta.aerobic) parts.push("Scheduled aerobic (pink)");
+    if(meta.rest) parts.push("Rest (yellow)");
+    const hasStrength=S.logs.some(x=>x.date===ds && x.type!=="cardio");
+    const hasCardio=S.logs.some(x=>x.date===ds && x.type==="cardio");
+    if(hasStrength) parts.push("Logged strength (blue)");
+    if(hasCardio) parts.push("Logged aerobic (pink)");
+    return parts.length?parts.join(" | "):"No markers yet. Use buttons below.";
+  }
+
+  let activeDay=null;
+
+  function openDay(ds){
+    activeDay=ds;
+    if(modal) modal.style.display="flex";
+    if(modalDatePill) modalDatePill.textContent=ds;
+    if(logDate) logDate.value=ds;
+
+    if(logMove) logMove.value=MOVES[0];
+    if(logTempo && logMove) logTempo.value=(S.steps[logMove.value]?.tempo||"");
+    if(logType) logType.value="rep";
+    if(logNote) logNote.value="";
+    if(s1i) s1i.value="0"; if(s2i) s2i.value="0"; if(s3i) s3i.value="0";
+    if(stepSize) stepSize.value="1";
+
+    updateSetHint();
+    renderDayLogs(ds);
+    renderProgress();
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
+  }
+
+  $("#btnCloseModal") && ($("#btnCloseModal").onclick=()=>{ if(modal) modal.style.display="none"; });
+
+  // Schedule controls
+  function ensureDay(ds){
+    if(!S.schedule[ds]) S.schedule[ds]={scheduled:false,rest:false,aerobic:false};
+  }
+
+  btnMarkScheduled && (btnMarkScheduled.onclick=()=>{
+    if(!activeDay) return;
+    ensureDay(activeDay);
+    S.schedule[activeDay].scheduled=true;
+    S.schedule[activeDay].rest=false;
+    save(S);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    renderCalendar();
+    toast("Marked scheduled (strength)");
+  });
+
+  btnMarkAerobic && (btnMarkAerobic.onclick=()=>{
+    if(!activeDay) return;
+    ensureDay(activeDay);
+    S.schedule[activeDay].aerobic=true;
+    S.schedule[activeDay].rest=false;
+    save(S);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    renderCalendar();
+    toast("Marked scheduled (aerobic)");
+  });
+
+  btnMarkRest && (btnMarkRest.onclick=()=>{
+    if(!activeDay) return;
+    ensureDay(activeDay);
+    S.schedule[activeDay].rest=true;
+    S.schedule[activeDay].scheduled=false;
+    S.schedule[activeDay].aerobic=false;
+    save(S);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    renderCalendar();
+    toast("Marked rest");
+  });
+
+  btnClearMarks && (btnClearMarks.onclick=()=>{
+    if(!activeDay) return;
+    delete S.schedule[activeDay];
+    save(S);
+    if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(activeDay);
+    renderCalendar();
+    toast("Cleared markers");
+  });
+
+  function renderDayLogs(ds){
+    const container=$("#dayLogs"); if(!container) return;
+    container.innerHTML="";
+    const logs=getLogsForDay(ds);
+    if(!logs.length){
+      const div=document.createElement("div");
+      div.className="tiny";
+      div.textContent="No logs yet for this day.";
+      container.appendChild(div);
+      return;
+    }
+    logs.slice().reverse().forEach((x)=>{
+      const div=document.createElement("div");
+      div.className="item";
+      const sets=x.sets||[];
+      const sum=sumSets(x.type||"rep", sets);
+
+      const tag = x.type==="cardio"
+        ? `<span class="pill p mono">AEROBIC ${sum} min</span>`
+        : `<span class="pill a mono">${(x.type==="sec"?"SEC":"REPS")} ${sum}</span>`;
+
+      div.innerHTML=`
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap">
+          <div><b>${x.type==="cardio"?"Aerobic":x.move}</b> <span class="tiny mono">${x.type==="cardio"?"":(x.tempo||"")}</span></div>
+          ${tag}
+        </div>
+        <div class="tiny mono">Sets: ${sets.map(v=>v||"0").join(" / ")}${x.note?` | Note: ${x.note}`:""}</div>
+        <div class="hr"></div>
+        <div class="right"><button class="btn2 mini" data-del="${S.logs.indexOf(x)}">Delete</button></div>
+      `;
+      div.querySelector("[data-del]").onclick=(e)=>{
+        const i=+e.target.getAttribute("data-del");
+        if(!confirm("Delete this log?")) return;
+        S.logs.splice(i,1);
+        save(S);
+        renderDayLogs(ds);
+        if(dayScheduleLine) dayScheduleLine.textContent=scheduleLine(ds);
+        renderCalendar();
+        renderProgress();
+        toast("Deleted");
+      };
+      container.appendChild(div);
+    });
+  }
+
+  function renderProgress(){
+    if(!progressBox || !logMove || !btnAdvance) return;
+    const move=logMove.value;
+    const {step,tempo,stepInfo,recent}=getProgress(move);
+    const ladder=LADDERS[move]||[];
+    const next=ladder[step]||null;
+    const need=stepInfo?`${stepInfo.sets} x ${stepInfo.per} ${stepInfo.type==="sec"?"sec":"reps"}`:"n/a";
+    const last = recent.slice(-3).map(x=>{
+      const sum=sumSets(x.type||"rep", x.sets||[]);
+      return `${x.date} | ${x.type==="sec"?"sec":"reps"} ${sum} | ${x.sets.join("/")}`;
+    }).join("\n") || "(no recent strength logs at this tempo)";
+    progressBox.textContent =
+`MOVE: ${move}
+STEP: ${step}${stepInfo?` (${stepInfo.name})`:``}
+OFFICIAL TEMPO: ${tempo||"(none)"}
+TARGET: ${need}
+NEXT: ${next?`Step ${step+1} (${next.name})`:"(top step)"}
+
+RECENT (same tempo):
+${last}
+`;
+    let okCount=0;
+    if(stepInfo){
+      recent.forEach(x=>{
+        const sets=x.sets||[];
+        if(stepInfo.type==="sec" || x.type==="sec"){
+          const secs=sets.map(v=>parseHold(v));
+          const good=secs.filter(v=>v>=stepInfo.per).length;
+          if(good>=stepInfo.sets) okCount++;
+        }else{
+          const reps=sets.map(v=>+v||0);
+          const good=reps.filter(v=>v>=stepInfo.per).length;
+          if(good>=stepInfo.sets) okCount++;
+        }
+      });
+    }
+    btnAdvance.disabled = !(okCount>=2 && step < (ladder.length||10));
+    btnAdvance.textContent = btnAdvance.disabled ? "Advance Step +1" : "Advance Step +1 (ready)";
+  }
+
+  logMove && (logMove.onchange=()=>{
+    if(logTempo) logTempo.value=(S.steps[logMove.value]?.tempo||"");
+    const move=logMove.value;
+    const stepInfo=(LADDERS[move]||[])[(S.steps[move]?.step||1)-1];
+    if(logType) logType.value=(stepInfo?.type==="sec")?"sec":"rep";
+    updateSetHint(); renderProgress();
+  });
+  logTempo && (logTempo.onchange=()=>{ updateSetHint(); renderProgress(); });
+  logType && (logType.onchange=()=>{ updateSetHint(); });
+
+  function bump(input, delta){
+    const type=logType?.value;
+    const ss=+stepSize?.value||1;
+    if(type==="sec"){
+      const v=parseHold(input.value||"0");
+      input.value=String(Math.max(0, v + delta*ss));
+    }else{
+      const v=+input.value||0;
+      input.value=String(Math.max(0, v + delta*ss));
+    }
+  }
+  function bindSet(id){
+    const i=$("#"+id+"i"); if(!i) return;
+    $("#"+id+"p") && ($("#"+id+"p").onclick=()=>bump(i,+1));
+    $("#"+id+"m") && ($("#"+id+"m").onclick=()=>bump(i,-1));
+    $("#"+id+"clr") && ($("#"+id+"clr").onclick=()=>{ i.value="0"; });
+  }
+  bindSet("s1"); bindSet("s2"); bindSet("s3");
+
+  $("#btnSaveLog") && ($("#btnSaveLog").onclick=()=>{
+    const date=logDate?.value;
+    const type=logType?.value || "rep";
+
+    let move=logMove?.value || MOVES[0];
+    let tempo=logTempo?.value || (S.steps[move]?.tempo||"");
+    const sets=[s1i?.value||"0", s2i?.value||"0", s3i?.value||"0"];
+    const note=(logNote?.value||"").trim();
+
+    if(!date){ toast("Pick a date"); return; }
+
+    if(type==="cardio"){
+      move="Aerobic";
+      tempo="";
+      sets[0]=String(Math.max(0, +sets[0]||0));
+      sets[1]=String(Math.max(0, +sets[1]||0));
+      sets[2]=String(Math.max(0, +sets[2]||0));
+      if((+sets[0]||0)===0 && (+sets[1]||0)===0 && (+sets[2]||0)===0){
+        toast("Enter aerobic minutes"); return;
+      }
+      if(!S.schedule[date]) S.schedule[date]={scheduled:false,rest:false,aerobic:false};
+      if(!S.schedule[date].rest) S.schedule[date].aerobic=true;
+    }
+
+    S.logs.push({date,move,tempo,type,sets,note});
+    save(S);
+    toast("Saved log");
+
+    renderDayLogs(date);
+    if(activeDay===date && dayScheduleLine) dayScheduleLine.textContent=scheduleLine(date);
+    renderCalendar();
+    renderProgress();
+  });
+
+  btnAdvance && (btnAdvance.onclick=()=>{
+    const move=logMove?.value;
+    if(!move) return;
+    const ladder=LADDERS[move]||[];
+    const curr=+(S.steps[move]?.step||1);
+    if(curr >= (ladder.length||10)) return;
+    S.steps[move].step=curr+1;
+    save(S);
+    makeSteps();
+    updateRankPill();
+    renderProgress();
+    toast(`Advanced to Step ${curr+1}`);
+  });
+
+  // Data
+  $("#btnExport") && ($("#btnExport").onclick=()=>{ $("#dataBox").value=JSON.stringify(S,null,2); toast("Exported"); });
+  $("#btnCopy") && ($("#btnCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#dataBox").value||""); toast("Copied"); }catch(e){ toast("Copy failed"); } });
+  $("#btnImport") && ($("#btnImport").onclick=()=>{
+    const raw=$("#dataBox").value||"";
+    if(!raw.trim()){ toast("Paste JSON first"); return; }
+    if(!confirm("Import will REPLACE current data on this device. Continue?")) return;
+    try{
+      S=JSON.parse(raw);
+      save(S);
+      $("#helloPill") && ($("#helloPill").textContent=S.profile?.name||"Athlete");
+      makeSteps();
+      updateRankPill();
+      renderCalendar();
+      toast("Imported");
+    }catch(e){ toast("Invalid JSON"); }
+  });
+
+  // Nav
+  navBtns.Guide && (navBtns.Guide.onclick=()=>showView("Guide"));
+  navBtns.Calendar && (navBtns.Calendar.onclick=()=>{ showView("Calendar"); renderCalendar(); });
+  navBtns.Steps && (navBtns.Steps.onclick=()=>{ showView("Steps"); makeSteps(); });
+  navBtns.Data && (navBtns.Data.onclick=()=>showView("Data"));
+
+  // Neon panels
+  function initNeonGuide(){
+    const btns=Array.from(document.querySelectorAll(".neonBtn[data-open]"));
+    if(!btns.length) return;
+
+    function closeAll(exceptId){
+      document.querySelectorAll(".neonPanel").forEach(p=>{
+        if(p.id!==exceptId) p.classList.remove("show");
+      });
+    }
+
+    btns.forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const id=b.getAttribute("data-open");
+        const panel=document.getElementById(id);
+        if(!panel) return;
+        const willShow=!panel.classList.contains("show");
+        closeAll(id);
+        panel.classList.toggle("show", willShow);
+        if(willShow) panel.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    });
+  }
+
+  // -------- Auth buttons + Cloud buttons (Supabase only) --------
+  $("#btnSignup") && ($("#btnSignup").onclick = async () => {
+    if(!supabase) return;
+    const email = ($("#authEmail").value||"").trim();
+    const pass = ($("#authPass").value||"").trim();
+    if(!email || !pass){ toast("Email + password"); return; }
+
+    const { error } = await supabase.auth.signUp({ email, password: pass });
+    if(error){ toast("Sign up failed"); console.error(error); return; }
+    toast("Signed up. Check email if required.");
+    await refreshAuthUI();
+  });
+
+  $("#btnLogin") && ($("#btnLogin").onclick = async () => {
+  if(!supabase) return;
+  const email = ($("#authEmail").value||"").trim();
+  const pass  = ($("#authPass").value||"").trim();
+  if(!email || !pass){ toast("Email + password"); return; }
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  if(error){ toast("Login failed"); console.error(error); return; }
+
+  if(!data?.session){
+    toast("Login incomplete");
+    return;
+  }
+
+  toast("Logged in");
+  await refreshAuthUI();
+});
+
+  $("#btnLogout") && ($("#btnLogout").onclick = async () => {
+    if(!supabase) return;
+    await supabase.auth.signOut();
+    toast("Logged out");
+    await refreshAuthUI();
+  });
+
+  $("#btnCloudSave") && ($("#btnCloudSave").onclick = () => cloudSaveState());
+  $("#btnCloudLoad") && ($("#btnCloudLoad").onclick = () => cloudLoadState());
+
+  if(supabase){
+    supabase.auth.onAuthStateChange(() => refreshAuthUI());
+  }
+	
+	/* ===============================
+   GUIDE COPY + SHARE INTEGRATION
+   =============================== */
+	 
+// Preventive medicine copy (Option C + your addition)
+const PREVENTIVE_COPY_HTML = `
+<div class="tiny" style="margin-top:8px;line-height:1.45">
+  <b>Optional:</b> use this as an exercise log you can share with your doctor to support preventive health conversations.
+  <div style="margin-top:6px">
+    Consistency—alongside diet—is one of the strongest protections for long-term health and can help reduce the number of medications you’re on, or may ever need.
+  </div>
+</div>
+`;
+
+// --- Inject preventive copy into Guide ---
+function injectPreventiveCopy(){
+  const el = document.getElementById("guidePreventiveCopy");
+  if(!el) return;
+  el.innerHTML = PREVENTIVE_COPY_HTML;
+}
+
+// --- Update storage copy based on auth ---
+function updateStorageCopy(){
+  const el = document.getElementById("storageBlurb");
+  if(!el) return;
+  el.textContent = currentUser ? STORAGE_COPY_LOGGED_IN : STORAGE_COPY_LOGGED_OUT;
+}
+
+// --- Share button (native share or copy) ---
+function getShareLink(){
+  return window.location.href.split("#")[0];
+}
+
+async function shareApp(){
+  const url = getShareLink();
+  const title = "MarineMD | CC Elite Tracker";
+  const text =
+    "I’ve been using this tracker to stay consistent. " +
+    "It works offline or without an account, with optional cloud backup + sync.";
+
+  try{
+    if(navigator.share){
+      await navigator.share({ title, text, url });
+      toast("Share opened");
+      return;
+    }
+  }catch(e){}
+
+  try{
+    await navigator.clipboard.writeText(url);
+    toast("Link copied");
+  }catch(e){
+    window.prompt("Copy this link:", url);
+  }
+}
+
+// --- Wire share button if present ---
+const shareBtn = document.getElementById("btnShare");
+if(shareBtn) shareBtn.onclick = () => shareApp();
+
+  // Init
+  showView("Guide");
+  renderCalendar();
+  initNeonGuide();
+  updateRankPill();
+  refreshAuthUI();
+	injectPreventiveCopy();
+  updateStorageCopy();
+})();
+</script>
+
+</body>
+</html>
+
