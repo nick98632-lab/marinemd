@@ -1,0 +1,1670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>DIIMED Brain (Full, Dense, Multicolor)</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;width:100%;height:100%;background:transparent !important;overflow:hidden;}
+body{
+  margin:0;
+  background:#0b0f16;
+  color:rgba(232,238,246,.94);
+  font:12px/1.45 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+:root{
+  --orbitShift:5vw;
+  --glass: rgba(10,14,22,.62);
+  --chipGlowA: rgba(255,64,54,.28);
+  --chipGlowB: rgba(255,59,212,.22);
+  --chipGlowC: rgba(47,123,255,.22);
+
+  --parxX: 0px;
+  --parxY: 0px;
+
+  /* quality knobs (JS may override) */
+  --dendOpacity: .22;
+  --dendGlowOpacity: .34;
+  --dendCount: 170;    /* per lobe */
+  --dendDepth: 4;
+  --dendAvoid: 1.85;
+  --dendLenA: 10;
+  --dendLenB: 18;
+  --routeWidth: 1.35;
+}
+.wrap{
+  width:min(60px, 100%);
+  aspect-ratio:1/1;
+  filter:drop-shadow(0 26px 58px rgba(0,0,0,.78));
+}
+svg{width:100%;height:100%;display:block;overflow:visible;}
+
+svg .brainStroke{
+  fill:none;
+  stroke-width:2.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.62;
+  filter: drop-shadow(0 0 10px rgba(47,123,255,.08));
+}
+svg .brainInnerStroke{
+  fill:none;
+  stroke: rgba(255,255,255,.05);
+  stroke-width: 1.0;
+  opacity:.30;
+}
+
+svg .borderFlowA{
+  fill:none;
+  stroke: rgba(255,255,255,.14);
+  stroke-width: 1.55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 22 340;
+  animation: borderFlowA 2.5s linear infinite;
+  opacity:.09;
+  filter: drop-shadow(0 0 10px rgba(47,123,255,.09));
+}
+svg .borderFlowB{
+  fill:none;
+  stroke: rgba(47,123,255,.14);
+  stroke-width: 1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 16 320;
+  animation: borderFlowB 2.0s linear infinite;
+  opacity:.08;
+  filter: drop-shadow(0 0 10px rgba(47,123,255,.09)) drop-shadow(0 0 6px rgba(255,59,212,.05));
+}
+svg .borderBreath{
+  fill:none;
+  stroke: rgba(47,123,255,.10);
+  stroke-width: 2.4;
+  animation: borderBreath 4.2s ease-in-out infinite;
+  opacity:.055;
+}
+@keyframes borderBreath{0%,100%{opacity:.05;}50%{opacity:.11;}}
+@keyframes borderFlowA{to{stroke-dashoffset:-380;}}
+@keyframes borderFlowB{to{stroke-dashoffset:-340;}}
+
+svg .sparkHalo{
+  fill: rgba(47,123,255,.12);
+  opacity:.08;
+  filter: drop-shadow(0 0 18px rgba(47,123,255,.12)) drop-shadow(0 0 12px rgba(255,59,212,.07));
+}
+svg .sparkCore{
+  fill: rgba(255,255,255,.42);
+  opacity:.08;
+  filter: drop-shadow(0 0 14px rgba(255,255,255,.07)) drop-shadow(0 0 14px rgba(47,123,255,.12));
+}
+
+svg .dendriteMass{
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity: var(--dendOpacity);
+}
+svg .dendGlowMass{
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 3 14;
+  animation: dendFlow 1.45s linear infinite;
+  opacity: var(--dendGlowOpacity);
+  filter: drop-shadow(0 0 10px rgba(47,123,255,.10));
+}
+@keyframes dendFlow{to{stroke-dashoffset:-92;}}
+
+/* sulci/gyri (front) */
+svg .sulcus{
+  fill:none;
+  stroke: rgba(255,255,255,.20);
+  stroke-width: 1.12;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 22 340;
+  animation: sulcusFlowA 2.35s linear infinite;
+  opacity:.76;
+  filter: drop-shadow(0 0 12px rgba(47,123,255,.12));
+}
+svg .sulcusGlow{
+  fill:none;
+  stroke: rgba(47,123,255,.16);
+  stroke-width: 1.72;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 16 320;
+  animation: sulcusFlowB 1.85s linear infinite;
+  opacity:.18;
+  filter: drop-shadow(0 0 12px rgba(47,123,255,.12)) drop-shadow(0 0 8px rgba(255,59,212,.08));
+}
+svg .gyrusRidge{
+  fill:none;
+  stroke: rgba(47,123,255,.10);
+  stroke-width: 2.55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.16;
+  animation: gyrusBreath 3.8s ease-in-out infinite;
+}
+
+/* backside depth */
+svg .backSulcus{
+  fill:none;
+  stroke: rgba(0,0,0,.28);
+  stroke-width: 1.0;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 22 360;
+  animation: backSulcusFlowA 3.10s linear infinite;
+  opacity:.44;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,.20));
+}
+svg .backSulcusGlow{
+  fill:none;
+  stroke: rgba(47,123,255,.10);
+  stroke-width: 1.45;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 16 340;
+  animation: backSulcusFlowB 2.55s linear infinite;
+  opacity:.11;
+  filter: drop-shadow(0 0 10px rgba(47,123,255,.10));
+}
+svg .backGyrus{
+  fill:none;
+  stroke: rgba(0,0,0,.20);
+  stroke-width: 2.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.18;
+  animation: backGyrusBreath 4.6s ease-in-out infinite;
+}
+@keyframes sulcusFlowA{to{stroke-dashoffset:-380;}}
+@keyframes sulcusFlowB{to{stroke-dashoffset:-340;}}
+@keyframes gyrusBreath{0%,100%{opacity:.07;}50%{opacity:.22;}}
+@keyframes backSulcusFlowA{to{stroke-dashoffset:-420;}}
+@keyframes backSulcusFlowB{to{stroke-dashoffset:-380;}}
+@keyframes backGyrusBreath{0%,100%{opacity:.10;}50%{opacity:.22;}}
+
+/* electrons */
+svg .topTrackHalo{fill:rgba(47,123,255,.10); opacity:.55; filter: drop-shadow(0 0 10px rgba(47,123,255,.16));}
+svg .topTrackCore{fill:rgba(255,255,255,.22); opacity:.55; filter: drop-shadow(0 0 10px rgba(255,255,255,.06));}
+svg .orbitHalo{fill:rgba(255,59,212,.12); opacity:.72; filter: drop-shadow(0 0 12px rgba(255,59,212,.22)) drop-shadow(0 0 12px rgba(255,64,54,.18));}
+svg .orbitCore{fill:rgba(255,255,255,.30); opacity:.72; filter: drop-shadow(0 0 10px rgba(255,255,255,.08)) drop-shadow(0 0 12px rgba(47,123,255,.18));}
+
+/* chip */
+svg .chipCoreFlash{ animation: chipCoreFlash 1.05s ease-in-out infinite; }
+@keyframes chipCoreFlash{0%,100%{opacity:.22}45%{opacity:.50}55%{opacity:.34}}
+svg .chipBack{
+  opacity:.38;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.42)) drop-shadow(0 0 12px rgba(47,123,255,.10));
+}
+svg .chipFront{
+  opacity:1;
+  filter:
+    drop-shadow(calc(6px + var(--parxX)) calc(2px + var(--parxY)) 0 rgba(0,0,0,.16))
+    drop-shadow(0 18px 22px rgba(0,0,0,.34))
+    drop-shadow(0 0 14px var(--chipGlowA))
+    drop-shadow(0 0 18px var(--chipGlowB))
+    drop-shadow(0 0 18px var(--chipGlowC));
+}
+
+/* routes from chip -> lobes */
+svg .route{
+  fill:none;
+  stroke: rgba(255,255,255,.12);
+  stroke-width: var(--routeWidth);
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.62;
+}
+svg .routeGlow{
+  fill:none;
+  stroke: rgba(255,64,54,.18);
+  stroke-width: calc(var(--routeWidth) + .85px);
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 10 22;
+  animation: routeFlow 1.25s linear infinite;
+  opacity:.42;
+  filter: drop-shadow(0 0 10px rgba(255,64,54,.14)) drop-shadow(0 0 10px rgba(255,59,212,.12));
+}
+@keyframes routeFlow{to{stroke-dashoffset:-96;}}
+
+svg .emitterHalo{
+  fill: rgba(255,64,54,.14);
+  filter: drop-shadow(0 0 12px rgba(255,64,54,.18)) drop-shadow(0 0 10px rgba(255,59,212,.12));
+  opacity:.88;
+}
+svg .emitterCore{
+  fill: rgba(255,255,255,.28);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.08));
+  opacity:.88;
+}
+svg .emitterPulse{
+  animation: emitterPulse 0.92s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes emitterPulse{0%,100%{opacity:.42; transform:scale(.92)}50%{opacity:.95; transform:scale(1.10)}}
+
+svg .lobeGroup{opacity:.62; transition: opacity .18s ease;}
+svg.signalBoost .dendGlowMass{opacity:.58;}
+svg.signalBoost .sulcusGlow{opacity:.26;}
+svg.signalBoost .gyrusRidge{opacity:.26;}
+svg #parallaxLayer{will-change:transform;}
+
+
+
+/* Spin only the outer ring elements */
+to{ transform: rotate(360deg);} }
+#ringSpin{ transform-origin:60px 70px;  }
+@media (prefers-reduced-motion: reduce){
+  #ringSpin{  }
+
+  svg .borderFlowA, svg .borderFlowB, svg .sulcus, svg .sulcusGlow, svg .dendGlowMass, svg .routeGlow,
+  svg .chipCoreFlash, svg .emitterPulse { animation:none !important; }
+}
+.rimLight{ fill:none; }
+
+/* ===== 3D Earth-style rotation (iPhone-safe CSS illusion) ===== */
+.stage3d{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:transparent !important; perspective:1100px; overflow:hidden;}
+.stage3d::before{content:""; display:none !important;}
+.stage3dInner{
+  width:min(980px, 100vw);
+  height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  transform-style:preserve-3d;
+  will-change:transform;
+  animation: orbit3d 1.9s linear infinite;
+}
+.stage3dInner svg{
+  width:100vw;
+  height:100vh;
+  max-width:100vw;
+  max-height:100vh;
+  display:block;
+  transform: translateZ(0);
+  backface-visibility:hidden;
+}
+
+@keyframes orbit3d{
+  /* "coin flip" with stronger right-side pull (back face) */
+  0%{
+    transform:
+      translateX(var(--orbitShift))
+      rotateX(-10deg) rotateY(0deg)
+      scale(1.03);
+  }
+  25%{
+    transform:
+      translateX(calc(var(--orbitShift) * 0.55))
+      rotateX(-10deg) rotateY(90deg)
+      scale(1.03);
+  }
+  50%{
+    transform:
+      translateX(calc(var(--orbitShift) * -1.55))
+      rotateX(-10deg) rotateY(180deg)
+      scale(1.03);
+  }
+  75%{
+    transform:
+      translateX(calc(var(--orbitShift) * 0.20))
+      rotateX(-10deg) rotateY(270deg)
+      scale(1.03);
+  }
+  100%{
+    transform:
+      translateX(var(--orbitShift))
+      rotateX(-10deg) rotateY(360deg)
+      scale(1.03);
+  }
+}
+
+/* ===== Mirror-front technique (prevents black backface) ===== */
+.stage3dInner{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  display:block;
+}
+.brainFace{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
+  pointer-events:none;
+}
+.brainFace svg{
+  /* a touch smaller so it never gets chopped on iPhone */
+  width:min(86vmin, 560px);
+  height:auto;
+  max-height:86vmin;
+  overflow:visible;
+}
+.brainFront{ transform: rotateY(0deg); }
+.brainBack{ transform: rotateY(180deg) scaleX(-1); }
+
+@keyframes lightSweep{
+  0%{ transform: translateX(-2.5%); opacity:.86; }
+  50%{ transform: translateX(2.5%); opacity:.94; }
+  100%{ transform: translateX(-2.5%); opacity:.86; }
+}@media (prefers-reduced-motion: reduce){
+  .stage3dInner{ animation:none !important; }
+  .stage3d::before{content:""; display:none !important;}
+}
+
+
+/* === Force single visible brain instance === */
+/* Keep rotation math, but hide the duplicate render */
+.brainFace.brainBack {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+
+/* === Fit + center the brain so it doesn't crop on mobile === */
+.brainBox{
+  width:min(92vmin, 92vw);
+  height:min(92vmin, 92vw);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.brainBox svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+
+.diimedMark{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-weight:800;
+  letter-spacing:0.65em;
+  font-size:min(7vmin,56px);
+  color:rgba(180,200,220,.18);
+  text-shadow:0 0 24px rgba(121,192,255,.25);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  z-index:8;
+}
+
+/* === Loading HUD === */
+.bootHUD{
+  position:fixed; inset:0;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  pointer-events:none;
+  padding-bottom:10vh;
+  z-index:9;
+}
+.bootHUDBox{
+  padding:10px 14px;
+  border-radius:12px;
+  background: rgba(10,14,22,.45);
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align:center;
+  min-width:210px;
+}
+.bootHUDTitle{
+  font:700 14px/1.1 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color: rgba(232,238,246,.95);
+}
+.bootHUDSub{
+  margin-top:4px;
+  font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  color: rgba(232,238,246,.7);
+}
+.bootHUDDots{ margin-top:8px; display:flex; gap:6px; justify-content:center; }
+.bootHUDDots span{
+  width:6px; height:6px; border-radius:999px;
+  background: rgba(121,192,255,.85);
+  animation: dotPulse 900ms ease-in-out infinite;
+}
+.bootHUDDots span:nth-child(2){ animation-delay:150ms; }
+.bootHUDDots span:nth-child(3){ animation-delay:300ms; }
+@keyframes dotPulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+
+</style>
+</head>
+
+<body>
+
+<div class="bootHUD" aria-hidden="true">
+  <div class="bootHUDBox">
+    <div class="bootHUDTitle">Loading…</div>
+    <div class="bootHUDSub">Syncing your progress</div>
+    <div class="bootHUDDots" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<div class="diimedMark" aria-hidden="true">DIIMED</div>
+
+<div class="wrap">
+  <div id="stage3d" class="stage3d" aria-hidden="true">
+  <div class="stage3dInner">
+    <div class="brainFace brainFront">
+<div class="brainBox">
+<svg preserveAspectRatio="xMidYMid meet" id="brainSvg" viewBox="-10 -12 140 150" xmlns="http://www.w3.org/2000/svg" aria-label="Brain with DIIMED branding, chip-fed circuitry, dense multicolor dendrites, depth and parallax">
+    <defs>
+      <linearGradient id="gBrain" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#2f7bff"/>
+        <stop offset="0.55" stop-color="#27e0a0"/>
+        <stop offset="1" stop-color="#ff3bd4"/>
+      </linearGradient>
+
+      <radialGradient id="gCore" cx="50%" cy="50%" r="70%">
+        <stop offset="0" stop-color="rgba(255,255,255,.04)"/>
+        <stop offset="0.30" stop-color="rgba(47,123,255,.12)"/>
+        <stop offset="0.68" stop-color="rgba(255,59,212,.08)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <radialGradient id="gChipRed" cx="76%" cy="56%" r="36%">
+        <stop offset="0" stop-color="rgba(255,64,54,.32)"/>
+        <stop offset="0.18" stop-color="rgba(255,64,54,.24)"/>
+        <stop offset="0.34" stop-color="rgba(255,59,212,.18)"/>
+        <stop offset="0.58" stop-color="rgba(47,123,255,.10)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <radialGradient id="gMistA" cx="30%" cy="35%" r="75%">
+        <stop offset="0" stop-color="rgba(39,224,160,.10)"/>
+        <stop offset="0.55" stop-color="rgba(47,123,255,.06)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+      <radialGradient id="gMistB" cx="72%" cy="56%" r="78%">
+        <stop offset="0" stop-color="rgba(255,59,212,.09)"/>
+        <stop offset="0.55" stop-color="rgba(54,194,255,.06)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <linearGradient id="gDIIMEDText" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(47,123,255,.26)"/>
+        <stop offset="0.5" stop-color="rgba(255,59,212,.24)"/>
+        <stop offset="1" stop-color="rgba(255,64,54,.22)"/>
+      </linearGradient>
+
+      <filter id="fHardGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="2.0" result="b"/>
+        <feColorMatrix in="b" type="matrix"
+          values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 14 -6" result="g"/>
+        <feMerge>
+          <feMergeNode in="g"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- higher-fidelity brain outline -->
+      <path id="brainPath" d="
+        M25 66
+        C20 59, 20 48, 28 42
+        C31 31, 39 24, 48 22
+        C55 16, 64 14, 74 16
+        C81 12, 91 12, 100 16
+        C109 20, 116 28, 118 38
+        C126 44, 129 53, 126 62
+        C132 66, 133 74, 127 82
+        C121 90, 110 95, 98 94
+        C94 103, 84 110, 72 112
+        C61 114, 50 110, 44 103
+        C36 102, 30 97, 28 90
+        C26 83, 30 76, 27 71
+        C26 69, 25 68, 25 66
+        Z" />
+
+      <clipPath id="brainClip"><use href="#brainPath"/></clipPath>
+
+      <!-- anatomical-ish lobe clip paths (curved, not rectangles) -->
+      <clipPath id="clip_frontal">
+        <path d="M20 10 L130 10 L130 54 C118 54,106 50,92 44 C74 36,56 32,38 38 C28 42,22 49,20 54 Z"/>
+      </clipPath>
+      <clipPath id="clip_parietal">
+        <path d="M20 54 C26 48,36 42,52 42 C66 42,78 46,90 52 C92 64,90 76,86 90 C78 104,62 112,48 108 C34 104,24 94,22 82 C20 70,20 62,20 54 Z"/>
+      </clipPath>
+      <clipPath id="clip_temporal">
+        <path d="M90 52 C104 58,116 66,124 76 C124 90,114 98,100 96 C98 104,88 110,78 112 C90 102,94 84,96 74 C98 66,96 58,90 52 Z"/>
+      </clipPath>
+      <clipPath id="clip_occipital">
+        <path d="M22 82 C28 98,44 112,62 112 C86 112,102 102,106 94 C112 94,120 92,126 86 C126 98,118 110,104 114 C92 118,74 120,58 118 C42 116,28 106,22 92 Z"/>
+      </clipPath>
+
+      <!-- sulci paths (denser + more organic) -->
+      <path id="su1"  d="M34 30 C44 22, 58 18, 72 18 C88 18, 104 24, 118 34 C124 38, 128 42, 130 46"/>
+      <path id="su2"  d="M86 22 C84 34, 82 46, 82 58 C82 70, 86 82, 92 92"/>
+      <path id="su3"  d="M74 22 C70 34, 68 46, 68 58 C68 70, 72 82, 78 90"/>
+      <path id="su4"  d="M98 24 C98 36, 98 48, 98 60 C98 74, 96 86, 90 98"/>
+      <path id="su5"  d="M38 64 C52 58, 66 56, 80 58 C94 60, 108 66, 120 74 C126 78, 130 82, 132 86"/>
+      <path id="su6"  d="M42 74 C56 70, 70 70, 84 72 C98 74, 112 82, 122 92 C126 96, 128 100, 128 104"/>
+      <path id="su7"  d="M48 94 C62 90, 76 90, 90 92 C104 94, 116 100, 124 108"/>
+      <path id="su8"  d="M94 46 C104 52, 114 60, 120 68 C126 76, 126 84, 122 92"/>
+      <path id="su9"  d="M110 40 C118 46, 126 56, 128 66 C130 76, 126 88, 120 96"/>
+      <path id="su10" d="M104 84 C112 88, 120 94, 124 102 C126 108, 124 112, 120 116"/>
+      <path id="su11" d="M42 40 C56 34, 70 34, 84 38 C98 42, 110 48, 120 54"/>
+      <path id="su12" d="M44 34 C56 26, 68 24, 80 26 C92 28, 102 34, 110 42"/>
+      <path id="su13" d="M42 52 C54 46, 66 44, 78 46 C90 48, 102 54, 112 62"/>
+      <path id="su14" d="M36 86 C44 80, 54 78, 64 80 C74 82, 82 88, 88 96"/>
+      <path id="su15" d="M98 98 C108 98, 118 102, 124 108"/>
+      <path id="su16" d="M58 62 C60 70, 66 76, 74 78"/>
+      <path id="su17" d="M72 60 C74 68, 80 74, 90 78"/>
+      <path id="su18" d="M86 60 C88 68, 94 74, 106 80"/>
+      <path id="suTop" d="M38 30 C52 18, 68 14, 84 16 C102 18, 116 28, 126 42"/>
+
+      <!-- chip glyph -->
+      <g id="chipGlyph">
+        <circle cx="60" cy="70" r="22.5" fill="rgba(255,64,54,.12)" class="chipCoreFlash"/>
+        <circle cx="60" cy="70" r="18.5" fill="rgba(255,59,212,.08)" class="chipCoreFlash"/>
+
+        <rect x="54.4" y="65.0" width="11.2" height="10.0" rx="2.8"
+              fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.34)" stroke-width="1.18" filter="url(#fHardGlow)"/>
+
+        <text x="60" y="71.2"
+              text-anchor="middle"
+              font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+              font-size="3.4"
+              font-weight="950"
+              letter-spacing="0.30"
+              fill="rgba(255,255,255,.22)"
+              style="paint-order:stroke;stroke:rgba(0,0,0,.22);stroke-width:.7">DIIMED</text>
+
+        <!-- MarineMD spear mark -->
+        <path d="M54.4 68.2h-3.6M54.4 71.8h-4.2M65.6 68.2h3.6M65.6 71.8h4.2
+                 M57.1 65.0v-4.2M60.0 65.0v-5.2M62.9 65.0v-4.2
+                 M57.1 75.0v4.2M60.0 75.0v5.2M62.9 75.0v-4.2"
+              stroke="rgba(255,255,255,.28)" stroke-width="0.98" stroke-linecap="round"/>
+      </g>
+
+      <!-- orbits around chip center after translate: (100.5,70) -->
+      <path id="chipOrbit1" d="M100.5 70 a10 10 0 1 0 0.01 0" />
+      <path id="chipOrbit2" d="M100.5 70 a15 8 0 1 0 0.01 0" />
+      <path id="chipOrbit3" d="M100.5 70 a7 14 0 1 0 0.01 0" />
+
+      <!-- chip -> lobe routes -->
+      <path id="route_frontal"   d="M98 66 C86 58, 74 50, 60 44 C52 40, 44 38, 36 38" />
+      <path id="route_parietal"  d="M98 70 C86 68, 78 66, 70 64 C60 62, 52 62, 46 66" />
+      <path id="route_temporal"  d="M100 74 C92 78, 86 82, 82 86 C78 90, 74 96, 70 104" />
+      <path id="route_occipital" d="M102 72 C110 78, 118 86, 120 96 C114 104, 106 108, 96 110" />
+      <!-- depth / 3D lift -->
+  <filter id="fDepth3D" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="2.2" stdDeviation="2.2" flood-color="rgba(0,0,0,.55)"/>
+    <feDropShadow dx="0" dy="7.0" stdDeviation="6.0" flood-color="rgba(0,0,0,.38)"/>
+  </filter>
+  <linearGradient id="gRimLight" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="rgba(255,255,255,.20)"/>
+    <stop offset="0.45" stop-color="rgba(255,255,255,.06)"/>
+    <stop offset="1" stop-color="rgba(0,0,0,.12)"/>
+  </linearGradient>
+</defs>
+
+    <circle cx="60" cy="70" r="52" fill="url(#gCore)" opacity=".85"/>
+
+    <g clip-path="url(#brainClip)">
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gMistA)" opacity=".75"/>
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gMistB)" opacity=".75"/>
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gChipRed)" opacity=".98"/>
+
+      <g opacity=".065">
+        <text x="60" y="74"
+              text-anchor="middle"
+              font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+              font-size="18"
+              font-weight="950"
+              letter-spacing="3.5"
+              fill="rgba(255,255,255,.18)"
+              transform="rotate(-12 60 74)">DIIMED</text>
+      </g>
+
+      <!-- BACKSIDE sulci/gyri -->
+      <g id="backGyriSulci" transform="translate(-2.0,2.2) scale(0.992)" opacity=".88">
+        <g id="backGyri">
+          <use href="#su1" class="backGyrus"/><use href="#su2" class="backGyrus"/><use href="#su3" class="backGyrus"/><use href="#su4" class="backGyrus"/>
+          <use href="#su5" class="backGyrus"/><use href="#su6" class="backGyrus"/><use href="#su7" class="backGyrus"/><use href="#su8" class="backGyrus"/>
+          <use href="#su9" class="backGyrus"/><use href="#su10" class="backGyrus"/><use href="#su11" class="backGyrus"/><use href="#su12" class="backGyrus"/>
+          <use href="#su13" class="backGyrus"/><use href="#su14" class="backGyrus"/><use href="#su15" class="backGyrus"/><use href="#su16" class="backGyrus"/>
+          <use href="#su17" class="backGyrus"/><use href="#su18" class="backGyrus"/><use href="#suTop" class="backGyrus"/>
+        </g>
+        <g id="backSulci">
+          <use href="#su1" class="backSulcus"/><use href="#su1" class="backSulcusGlow"/>
+          <use href="#su2" class="backSulcus"/><use href="#su2" class="backSulcusGlow"/>
+          <use href="#su3" class="backSulcus"/><use href="#su3" class="backSulcusGlow"/>
+          <use href="#su4" class="backSulcus"/><use href="#su4" class="backSulcusGlow"/>
+          <use href="#su5" class="backSulcus"/><use href="#su5" class="backSulcusGlow"/>
+          <use href="#su6" class="backSulcus"/><use href="#su6" class="backSulcusGlow"/>
+          <use href="#su7" class="backSulcus"/><use href="#su7" class="backSulcusGlow"/>
+          <use href="#su8" class="backSulcus"/><use href="#su8" class="backSulcusGlow"/>
+          <use href="#su9" class="backSulcus"/><use href="#su9" class="backSulcusGlow"/>
+          <use href="#su10" class="backSulcus"/><use href="#su10" class="backSulcusGlow"/>
+          <use href="#su11" class="backSulcus"/><use href="#su11" class="backSulcusGlow"/>
+          <use href="#su12" class="backSulcus"/><use href="#su12" class="backSulcusGlow"/>
+          <use href="#su13" class="backSulcus"/><use href="#su13" class="backSulcusGlow"/>
+          <use href="#su14" class="backSulcus"/><use href="#su14" class="backSulcusGlow"/>
+          <use href="#su15" class="backSulcus"/><use href="#su15" class="backSulcusGlow"/>
+          <use href="#su16" class="backSulcus"/><use href="#su16" class="backSulcusGlow"/>
+          <use href="#su17" class="backSulcus"/><use href="#su17" class="backSulcusGlow"/>
+          <use href="#su18" class="backSulcus"/><use href="#su18" class="backSulcusGlow"/>
+          <use href="#suTop" class="backSulcus"/><use href="#suTop" class="backSulcusGlow"/>
+        </g>
+      </g>
+
+      <g id="parallaxLayer">
+
+        <!-- FRONT gyri -->
+        <g id="gyri">
+          <use href="#su1" class="gyrusRidge"/><use href="#su2" class="gyrusRidge"/><use href="#su3" class="gyrusRidge"/><use href="#su4" class="gyrusRidge"/>
+          <use href="#su5" class="gyrusRidge"/><use href="#su6" class="gyrusRidge"/><use href="#su7" class="gyrusRidge"/><use href="#su8" class="gyrusRidge"/>
+          <use href="#su9" class="gyrusRidge"/><use href="#su10" class="gyrusRidge"/><use href="#su11" class="gyrusRidge"/><use href="#su12" class="gyrusRidge"/>
+          <use href="#su13" class="gyrusRidge"/><use href="#su14" class="gyrusRidge"/><use href="#su15" class="gyrusRidge"/><use href="#su16" class="gyrusRidge"/>
+          <use href="#su17" class="gyrusRidge"/><use href="#su18" class="gyrusRidge"/><use href="#suTop" class="gyrusRidge"/>
+        </g>
+
+        <!-- FRONT sulci -->
+        <g id="sulci">
+          <use href="#su1" class="sulcus"/><use href="#su1" class="sulcusGlow"/>
+          <use href="#su2" class="sulcus"/><use href="#su2" class="sulcusGlow"/>
+          <use href="#su3" class="sulcus"/><use href="#su3" class="sulcusGlow"/>
+          <use href="#su4" class="sulcus"/><use href="#su4" class="sulcusGlow"/>
+          <use href="#su5" class="sulcus"/><use href="#su5" class="sulcusGlow"/>
+          <use href="#su6" class="sulcus"/><use href="#su6" class="sulcusGlow"/>
+          <use href="#su7" class="sulcus"/><use href="#su7" class="sulcusGlow"/>
+          <use href="#su8" class="sulcus"/><use href="#su8" class="sulcusGlow"/>
+          <use href="#su9" class="sulcus"/><use href="#su9" class="sulcusGlow"/>
+          <use href="#su10" class="sulcus"/><use href="#su10" class="sulcusGlow"/>
+          <use href="#su11" class="sulcus"/><use href="#su11" class="sulcusGlow"/>
+          <use href="#su12" class="sulcus"/><use href="#su12" class="sulcusGlow"/>
+          <use href="#su13" class="sulcus"/><use href="#su13" class="sulcusGlow"/>
+          <use href="#su14" class="sulcus"/><use href="#su14" class="sulcusGlow"/>
+          <use href="#su15" class="sulcus"/><use href="#su15" class="sulcusGlow"/>
+          <use href="#su16" class="sulcus"/><use href="#su16" class="sulcusGlow"/>
+          <use href="#su17" class="sulcus"/><use href="#su17" class="sulcusGlow"/>
+          <use href="#su18" class="sulcus"/><use href="#su18" class="sulcusGlow"/>
+          <use href="#suTop" class="sulcus"/><use href="#suTop" class="sulcusGlow"/>
+        </g>
+
+        <!-- TOP track electrons -->
+        <g id="topTrackElectrons">
+          <circle r="2.1" class="topTrackHalo">
+            <animateMotion dur="1.55s" repeatCount="indefinite" calcMode="linear"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="1.0" class="topTrackCore">
+            <animateMotion dur="1.55s" repeatCount="indefinite" calcMode="linear"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="1.7" class="topTrackHalo" opacity=".42">
+            <animateMotion dur="1.85s" repeatCount="indefinite" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="0.85" class="topTrackCore" opacity=".42">
+            <animateMotion dur="1.85s" repeatCount="indefinite" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+        </g>
+
+        <!-- ROUTES (chip -> lobes) -->
+        <g id="routes" opacity=".92">
+          <use href="#route_frontal" class="route"/><use href="#route_frontal" class="routeGlow"/>
+          <use href="#route_parietal" class="route"/><use href="#route_parietal" class="routeGlow"/>
+          <use href="#route_temporal" class="route"/><use href="#route_temporal" class="routeGlow"/>
+          <use href="#route_occipital" class="route"/><use href="#route_occipital" class="routeGlow"/>
+        </g>
+
+        <!-- DENDRITES (dense multicolor, low DOM: 6 layers per lobe) -->
+        <g id="g_frontal" class="lobeGroup" clip-path="url(#clip_frontal)">
+          <path id="mass_frontal_0" class="dendriteMass"></path>
+          <path id="mass_frontal_1" class="dendriteMass"></path>
+          <path id="mass_frontal_2" class="dendriteMass"></path>
+          <path id="mass_frontal_3" class="dendriteMass"></path>
+          <path id="mass_frontal_4" class="dendriteMass"></path>
+          <path id="mass_frontal_5" class="dendriteMass"></path>
+
+          <path id="glow_frontal_0" class="dendGlowMass"></path>
+          <path id="glow_frontal_1" class="dendGlowMass"></path>
+          <path id="glow_frontal_2" class="dendGlowMass"></path>
+          <path id="glow_frontal_3" class="dendGlowMass"></path>
+          <path id="glow_frontal_4" class="dendGlowMass"></path>
+          <path id="glow_frontal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_parietal" class="lobeGroup" clip-path="url(#clip_parietal)">
+          <path id="mass_parietal_0" class="dendriteMass"></path>
+          <path id="mass_parietal_1" class="dendriteMass"></path>
+          <path id="mass_parietal_2" class="dendriteMass"></path>
+          <path id="mass_parietal_3" class="dendriteMass"></path>
+          <path id="mass_parietal_4" class="dendriteMass"></path>
+          <path id="mass_parietal_5" class="dendriteMass"></path>
+
+          <path id="glow_parietal_0" class="dendGlowMass"></path>
+          <path id="glow_parietal_1" class="dendGlowMass"></path>
+          <path id="glow_parietal_2" class="dendGlowMass"></path>
+          <path id="glow_parietal_3" class="dendGlowMass"></path>
+          <path id="glow_parietal_4" class="dendGlowMass"></path>
+          <path id="glow_parietal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_temporal" class="lobeGroup" clip-path="url(#clip_temporal)">
+          <path id="mass_temporal_0" class="dendriteMass"></path>
+          <path id="mass_temporal_1" class="dendriteMass"></path>
+          <path id="mass_temporal_2" class="dendriteMass"></path>
+          <path id="mass_temporal_3" class="dendriteMass"></path>
+          <path id="mass_temporal_4" class="dendriteMass"></path>
+          <path id="mass_temporal_5" class="dendriteMass"></path>
+
+          <path id="glow_temporal_0" class="dendGlowMass"></path>
+          <path id="glow_temporal_1" class="dendGlowMass"></path>
+          <path id="glow_temporal_2" class="dendGlowMass"></path>
+          <path id="glow_temporal_3" class="dendGlowMass"></path>
+          <path id="glow_temporal_4" class="dendGlowMass"></path>
+          <path id="glow_temporal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_occipital" class="lobeGroup" clip-path="url(#clip_occipital)">
+          <path id="mass_occipital_0" class="dendriteMass"></path>
+          <path id="mass_occipital_1" class="dendriteMass"></path>
+          <path id="mass_occipital_2" class="dendriteMass"></path>
+          <path id="mass_occipital_3" class="dendriteMass"></path>
+          <path id="mass_occipital_4" class="dendriteMass"></path>
+          <path id="mass_occipital_5" class="dendriteMass"></path>
+
+          <path id="glow_occipital_0" class="dendGlowMass"></path>
+          <path id="glow_occipital_1" class="dendGlowMass"></path>
+          <path id="glow_occipital_2" class="dendGlowMass"></path>
+          <path id="glow_occipital_3" class="dendGlowMass"></path>
+          <path id="glow_occipital_4" class="dendGlowMass"></path>
+          <path id="glow_occipital_5" class="dendGlowMass"></path>
+        </g>
+
+        <!-- CHIP STACK (3D) -->
+        <g id="chipStack" transform="translate(40.5,0)">
+          <g id="chipBack" class="chipBack" transform="translate(-2.6,-2.0) rotate(-18 60 70) scale(1.06)">
+            <use href="#chipGlyph"/>
+          </g>
+          <g id="chipFront" class="chipFront" transform="translate(0,0) rotate(-35 60 70)">
+            <use href="#chipGlyph"/>
+          </g>
+        </g>
+
+        <!-- EMITTERS ON CHIP PINS -->
+        <g id="chipEmitters">
+          <g class="emitterPulse">
+            <circle cx="97.0" cy="66.6" r="2.2" class="emitterHalo"/><circle cx="97.0" cy="66.6" r="0.95" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.09s">
+            <circle cx="97.6" cy="70.0" r="2.0" class="emitterHalo"/><circle cx="97.6" cy="70.0" r="0.90" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.16s">
+            <circle cx="98.3" cy="73.6" r="2.1" class="emitterHalo"/><circle cx="98.3" cy="73.6" r="0.92" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.23s">
+            <circle cx="102.0" cy="66.0" r="2.0" class="emitterHalo"/><circle cx="102.0" cy="66.0" r="0.90" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.31s">
+            <circle cx="102.4" cy="70.1" r="2.2" class="emitterHalo"/><circle cx="102.4" cy="70.1" r="0.96" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.38s">
+            <circle cx="102.0" cy="74.2" r="2.0" class="emitterHalo"/><circle cx="102.0" cy="74.2" r="0.90" class="emitterCore"/>
+          </g>
+        </g>
+
+        <!-- ORBIT ELECTRONS -->
+        <g id="chipOrbitElectrons">
+          <circle r="2.2" class="orbitHalo">
+            <animateMotion dur="0.78s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit1"></mpath></animateMotion>
+          </circle>
+          <circle r="1.05" class="orbitCore">
+            <animateMotion dur="0.78s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit1"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.9" class="orbitHalo" opacity=".72">
+            <animateMotion dur="1.05s" begin="0.12s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+          <circle r="0.95" class="orbitCore" opacity=".72">
+            <animateMotion dur="1.05s" begin="0.12s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.6" class="orbitHalo" opacity=".62">
+            <animateMotion dur="1.35s" begin="0.32s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit3"></mpath></animateMotion>
+          </circle>
+          <circle r="0.80" class="orbitCore" opacity=".62">
+            <animateMotion dur="1.35s" begin="0.32s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit3"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.35" class="orbitHalo" opacity=".44">
+            <animateMotion dur="1.55s" begin="0.22s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+          <circle r="0.70" class="orbitCore" opacity=".44">
+            <animateMotion dur="1.55s" begin="0.22s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+        </g>
+
+      </g>
+    </g>
+
+    <g id="ringSpin">
+<use href="#brainPath" class="rimLight" stroke="url(#gRimLight)" stroke-width="2.2" opacity=".65"/>
+    <use href="#brainPath" class="brainStroke" stroke="url(#gBrain)"/>
+    <use href="#brainPath" class="brainInnerStroke"/>
+    <use href="#brainPath" class="borderBreath"/>
+    <use href="#brainPath" class="borderFlowB"/>
+    <use href="#brainPath" class="borderFlowA"/>
+
+    <text font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+          font-size="6.2"
+          font-weight="950"
+          letter-spacing="2.8"
+          fill="url(#gDIIMEDText)"
+          opacity=".085">
+      <textPath href="#brainPath" startOffset="6%">DIIMED  DIIMED  DIIMED  DIIMED  DIIMED</textPath>
+    </text>
+
+    
+
+    <g>
+      <circle r="4.2" class="sparkHalo"><animateMotion dur="1.75s" repeatCount="indefinite" rotate="auto"><mpath href="#brainPath"></mpath></animateMotion></circle>
+      <circle r="1.8" class="sparkCore"><animateMotion dur="1.75s" repeatCount="indefinite" rotate="auto"><mpath href="#brainPath"></mpath></animateMotion></circle>
+    </g>
+</g>
+  </svg>
+</div>
+    </div>
+    <div class="brainFace brainBack">
+<svg id="brainSvg" viewBox="-10 -12 140 150" xmlns="http://www.w3.org/2000/svg" aria-label="Brain with DIIMED branding, chip-fed circuitry, dense multicolor dendrites, depth and parallax">
+    <defs>
+      <linearGradient id="gBrain" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#2f7bff"/>
+        <stop offset="0.55" stop-color="#27e0a0"/>
+        <stop offset="1" stop-color="#ff3bd4"/>
+      </linearGradient>
+
+      <radialGradient id="gCore" cx="50%" cy="50%" r="70%">
+        <stop offset="0" stop-color="rgba(255,255,255,.04)"/>
+        <stop offset="0.30" stop-color="rgba(47,123,255,.12)"/>
+        <stop offset="0.68" stop-color="rgba(255,59,212,.08)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <radialGradient id="gChipRed" cx="76%" cy="56%" r="36%">
+        <stop offset="0" stop-color="rgba(255,64,54,.32)"/>
+        <stop offset="0.18" stop-color="rgba(255,64,54,.24)"/>
+        <stop offset="0.34" stop-color="rgba(255,59,212,.18)"/>
+        <stop offset="0.58" stop-color="rgba(47,123,255,.10)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <radialGradient id="gMistA" cx="30%" cy="35%" r="75%">
+        <stop offset="0" stop-color="rgba(39,224,160,.10)"/>
+        <stop offset="0.55" stop-color="rgba(47,123,255,.06)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+      <radialGradient id="gMistB" cx="72%" cy="56%" r="78%">
+        <stop offset="0" stop-color="rgba(255,59,212,.09)"/>
+        <stop offset="0.55" stop-color="rgba(54,194,255,.06)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+
+      <linearGradient id="gDIIMEDText" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(47,123,255,.26)"/>
+        <stop offset="0.5" stop-color="rgba(255,59,212,.24)"/>
+        <stop offset="1" stop-color="rgba(255,64,54,.22)"/>
+      </linearGradient>
+
+      <filter id="fHardGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="2.0" result="b"/>
+        <feColorMatrix in="b" type="matrix"
+          values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 14 -6" result="g"/>
+        <feMerge>
+          <feMergeNode in="g"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- higher-fidelity brain outline -->
+      <path id="brainPath" d="
+        M25 66
+        C20 59, 20 48, 28 42
+        C31 31, 39 24, 48 22
+        C55 16, 64 14, 74 16
+        C81 12, 91 12, 100 16
+        C109 20, 116 28, 118 38
+        C126 44, 129 53, 126 62
+        C132 66, 133 74, 127 82
+        C121 90, 110 95, 98 94
+        C94 103, 84 110, 72 112
+        C61 114, 50 110, 44 103
+        C36 102, 30 97, 28 90
+        C26 83, 30 76, 27 71
+        C26 69, 25 68, 25 66
+        Z" />
+
+      <clipPath id="brainClip"><use href="#brainPath"/></clipPath>
+
+      <!-- anatomical-ish lobe clip paths (curved, not rectangles) -->
+      <clipPath id="clip_frontal">
+        <path d="M20 10 L130 10 L130 54 C118 54,106 50,92 44 C74 36,56 32,38 38 C28 42,22 49,20 54 Z"/>
+      </clipPath>
+      <clipPath id="clip_parietal">
+        <path d="M20 54 C26 48,36 42,52 42 C66 42,78 46,90 52 C92 64,90 76,86 90 C78 104,62 112,48 108 C34 104,24 94,22 82 C20 70,20 62,20 54 Z"/>
+      </clipPath>
+      <clipPath id="clip_temporal">
+        <path d="M90 52 C104 58,116 66,124 76 C124 90,114 98,100 96 C98 104,88 110,78 112 C90 102,94 84,96 74 C98 66,96 58,90 52 Z"/>
+      </clipPath>
+      <clipPath id="clip_occipital">
+        <path d="M22 82 C28 98,44 112,62 112 C86 112,102 102,106 94 C112 94,120 92,126 86 C126 98,118 110,104 114 C92 118,74 120,58 118 C42 116,28 106,22 92 Z"/>
+      </clipPath>
+
+      <!-- sulci paths (denser + more organic) -->
+      <path id="su1"  d="M34 30 C44 22, 58 18, 72 18 C88 18, 104 24, 118 34 C124 38, 128 42, 130 46"/>
+      <path id="su2"  d="M86 22 C84 34, 82 46, 82 58 C82 70, 86 82, 92 92"/>
+      <path id="su3"  d="M74 22 C70 34, 68 46, 68 58 C68 70, 72 82, 78 90"/>
+      <path id="su4"  d="M98 24 C98 36, 98 48, 98 60 C98 74, 96 86, 90 98"/>
+      <path id="su5"  d="M38 64 C52 58, 66 56, 80 58 C94 60, 108 66, 120 74 C126 78, 130 82, 132 86"/>
+      <path id="su6"  d="M42 74 C56 70, 70 70, 84 72 C98 74, 112 82, 122 92 C126 96, 128 100, 128 104"/>
+      <path id="su7"  d="M48 94 C62 90, 76 90, 90 92 C104 94, 116 100, 124 108"/>
+      <path id="su8"  d="M94 46 C104 52, 114 60, 120 68 C126 76, 126 84, 122 92"/>
+      <path id="su9"  d="M110 40 C118 46, 126 56, 128 66 C130 76, 126 88, 120 96"/>
+      <path id="su10" d="M104 84 C112 88, 120 94, 124 102 C126 108, 124 112, 120 116"/>
+      <path id="su11" d="M42 40 C56 34, 70 34, 84 38 C98 42, 110 48, 120 54"/>
+      <path id="su12" d="M44 34 C56 26, 68 24, 80 26 C92 28, 102 34, 110 42"/>
+      <path id="su13" d="M42 52 C54 46, 66 44, 78 46 C90 48, 102 54, 112 62"/>
+      <path id="su14" d="M36 86 C44 80, 54 78, 64 80 C74 82, 82 88, 88 96"/>
+      <path id="su15" d="M98 98 C108 98, 118 102, 124 108"/>
+      <path id="su16" d="M58 62 C60 70, 66 76, 74 78"/>
+      <path id="su17" d="M72 60 C74 68, 80 74, 90 78"/>
+      <path id="su18" d="M86 60 C88 68, 94 74, 106 80"/>
+      <path id="suTop" d="M38 30 C52 18, 68 14, 84 16 C102 18, 116 28, 126 42"/>
+
+      <!-- chip glyph -->
+      <g id="chipGlyph">
+        <circle cx="60" cy="70" r="22.5" fill="rgba(255,64,54,.12)" class="chipCoreFlash"/>
+        <circle cx="60" cy="70" r="18.5" fill="rgba(255,59,212,.08)" class="chipCoreFlash"/>
+
+        <rect x="54.4" y="65.0" width="11.2" height="10.0" rx="2.8"
+              fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.34)" stroke-width="1.18" filter="url(#fHardGlow)"/>
+
+        <text x="60" y="71.2"
+              text-anchor="middle"
+              font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+              font-size="3.4"
+              font-weight="950"
+              letter-spacing="0.30"
+              fill="rgba(255,255,255,.22)"
+              style="paint-order:stroke;stroke:rgba(0,0,0,.22);stroke-width:.7">DIIMED</text>
+
+        <!-- MarineMD spear mark -->
+        <path d="M54.4 68.2h-3.6M54.4 71.8h-4.2M65.6 68.2h3.6M65.6 71.8h4.2
+                 M57.1 65.0v-4.2M60.0 65.0v-5.2M62.9 65.0v-4.2
+                 M57.1 75.0v4.2M60.0 75.0v5.2M62.9 75.0v-4.2"
+              stroke="rgba(255,255,255,.28)" stroke-width="0.98" stroke-linecap="round"/>
+      </g>
+
+      <!-- orbits around chip center after translate: (100.5,70) -->
+      <path id="chipOrbit1" d="M100.5 70 a10 10 0 1 0 0.01 0" />
+      <path id="chipOrbit2" d="M100.5 70 a15 8 0 1 0 0.01 0" />
+      <path id="chipOrbit3" d="M100.5 70 a7 14 0 1 0 0.01 0" />
+
+      <!-- chip -> lobe routes -->
+      <path id="route_frontal"   d="M98 66 C86 58, 74 50, 60 44 C52 40, 44 38, 36 38" />
+      <path id="route_parietal"  d="M98 70 C86 68, 78 66, 70 64 C60 62, 52 62, 46 66" />
+      <path id="route_temporal"  d="M100 74 C92 78, 86 82, 82 86 C78 90, 74 96, 70 104" />
+      <path id="route_occipital" d="M102 72 C110 78, 118 86, 120 96 C114 104, 106 108, 96 110" />
+      <!-- depth / 3D lift -->
+  <filter id="fDepth3D" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="2.2" stdDeviation="2.2" flood-color="rgba(0,0,0,.55)"/>
+    <feDropShadow dx="0" dy="7.0" stdDeviation="6.0" flood-color="rgba(0,0,0,.38)"/>
+  </filter>
+  <linearGradient id="gRimLight" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="rgba(255,255,255,.20)"/>
+    <stop offset="0.45" stop-color="rgba(255,255,255,.06)"/>
+    <stop offset="1" stop-color="rgba(0,0,0,.12)"/>
+  </linearGradient>
+</defs>
+
+    <circle cx="60" cy="70" r="52" fill="url(#gCore)" opacity=".85"/>
+
+    <g clip-path="url(#brainClip)">
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gMistA)" opacity=".75"/>
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gMistB)" opacity=".75"/>
+      <rect x="-10" y="-12" width="180" height="180" fill="url(#gChipRed)" opacity=".98"/>
+
+      <g opacity=".065">
+        <text x="60" y="74"
+              text-anchor="middle"
+              font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+              font-size="18"
+              font-weight="950"
+              letter-spacing="3.5"
+              fill="rgba(255,255,255,.18)"
+              transform="rotate(-12 60 74)">DIIMED</text>
+      </g>
+
+      <!-- BACKSIDE sulci/gyri -->
+      <g id="backGyriSulci" transform="translate(-2.0,2.2) scale(0.992)" opacity=".88">
+        <g id="backGyri">
+          <use href="#su1" class="backGyrus"/><use href="#su2" class="backGyrus"/><use href="#su3" class="backGyrus"/><use href="#su4" class="backGyrus"/>
+          <use href="#su5" class="backGyrus"/><use href="#su6" class="backGyrus"/><use href="#su7" class="backGyrus"/><use href="#su8" class="backGyrus"/>
+          <use href="#su9" class="backGyrus"/><use href="#su10" class="backGyrus"/><use href="#su11" class="backGyrus"/><use href="#su12" class="backGyrus"/>
+          <use href="#su13" class="backGyrus"/><use href="#su14" class="backGyrus"/><use href="#su15" class="backGyrus"/><use href="#su16" class="backGyrus"/>
+          <use href="#su17" class="backGyrus"/><use href="#su18" class="backGyrus"/><use href="#suTop" class="backGyrus"/>
+        </g>
+        <g id="backSulci">
+          <use href="#su1" class="backSulcus"/><use href="#su1" class="backSulcusGlow"/>
+          <use href="#su2" class="backSulcus"/><use href="#su2" class="backSulcusGlow"/>
+          <use href="#su3" class="backSulcus"/><use href="#su3" class="backSulcusGlow"/>
+          <use href="#su4" class="backSulcus"/><use href="#su4" class="backSulcusGlow"/>
+          <use href="#su5" class="backSulcus"/><use href="#su5" class="backSulcusGlow"/>
+          <use href="#su6" class="backSulcus"/><use href="#su6" class="backSulcusGlow"/>
+          <use href="#su7" class="backSulcus"/><use href="#su7" class="backSulcusGlow"/>
+          <use href="#su8" class="backSulcus"/><use href="#su8" class="backSulcusGlow"/>
+          <use href="#su9" class="backSulcus"/><use href="#su9" class="backSulcusGlow"/>
+          <use href="#su10" class="backSulcus"/><use href="#su10" class="backSulcusGlow"/>
+          <use href="#su11" class="backSulcus"/><use href="#su11" class="backSulcusGlow"/>
+          <use href="#su12" class="backSulcus"/><use href="#su12" class="backSulcusGlow"/>
+          <use href="#su13" class="backSulcus"/><use href="#su13" class="backSulcusGlow"/>
+          <use href="#su14" class="backSulcus"/><use href="#su14" class="backSulcusGlow"/>
+          <use href="#su15" class="backSulcus"/><use href="#su15" class="backSulcusGlow"/>
+          <use href="#su16" class="backSulcus"/><use href="#su16" class="backSulcusGlow"/>
+          <use href="#su17" class="backSulcus"/><use href="#su17" class="backSulcusGlow"/>
+          <use href="#su18" class="backSulcus"/><use href="#su18" class="backSulcusGlow"/>
+          <use href="#suTop" class="backSulcus"/><use href="#suTop" class="backSulcusGlow"/>
+        </g>
+      </g>
+
+      <g id="parallaxLayer">
+
+        <!-- FRONT gyri -->
+        <g id="gyri">
+          <use href="#su1" class="gyrusRidge"/><use href="#su2" class="gyrusRidge"/><use href="#su3" class="gyrusRidge"/><use href="#su4" class="gyrusRidge"/>
+          <use href="#su5" class="gyrusRidge"/><use href="#su6" class="gyrusRidge"/><use href="#su7" class="gyrusRidge"/><use href="#su8" class="gyrusRidge"/>
+          <use href="#su9" class="gyrusRidge"/><use href="#su10" class="gyrusRidge"/><use href="#su11" class="gyrusRidge"/><use href="#su12" class="gyrusRidge"/>
+          <use href="#su13" class="gyrusRidge"/><use href="#su14" class="gyrusRidge"/><use href="#su15" class="gyrusRidge"/><use href="#su16" class="gyrusRidge"/>
+          <use href="#su17" class="gyrusRidge"/><use href="#su18" class="gyrusRidge"/><use href="#suTop" class="gyrusRidge"/>
+        </g>
+
+        <!-- FRONT sulci -->
+        <g id="sulci">
+          <use href="#su1" class="sulcus"/><use href="#su1" class="sulcusGlow"/>
+          <use href="#su2" class="sulcus"/><use href="#su2" class="sulcusGlow"/>
+          <use href="#su3" class="sulcus"/><use href="#su3" class="sulcusGlow"/>
+          <use href="#su4" class="sulcus"/><use href="#su4" class="sulcusGlow"/>
+          <use href="#su5" class="sulcus"/><use href="#su5" class="sulcusGlow"/>
+          <use href="#su6" class="sulcus"/><use href="#su6" class="sulcusGlow"/>
+          <use href="#su7" class="sulcus"/><use href="#su7" class="sulcusGlow"/>
+          <use href="#su8" class="sulcus"/><use href="#su8" class="sulcusGlow"/>
+          <use href="#su9" class="sulcus"/><use href="#su9" class="sulcusGlow"/>
+          <use href="#su10" class="sulcus"/><use href="#su10" class="sulcusGlow"/>
+          <use href="#su11" class="sulcus"/><use href="#su11" class="sulcusGlow"/>
+          <use href="#su12" class="sulcus"/><use href="#su12" class="sulcusGlow"/>
+          <use href="#su13" class="sulcus"/><use href="#su13" class="sulcusGlow"/>
+          <use href="#su14" class="sulcus"/><use href="#su14" class="sulcusGlow"/>
+          <use href="#su15" class="sulcus"/><use href="#su15" class="sulcusGlow"/>
+          <use href="#su16" class="sulcus"/><use href="#su16" class="sulcusGlow"/>
+          <use href="#su17" class="sulcus"/><use href="#su17" class="sulcusGlow"/>
+          <use href="#su18" class="sulcus"/><use href="#su18" class="sulcusGlow"/>
+          <use href="#suTop" class="sulcus"/><use href="#suTop" class="sulcusGlow"/>
+        </g>
+
+        <!-- TOP track electrons -->
+        <g id="topTrackElectrons">
+          <circle r="2.1" class="topTrackHalo">
+            <animateMotion dur="1.55s" repeatCount="indefinite" calcMode="linear"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="1.0" class="topTrackCore">
+            <animateMotion dur="1.55s" repeatCount="indefinite" calcMode="linear"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="1.7" class="topTrackHalo" opacity=".42">
+            <animateMotion dur="1.85s" repeatCount="indefinite" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+          <circle r="0.85" class="topTrackCore" opacity=".42">
+            <animateMotion dur="1.85s" repeatCount="indefinite" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#suTop"></mpath></animateMotion>
+          </circle>
+        </g>
+
+        <!-- ROUTES (chip -> lobes) -->
+        <g id="routes" opacity=".92">
+          <use href="#route_frontal" class="route"/><use href="#route_frontal" class="routeGlow"/>
+          <use href="#route_parietal" class="route"/><use href="#route_parietal" class="routeGlow"/>
+          <use href="#route_temporal" class="route"/><use href="#route_temporal" class="routeGlow"/>
+          <use href="#route_occipital" class="route"/><use href="#route_occipital" class="routeGlow"/>
+        </g>
+
+        <!-- DENDRITES (dense multicolor, low DOM: 6 layers per lobe) -->
+        <g id="g_frontal" class="lobeGroup" clip-path="url(#clip_frontal)">
+          <path id="mass_frontal_0" class="dendriteMass"></path>
+          <path id="mass_frontal_1" class="dendriteMass"></path>
+          <path id="mass_frontal_2" class="dendriteMass"></path>
+          <path id="mass_frontal_3" class="dendriteMass"></path>
+          <path id="mass_frontal_4" class="dendriteMass"></path>
+          <path id="mass_frontal_5" class="dendriteMass"></path>
+
+          <path id="glow_frontal_0" class="dendGlowMass"></path>
+          <path id="glow_frontal_1" class="dendGlowMass"></path>
+          <path id="glow_frontal_2" class="dendGlowMass"></path>
+          <path id="glow_frontal_3" class="dendGlowMass"></path>
+          <path id="glow_frontal_4" class="dendGlowMass"></path>
+          <path id="glow_frontal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_parietal" class="lobeGroup" clip-path="url(#clip_parietal)">
+          <path id="mass_parietal_0" class="dendriteMass"></path>
+          <path id="mass_parietal_1" class="dendriteMass"></path>
+          <path id="mass_parietal_2" class="dendriteMass"></path>
+          <path id="mass_parietal_3" class="dendriteMass"></path>
+          <path id="mass_parietal_4" class="dendriteMass"></path>
+          <path id="mass_parietal_5" class="dendriteMass"></path>
+
+          <path id="glow_parietal_0" class="dendGlowMass"></path>
+          <path id="glow_parietal_1" class="dendGlowMass"></path>
+          <path id="glow_parietal_2" class="dendGlowMass"></path>
+          <path id="glow_parietal_3" class="dendGlowMass"></path>
+          <path id="glow_parietal_4" class="dendGlowMass"></path>
+          <path id="glow_parietal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_temporal" class="lobeGroup" clip-path="url(#clip_temporal)">
+          <path id="mass_temporal_0" class="dendriteMass"></path>
+          <path id="mass_temporal_1" class="dendriteMass"></path>
+          <path id="mass_temporal_2" class="dendriteMass"></path>
+          <path id="mass_temporal_3" class="dendriteMass"></path>
+          <path id="mass_temporal_4" class="dendriteMass"></path>
+          <path id="mass_temporal_5" class="dendriteMass"></path>
+
+          <path id="glow_temporal_0" class="dendGlowMass"></path>
+          <path id="glow_temporal_1" class="dendGlowMass"></path>
+          <path id="glow_temporal_2" class="dendGlowMass"></path>
+          <path id="glow_temporal_3" class="dendGlowMass"></path>
+          <path id="glow_temporal_4" class="dendGlowMass"></path>
+          <path id="glow_temporal_5" class="dendGlowMass"></path>
+        </g>
+
+        <g id="g_occipital" class="lobeGroup" clip-path="url(#clip_occipital)">
+          <path id="mass_occipital_0" class="dendriteMass"></path>
+          <path id="mass_occipital_1" class="dendriteMass"></path>
+          <path id="mass_occipital_2" class="dendriteMass"></path>
+          <path id="mass_occipital_3" class="dendriteMass"></path>
+          <path id="mass_occipital_4" class="dendriteMass"></path>
+          <path id="mass_occipital_5" class="dendriteMass"></path>
+
+          <path id="glow_occipital_0" class="dendGlowMass"></path>
+          <path id="glow_occipital_1" class="dendGlowMass"></path>
+          <path id="glow_occipital_2" class="dendGlowMass"></path>
+          <path id="glow_occipital_3" class="dendGlowMass"></path>
+          <path id="glow_occipital_4" class="dendGlowMass"></path>
+          <path id="glow_occipital_5" class="dendGlowMass"></path>
+        </g>
+
+        <!-- CHIP STACK (3D) -->
+        <g id="chipStack" transform="translate(40.5,0)">
+          <g id="chipBack" class="chipBack" transform="translate(-2.6,-2.0) rotate(-18 60 70) scale(1.06)">
+            <use href="#chipGlyph"/>
+          </g>
+          <g id="chipFront" class="chipFront" transform="translate(0,0) rotate(-35 60 70)">
+            <use href="#chipGlyph"/>
+          </g>
+        </g>
+
+        <!-- EMITTERS ON CHIP PINS -->
+        <g id="chipEmitters">
+          <g class="emitterPulse">
+            <circle cx="97.0" cy="66.6" r="2.2" class="emitterHalo"/><circle cx="97.0" cy="66.6" r="0.95" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.09s">
+            <circle cx="97.6" cy="70.0" r="2.0" class="emitterHalo"/><circle cx="97.6" cy="70.0" r="0.90" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.16s">
+            <circle cx="98.3" cy="73.6" r="2.1" class="emitterHalo"/><circle cx="98.3" cy="73.6" r="0.92" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.23s">
+            <circle cx="102.0" cy="66.0" r="2.0" class="emitterHalo"/><circle cx="102.0" cy="66.0" r="0.90" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.31s">
+            <circle cx="102.4" cy="70.1" r="2.2" class="emitterHalo"/><circle cx="102.4" cy="70.1" r="0.96" class="emitterCore"/>
+          </g>
+          <g class="emitterPulse" style="animation-delay:.38s">
+            <circle cx="102.0" cy="74.2" r="2.0" class="emitterHalo"/><circle cx="102.0" cy="74.2" r="0.90" class="emitterCore"/>
+          </g>
+        </g>
+
+        <!-- ORBIT ELECTRONS -->
+        <g id="chipOrbitElectrons">
+          <circle r="2.2" class="orbitHalo">
+            <animateMotion dur="0.78s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit1"></mpath></animateMotion>
+          </circle>
+          <circle r="1.05" class="orbitCore">
+            <animateMotion dur="0.78s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit1"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.9" class="orbitHalo" opacity=".72">
+            <animateMotion dur="1.05s" begin="0.12s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+          <circle r="0.95" class="orbitCore" opacity=".72">
+            <animateMotion dur="1.05s" begin="0.12s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.6" class="orbitHalo" opacity=".62">
+            <animateMotion dur="1.35s" begin="0.32s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit3"></mpath></animateMotion>
+          </circle>
+          <circle r="0.80" class="orbitCore" opacity=".62">
+            <animateMotion dur="1.35s" begin="0.32s" repeatCount="indefinite" rotate="auto" calcMode="linear"><mpath href="#chipOrbit3"></mpath></animateMotion>
+          </circle>
+
+          <circle r="1.35" class="orbitHalo" opacity=".44">
+            <animateMotion dur="1.55s" begin="0.22s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+          <circle r="0.70" class="orbitCore" opacity=".44">
+            <animateMotion dur="1.55s" begin="0.22s" repeatCount="indefinite" rotate="auto" calcMode="linear" keyPoints="1;0" keyTimes="0;1"><mpath href="#chipOrbit2"></mpath></animateMotion>
+          </circle>
+        </g>
+
+      </g>
+    </g>
+
+    <g id="ringSpin">
+<use href="#brainPath" class="rimLight" stroke="url(#gRimLight)" stroke-width="2.2" opacity=".65"/>
+    <use href="#brainPath" class="brainStroke" stroke="url(#gBrain)"/>
+    <use href="#brainPath" class="brainInnerStroke"/>
+    <use href="#brainPath" class="borderBreath"/>
+    <use href="#brainPath" class="borderFlowB"/>
+    <use href="#brainPath" class="borderFlowA"/>
+
+    <text font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+          font-size="6.2"
+          font-weight="950"
+          letter-spacing="2.8"
+          fill="url(#gDIIMEDText)"
+          opacity=".085">
+      <textPath href="#brainPath" startOffset="6%">DIIMED  DIIMED  DIIMED  DIIMED  DIIMED</textPath>
+    </text>
+
+    
+
+    <g>
+      <circle r="4.2" class="sparkHalo"><animateMotion dur="1.75s" repeatCount="indefinite" rotate="auto"><mpath href="#brainPath"></mpath></animateMotion></circle>
+      <circle r="1.8" class="sparkCore"><animateMotion dur="1.75s" repeatCount="indefinite" rotate="auto"><mpath href="#brainPath"></mpath></animateMotion></circle>
+    </g>
+</g>
+  </svg>
+    </div>
+</div>
+</div>
+</div>
+
+<script>
+const svg = document.getElementById('brainSvg');
+const root = document.documentElement;
+
+/* deterministic RNG */
+function mulberry32(seed){
+  let a = seed >>> 0;
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (a >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* distance point->segment */
+function distToSeg(px,py, ax,ay, bx,by){
+  const vx = bx-ax, vy = by-ay;
+  const wx = px-ax, wy = py-ay;
+  const c1 = vx*wx + vy*wy;
+  if(c1 <= 0) return Math.hypot(px-ax, py-ay);
+  const c2 = vx*vx + vy*vy;
+  if(c2 <= c1) return Math.hypot(px-bx, py-by);
+  const t = c1 / (c2+1e-9);
+  const cx = ax + t*vx, cy = ay + t*vy;
+  return Math.hypot(px-cx, py-cy);
+}
+
+/* sample a path into a polygon for fast point-in */
+function samplePathToPoly(pathEl, samples){
+  const L = pathEl.getTotalLength();
+  const poly = [];
+  for(let i=0;i<samples;i++){
+    const p = pathEl.getPointAtLength((i/(samples))*L);
+    poly.push([p.x, p.y]);
+  }
+  return poly;
+}
+function pointInPoly(x,y,poly){
+  let inside=false;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const xi=poly[i][0], yi=poly[i][1];
+    const xj=poly[j][0], yj=poly[j][1];
+    const intersect = ((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi+1e-9)+xi);
+    if(intersect) inside=!inside;
+  }
+  return inside;
+}
+
+/* sulci segments for avoidance */
+const SULCI_SEGS = [
+  [[34,30],[44,22],[58,18],[72,18],[88,18],[104,24],[118,34],[124,38],[128,42],[130,46]],
+  [[86,22],[84,34],[82,46],[82,58],[82,70],[86,82],[92,92]],
+  [[74,22],[70,34],[68,46],[68,58],[68,70],[72,82],[78,90]],
+  [[98,24],[98,36],[98,48],[98,60],[98,74],[96,86],[90,98]],
+  [[38,64],[52,58],[66,56],[80,58],[94,60],[108,66],[120,74],[126,78],[130,82],[132,86]],
+  [[42,74],[56,70],[70,70],[84,72],[98,74],[112,82],[122,92],[126,96],[128,100],[128,104]],
+  [[48,94],[62,90],[76,90],[90,92],[104,94],[116,100],[124,108]],
+  [[94,46],[104,52],[114,60],[120,68],[126,76],[126,84],[122,92]],
+  [[110,40],[118,46],[126,56],[128,66],[130,76],[126,88],[120,96]],
+  [[104,84],[112,88],[120,94],[124,102],[126,108],[124,112],[120,116]],
+  [[42,40],[56,34],[70,34],[84,38],[98,42],[110,48],[120,54]],
+  [[44,34],[56,26],[68,24],[80,26],[92,28],[102,34],[110,42]],
+  [[42,52],[54,46],[66,44],[78,46],[90,48],[102,54],[112,62]],
+  [[36,86],[44,80],[54,78],[64,80],[74,82],[82,88],[88,96]],
+  [[98,98],[108,98],[118,102],[124,108]],
+  [[58,62],[60,70],[66,76],[74,78]],
+  [[72,60],[74,68],[80,74],[90,78]],
+  [[86,60],[88,68],[94,74],[106,80]],
+  [[38,30],[52,18],[68,14],[84,16],[102,18],[116,28],[126,42]]
+];
+
+function farFromSulci(x,y, minDist){
+  for(const poly of SULCI_SEGS){
+    for(let i=0;i<poly.length-1;i++){
+      const a = poly[i], b = poly[i+1];
+      if(distToSeg(x,y, a[0],a[1], b[0],b[1]) < minDist) return false;
+    }
+  }
+  return true;
+}
+
+/* lobe clip polys (sampled from their clipPath paths) */
+function clipPathToPoly(clipId, samples){
+  const cp = svg.querySelector('#' + clipId + ' path');
+  if(!cp) return null;
+  return samplePathToPoly(cp, samples);
+}
+
+/* quality auto (iPhone safe) */
+(function autoQuality(){
+  const mem = navigator.deviceMemory || 4;
+  const cores = navigator.hardwareConcurrency || 4;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let q = 'high';
+  if(reduce) q = 'low';
+  else if(mem <= 4 || cores <= 4) q = 'med';
+  else q = 'high';
+
+  if(q === 'low'){
+    root.style.setProperty('--dendCount','95');
+    root.style.setProperty('--dendDepth','3');
+    root.style.setProperty('--dendAvoid','2.1');
+    root.style.setProperty('--dendOpacity','.18');
+    root.style.setProperty('--dendGlowOpacity','.26');
+    root.style.setProperty('--routeWidth','1.20');
+  }else if(q === 'med'){
+    root.style.setProperty('--dendCount','135');
+    root.style.setProperty('--dendDepth','4');
+    root.style.setProperty('--dendAvoid','1.95');
+    root.style.setProperty('--dendOpacity','.20');
+    root.style.setProperty('--dendGlowOpacity','.30');
+    root.style.setProperty('--routeWidth','1.30');
+  }else{
+    root.style.setProperty('--dendCount','170');
+    root.style.setProperty('--dendDepth','4');
+    root.style.setProperty('--dendAvoid','1.85');
+    root.style.setProperty('--dendOpacity','.22');
+    root.style.setProperty('--dendGlowOpacity','.34');
+    root.style.setProperty('--routeWidth','1.35');
+  }
+})();
+
+/* brain containment */
+const brainPathEl = svg.querySelector('#brainPath');
+const BRAIN_POLY = samplePathToPoly(brainPathEl, 420);
+
+/* lobe polys */
+const LOBE_POLY = {
+  frontal:   clipPathToPoly('clip_frontal', 240),
+  parietal:  clipPathToPoly('clip_parietal', 260),
+  temporal:  clipPathToPoly('clip_temporal', 220),
+  occipital: clipPathToPoly('clip_occipital', 220),
+};
+
+/* hubs (where routes terminate) */
+const HUBS = {
+  frontal:   {x: 40, y: 40},
+  parietal:  {x: 54, y: 66},
+  temporal:  {x: 72, y: 104},
+  occipital: {x: 98, y: 108},
+};
+
+/* route samples used as biased seed field */
+const ROUTE_SAMPLES = {
+  frontal:   samplePathToPoly(svg.querySelector('#route_frontal'), 80),
+  parietal:  samplePathToPoly(svg.querySelector('#route_parietal'), 80),
+  temporal:  samplePathToPoly(svg.querySelector('#route_temporal'), 80),
+  occipital: samplePathToPoly(svg.querySelector('#route_occipital'), 80),
+};
+
+function inBrain(x,y){ return pointInPoly(x,y,BRAIN_POLY); }
+function inLobe(lobe,x,y){
+  const poly = LOBE_POLY[lobe];
+  if(!poly) return false;
+  return pointInPoly(x,y,poly) && inBrain(x,y);
+}
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+/* dense multicolor dendrites, still low DOM */
+function generateLobeDendrites(lobe, seedBase){
+  const massEls = [...Array(6)].map((_,i)=>svg.querySelector(`#mass_${lobe}_${i}`));
+  const glowEls = [...Array(6)].map((_,i)=>svg.querySelector(`#glow_${lobe}_${i}`));
+  if(massEls.some(x=>!x) || glowEls.some(x=>!x)) return;
+
+  const rnd = mulberry32(seedBase);
+
+  const branchCount = parseInt(getComputedStyle(root).getPropertyValue('--dendCount')) || 150;
+  const maxDepth = parseInt(getComputedStyle(root).getPropertyValue('--dendDepth')) || 4;
+  const avoidDist = parseFloat(getComputedStyle(root).getPropertyValue('--dendAvoid')) || 1.9;
+  const baseLenMin = parseFloat(getComputedStyle(root).getPropertyValue('--dendLenA')) || 10;
+  const baseLenMax = parseFloat(getComputedStyle(root).getPropertyValue('--dendLenB')) || 18;
+
+  function jitter(a){ return (rnd()*2-1)*a; }
+  function validPoint(x,y){ return inLobe(lobe,x,y) && farFromSulci(x,y,avoidDist); }
+
+  function sampleStart(){
+    if(rnd() < 0.70){
+      const pts = ROUTE_SAMPLES[lobe] || [];
+      const p = pts[(pts.length*rnd())|0];
+      if(p){
+        for(let t=0;t<22;t++){
+          const x = p[0] + jitter(7.0);
+          const y = p[1] + jitter(7.0);
+          if(validPoint(x,y)) return {x,y};
+        }
+      }
+    }
+    for(let t=0;t<150;t++){
+      const x = 18 + rnd()*116;
+      const y = 10 + rnd()*118;
+      if(validPoint(x,y)) return {x,y};
+    }
+    const h = HUBS[lobe];
+    return {x:h.x, y:h.y};
+  }
+
+  function pathD(pts){
+    let d = `M${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+    for(let i=1;i<pts.length;i++) d += ` L${pts[i].x.toFixed(2)} ${pts[i].y.toFixed(2)}`;
+    return d;
+  }
+
+  const colors = ["#2f7bff","#36c2ff","#27e0a0","#9bff9f","#ff3bd4","#a46bff"];
+  const massD = Array.from({length:6}, ()=>[]);
+  const glowD = Array.from({length:6}, ()=>[]);
+
+  function growBranch(start, angle, len, depth, bucket){
+    const pts = [];
+    let x = start.x, y = start.y;
+    pts.push({x,y});
+
+    const segs = 7 + depth*2;
+    const step = len / segs;
+
+    for(let s=0;s<segs;s++){
+      angle += jitter(0.22) + (depth===0 ? jitter(0.10) : jitter(0.16));
+
+      let nx = x + Math.cos(angle) * step;
+      let ny = y + Math.sin(angle) * step;
+
+      let tries = 0;
+      while(tries < 7 && !validPoint(nx,ny)){
+        angle += (tries % 2 === 0 ? 1 : -1) * (0.40 + jitter(0.10));
+        nx = x + Math.cos(angle) * step;
+        ny = y + Math.sin(angle) * step;
+        tries++;
+      }
+
+      nx = clamp(nx, -6, 136);
+      ny = clamp(ny, -6, 136);
+      if(!inLobe(lobe,nx,ny)) break;
+
+      x = nx; y = ny;
+      pts.push({x,y});
+    }
+    if(pts.length < 3) return;
+
+    massD[bucket].push(pathD(pts));
+    glowD[bucket].push(pathD(pts));
+
+    const end = pts[pts.length-1];
+    if(depth < maxDepth){
+      const nKids = (rnd() < 0.62) ? 2 : 1;
+      for(let k=0;k<nKids;k++){
+        const a2 = angle + (k===0 ? -0.92 : 0.92) + jitter(0.20);
+        const l2 = len * (0.58 + rnd()*0.14);
+        const b2 = (rnd()<0.30) ? ((rnd()*6)|0) : bucket;
+        growBranch(end, a2, l2, depth+1, b2);
+      }
+    }
+  }
+
+  const hub = HUBS[lobe];
+  for(let b=0;b<6;b++){
+    for(let i=0;i<3;i++){
+      const a = (i/3)*Math.PI*2 + jitter(0.35) + b*0.05;
+      const len = 20 + rnd()*12;
+      growBranch({x:hub.x + jitter(2.0), y:hub.y + jitter(2.0)}, a, len, 0, b);
+    }
+  }
+
+  for(let i=0;i<branchCount;i++){
+    const start = sampleStart();
+    const a = rnd()*Math.PI*2;
+    const len = baseLenMin + rnd()*(baseLenMax - baseLenMin);
+    const bucket = (rnd()*6)|0;
+    growBranch(start, a, len, 0, bucket);
+  }
+
+  for(let i=0;i<6;i++){
+    massEls[i].setAttribute('d', massD[i].join(' '));
+    glowEls[i].setAttribute('d', glowD[i].join(' '));
+    massEls[i].setAttribute('stroke', colors[i]);
+    glowEls[i].setAttribute('stroke', colors[i]);
+    massEls[i].setAttribute('stroke-width', '0.72');
+    glowEls[i].setAttribute('stroke-width', '1.05');
+  }
+}
+
+/* build dendrites */
+generateLobeDendrites('frontal',   101);
+generateLobeDendrites('parietal',  202);
+generateLobeDendrites('temporal',  303);
+generateLobeDendrites('occipital', 404);
+
+/* optional subtle boost pulse on load */
+svg.classList.add('signalBoost');
+setTimeout(()=>svg.classList.remove('signalBoost'), 900);
+
+/* parallax + chip shadow coupling */
+(function(){
+  const layer = svg.querySelector('#parallaxLayer');
+  if(!layer) return;
+
+  const clamp2 = (v,min,max)=>Math.max(min,Math.min(max,v));
+  let dx = 0, dy = 0;
+
+  function apply(){
+    const tx = dx * 3.0;
+    const ty = dy * 3.0;
+    layer.setAttribute('transform', `translate(${tx.toFixed(2)},${ty.toFixed(2)})`);
+    root.style.setProperty('--parxX', (dx*2.2).toFixed(2) + 'px');
+    root.style.setProperty('--parxY', (dy*2.2).toFixed(2) + 'px');
+  }
+
+  svg.addEventListener('pointermove', (e)=>{
+    const r = svg.getBoundingClientRect();
+    const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+    const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+    dx = clamp2(nx, -1, 1);
+    dy = clamp2(ny, -1, 1);
+    apply();
+  }, {passive:true});
+
+  svg.addEventListener('pointerleave', ()=>{
+    dx *= 0.35; dy *= 0.35; apply();
+  }, {passive:true});
+
+  function onOrient(e){
+    const g = (e.gamma || 0) / 30;
+    const b = (e.beta  || 0) / 30;
+    dx = clamp2(g, -1, 1);
+    dy = clamp2(b, -1, 1);
+    apply();
+  }
+  window.addEventListener('deviceorientation', onOrient, true);
+})();
+
+/* subtle lobe-reactivity */
+(function(){
+  const groups = {
+    frontal:  svg.querySelector('#g_frontal'),
+    parietal: svg.querySelector('#g_parietal'),
+    temporal: svg.querySelector('#g_temporal'),
+    occipital:svg.querySelector('#g_occipital'),
+  };
+  function setAll(o){
+    for(const k in groups) if(groups[k]) groups[k].style.opacity = o;
+  }
+  for(const k in groups){
+    const g = groups[k];
+    if(!g) continue;
+    g.addEventListener('pointerenter', ()=>{
+      setAll('0.52');
+      g.style.opacity = '0.84';
+      svg.classList.add('signalBoost');
+    }, {passive:true});
+    g.addEventListener('pointerleave', ()=>{
+      setAll('0.62');
+      svg.classList.remove('signalBoost');
+    }, {passive:true});
+  }
+})();
+</script>
+</body>
+</html>
