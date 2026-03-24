@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head> 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="description" content="MarineMD is a physician-founded initiative focused on clinical reasoning, communication, feedback, and systems improvement in healthcare." />
 <title>MarineMD</title>
 
 <style>
@@ -24,15 +23,15 @@
   --shadow2:0 10px 28px rgba(0,0,0,.50);
 
   --r:16px;
-  --pad:8px;
+  --pad:6px;
 
-  --brand:13.5px;
-  --tag:10.8px;
-  --h1:14px;
-  --p:10.7px;
+  --brand:12.5px;
+  --tag:10.6px;
+  --h1:10px;
+  --p:9.3px;
 
-  --diamondSize:min(280px, 86vw);
-  --diamondSize2:min(245px, 86vw);
+  --diamondSize:min(270px, 86vw);
+  --diamondSize2:min(240px, 86vw);
 
   --headerH:56px;
 }
@@ -57,6 +56,7 @@ body{
   max-width:1200px;
   margin:0 auto;
   padding:var(--pad);
+
   padding-top:calc(var(--pad) + env(safe-area-inset-top));
   padding-left:calc(var(--pad) + env(safe-area-inset-left));
   padding-right:calc(var(--pad) + env(safe-area-inset-right));
@@ -72,12 +72,19 @@ body{
   }
 }
 
+@supports (padding-top: constant(safe-area-inset-top)){
+  .hero{
+    padding-top: constant(safe-area-inset-top);
+  }
+}
+
 .hero{
   border:1px solid var(--line);
   border-radius:var(--r);
   background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
   box-shadow:var(--shadow);
   overflow:hidden;
+  padding-top: env(safe-area-inset-top);
   position:relative;
 }
 
@@ -85,7 +92,7 @@ body{
   padding:calc(var(--headerH) + 12px) var(--pad) var(--pad) var(--pad);
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:10px;
 }
 
 /* illusion layer */
@@ -123,43 +130,26 @@ body{
   position:sticky;
   top:0;
   z-index:50;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:8px;
+  gap:2px;
+
   min-height:var(--headerH);
-  padding:10px 6px;
+  padding:10px 2px 10px 2px;
+
   background:rgba(5,6,10,.72);
   backdrop-filter: blur(8px);
   border-bottom:1px solid rgba(255,255,255,.10);
 }
 
-.brandLeft{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  text-align:left;
-  gap:2px;
-  min-width:0;
-}
-.brandName{
-  font-size:var(--brand);
-  font-weight:950;
-  letter-spacing:.18px;
-  line-height:1.05;
-  margin:0;
-}
-.brandTag{
-  font-size:var(--tag);
-  opacity:0.88;
-  color:rgba(170,182,199,.92);
-  margin:0;
-  line-height:1.14;
-  white-space:normal;
-}
+.brandLeft{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;min-width:0;margin:0px;}
+.brandName{font-size:var(--brand);font-weight:950;letter-spacing:.18px;line-height:1.05;margin:0;}
+.brandTag{font-size:var(--tag);font-style:italic;opacity:0.85;color:rgba(170,182,199,.92);margin:0;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 .brandMark{
-  margin:0;
+  margin:0px;
   width:44px;
   height:62px;
   border-radius:12px;
@@ -172,73 +162,16 @@ body{
 .brandGroup{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:2px;
 }
 
-.topNav{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.topNav a{
-  text-decoration:none;
-  color:rgba(232,238,246,.95);
-  font-size:10.2px;
-  font-weight:900;
-  padding:7px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.11);
-  background:rgba(255,255,255,.03);
-}
-.topNav a:hover{background:rgba(255,255,255,.06)}
-
-.heroCopy{
-  position:relative;
-  z-index:3;
-  padding:8px 10px 14px 10px;
-}
-.heroCopy h1{
-  margin:0 0 8px 0;
-  font-size:var(--h1);
-  line-height:1.2;
-  font-weight:950;
-  letter-spacing:.12px;
-}
-.heroCopy p{
-  margin:0;
-  font-size:var(--p);
-  line-height:1.45;
-  color:rgba(232,238,246,.92);
-  max-width:920px;
-}
-
-.heroMiniGrid{
-  margin-top:12px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-.miniCard{
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:14px;
-  background:rgba(0,0,0,.18);
-  padding:10px;
-  box-shadow:var(--shadow2);
-}
-.miniCard strong{
-  display:block;
-  font-size:10.5px;
-  margin-bottom:4px;
-}
-.miniCard span{
-  display:block;
-  font-size:10px;
-  line-height:1.35;
-  color:rgba(232,238,246,.88);
-}
+/* HERO SECTION */
+.heroCopy{position:relative;z-index:3;padding:6px 8px 20px 8px;}
+.heroCopy h1{margin:0 0 6px 0;font-size:var(--h1);line-height:1.18;font-weight:950;letter-spacing:.12px;}
+.heroCopy p{margin:0;font-size:var(--p);line-height:1.35;color:rgba(232,238,246,.90);}
 
 /* diamonds */
-.diamondStage{display:flex;justify-content:center;padding:4px 0 0 0;margin-top:8px;}
+.diamondStage{display:flex;justify-content:center;padding:4px 0 0 0;margin-top:10px;}
 .diamondWrap{
   position:relative;
   width:var(--diamondSize);
@@ -249,11 +182,12 @@ body{
 }
 .diamondWrap.small{width:var(--diamondSize2);height:var(--diamondSize2);}
 
+/* small diamond tuning */
 .diamondWrap.small .center{width:56%;}
-.diamondWrap.small .center .quote{font-size:10px;line-height:1.22;}
-.diamondWrap.small .node{max-width:145px;}
-.diamondWrap.small .nodeLeft{left:-36px;}
-.diamondWrap.small .nodeRight{right:-36px;}
+.diamondWrap.small .center .quote{font-size:10.0px;line-height:1.22;}
+.diamondWrap.small .node{max-width:140px;}
+.diamondWrap.small .nodeLeft{left:-38px;}
+.diamondWrap.small .nodeRight{right:-38px;}
 
 .ring{
   position:absolute; inset:0; pointer-events:none;
@@ -301,11 +235,12 @@ body{
   width:82%; height:82%;
   transform:translate(-50%,-50%) translateZ(16px);
   pointer-events:none;
-  opacity:.18;
+  opacity:.20;
   background:repeating-linear-gradient(180deg, rgba(255,255,255,.10) 0px, rgba(255,255,255,.10) 1px, transparent 1px, transparent 10px);
   mask-image:radial-gradient(circle at 50% 50%, rgba(0,0,0,1), rgba(0,0,0,0) 72%);
 }
 
+/* DIAMOND CENTER */
 .center{
   position:absolute;
   top:50%; left:50%;
@@ -320,6 +255,7 @@ body{
 .center .quote{margin:0;font-size:10.5px;line-height:1.25;font-style:italic;color:rgba(232,238,246,.92);}
 .center .who{margin-top:6px;display:block;font-size:10.5px;font-style:normal;font-weight:950;color:rgba(170,182,199,.95);}
 
+/* diamond buttons */
 .node{
   position:absolute;
   min-height:44px;
@@ -337,12 +273,12 @@ body{
   align-items:center;
   justify-content:center;
   text-align:center;
-  line-height:1.08;
+  line-height:1.05;
   max-width:170px;
   z-index:4;
   transform:translateZ(44px);
 }
-.node:hover{filter:brightness(1.06)}
+.node:active{filter:brightness(1.06)}
 .nodeTop{top:-12px; left:50%; transform:translateX(-50%) translateZ(44px);}
 .nodeBottom{bottom:-18px; left:50%; transform:translateX(-50%) translateZ(44px);}
 .nodeLeft{left:-22px; top:50%; transform:translateY(-50%) translateZ(44px);}
@@ -352,62 +288,33 @@ body{
 .slide{
   border:1px solid rgba(255,255,255,.12);
   border-radius:18px;
-  padding:13px;
+  padding:12px;
   background:linear-gradient(160deg, rgba(10,14,26,.86), rgba(5,8,16,.96));
   box-shadow:0 18px 60px rgba(0,0,0,.55);
   display:flex;
   flex-direction:column;
 }
-.kicker{
-  margin:0 0 6px 0;
-  font-size:10px;
-  font-weight:950;
-  letter-spacing:.3px;
-  color:rgba(170,182,199,.92);
-  text-transform:uppercase;
-}
-.slide h3{
-  margin:0 0 8px 0;
-  font-size:12.4px;
-  font-weight:950;
-  letter-spacing:.10px;
-  line-height:1.28;
-}
-.slide p{
-  margin:0;
-  font-size:10.6px;
-  line-height:1.42;
-  color:rgba(232,238,246,.92);
-}
+.kicker{margin:0 0 6px 0;font-size:10px;font-weight:950;letter-spacing:.3px;color:rgba(170,182,199,.92);text-transform:uppercase;}
+.slide h3{margin:0 0 8px 0;font-size:12.2px;font-weight:950;letter-spacing:.10px;}
+.slide p{margin:0;font-size:10.6px;line-height:1.35;color:rgba(232,238,246,.92);}
 .slide p + p{margin-top:8px}
 
 .slideBody{
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
-  max-height:min(48vh, 380px);
+  max-height:min(46vh, 360px);
   padding-right:2px;
   touch-action:pan-y;
 }
 
-details{
-  margin-top:10px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:14px;
-  background:rgba(0,0,0,.14);
-  overflow:hidden;
-}
+/* collapsible */
+details{margin-top:10px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(0,0,0,.14);overflow:hidden;}
 summary{
-  list-style:none;
-  cursor:pointer;
-  user-select:none;
+  list-style:none;cursor:pointer;user-select:none;
   padding:11px 10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  font-weight:950;
-  font-size:10.8px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-weight:950;font-size:10.8px;
 }
 summary::-webkit-details-marker{display:none}
 .chev{
@@ -418,12 +325,7 @@ summary::-webkit-details-marker{display:none}
   transition:transform .12s ease, color .12s ease;
 }
 details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
-.detailsBody{
-  padding:10px 10px 12px 10px;
-  font-size:10.3px;
-  line-height:1.4;
-  color:rgba(232,238,246,.90);
-}
+.detailsBody{padding:10px 10px 12px 10px;font-size:10.3px;line-height:1.35;color:rgba(232,238,246,.90);}
 
 /* CTAs */
 .ctaRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
@@ -442,20 +344,14 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   align-items:center;
   justify-content:center;
 }
-.cta:hover{filter:brightness(1.07)}
+.cta:active{filter:brightness(1.07)}
 .ctaRZ{border-color:rgba(241,200,77,.32); box-shadow:0 0 0 1px rgba(241,200,77,.10) inset;}
 .ctaCC{border-color:rgba(39,224,160,.30); box-shadow:0 0 0 1px rgba(39,224,160,.10) inset;}
 .ctaGhost{border-color:rgba(255,255,255,.12); background:rgba(0,0,0,.12);}
 
+/* two-up rows */
 .rows{display:flex;flex-direction:column;gap:18px;padding:14px 0 10px 0;}
-.rowTitle{
-  text-align:center;
-  margin:0 0 10px 0;
-  font-size:10.6px;
-  font-weight:950;
-  letter-spacing:.28px;
-  color:rgba(170,182,199,.92);
-}
+.rowTitle{text-align:center;margin:0 0 10px 0;font-size:10.6px;font-weight:950;letter-spacing:.28px;color:rgba(170,182,199,.92);}
 
 .hRow{
   overflow-x:auto;
@@ -477,15 +373,9 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   gap:14px;
 }
 
-@media (max-width:760px){
-  .heroMiniGrid{grid-template-columns:1fr}
-  .pairPage{grid-template-columns:1fr}
-  .topNav{display:none}
-}
-
 @media (max-width:420px){
   .center{width:70%}
-  .node{font-size:10.7px;max-width:160px}
+  .node{font-size:10.8px;max-width:160px}
   .nodeTop{top:-8px;}
   .brandTag{white-space:normal;overflow:visible;text-overflow:clip;}
   .pairPage{gap:10px;}
@@ -494,17 +384,11 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   .slide p{font-size:10.2px;}
 }
 
-#slide-readiness,#slide-framework,#feedback,#join,#slide-purpose,#slide-standards{
+#slide-redzone,#slide-cc,#feedback,#doctrine{
   scroll-margin-top:calc(var(--headerH) + 18px);
 }
 
-footer{
-  padding:10px 6px 0 6px;
-  color:rgba(170,182,199,.88);
-  font-size:9.8px;
-  text-align:center;
-  line-height:1.4;
-}
+footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-align:center;}
 </style>
 </head>
 
@@ -516,40 +400,17 @@ footer{
 
       <div class="brandbar">
         <div class="brandGroup">
-          <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
-          <div class="brandLeft">
-            <p class="brandName">MarineMD</p>
-            <p class="brandTag">Clinical reasoning, communication, and systems improvement under uncertainty.</p>
-          </div>
-        </div>
-
-        <nav class="topNav" aria-label="Primary navigation">
-          <a href="#slide-purpose">Purpose</a>
-          <a href="#slide-readiness">Clinical Readiness</a>
-          <a href="#feedback">Feedback</a>
-          <a href="#slide-framework">Framework</a>
-          <a href="#join">Join</a>
-        </nav>
-      </div>
+         <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
+         <div class="brandLeft">
+           <p class="brandName">MarineMD</p>
+           <p class="brandTag">Bridging innovation and inclusion for a better tomorrow.</p>
+         </div>
+       </div>
+     </div>
 
       <div class="heroCopy">
         <h1>Judgment under uncertainty. Standards that hold.</h1>
-        <p>MarineMD is a physician-founded, veteran-owned initiative built for clinicians and care teams. Its focus is structured clinical reasoning, clearer communication, and systems that support safer, more reliable care in environments where time is limited and information is incomplete.</p>
-
-        <div class="heroMiniGrid">
-          <div class="miniCard">
-            <strong>Clinical reasoning</strong>
-            <span>Shared structure for recognizing signals, verifying impressions, acting decisively, and grounding decisions in evidence.</span>
-          </div>
-          <div class="miniCard">
-            <strong>Team communication</strong>
-            <span>Cleaner handoffs, stronger escalation, and more consistent language across disciplines and levels of training.</span>
-          </div>
-          <div class="miniCard">
-            <strong>Systems improvement</strong>
-            <span>Feedback and framework design aimed at identifying recurring friction, delay, and preventable failure points.</span>
-          </div>
-        </div>
+        <p>MarineMD is built for clinicians and care teams. It is a veteran-owned effort founded by a physician and United States Marine. The goal is to support teams that train continuously, communicate clearly, and uphold meaningful standards in patient care.</p>
       </div>
 
       <div class="diamondStage">
@@ -586,14 +447,12 @@ footer{
             <p class="sub">Judgment under uncertainty</p>
             <p class="quote">
               Medicine is a science of uncertainty and an art of probability.
-              <span class="who">— Sir William Osler</span>
+              <span class="who">- Sir William Osler</span>
             </p>
           </div>
 
-          <a class="node nodeTop" href="#slide-readiness">Clinical Readiness</a>
-          <a class="node nodeBottom" href="#join">Join the Initiative</a>
-          <a class="node nodeLeft" href="#feedback">Feedback</a>
-          <a class="node nodeRight" href="#slide-framework">Framework</a>
+          <a class="node nodeTop" href="#slide-redzone">Clinical Readiness</a>
+          <a class="node nodeBottom" href="#slide-cc">Convict Conditioning</a>
         </div>
       </div>
 
@@ -608,35 +467,36 @@ footer{
                 <p class="kicker">Purpose</p>
                 <h3>Structure improves decisions when time is short.</h3>
                 <div class="slideBody">
-                  <p>Clinical medicine is practiced under uncertainty, time pressure, and incomplete information. In those settings, error is often less about knowledge deficits and more about missed signals, premature closure, communication failure, or delayed action.</p>
-                  <p>MarineMD is built to help clinicians and teams reason more consistently, communicate more clearly, and improve how they respond when conditions are complex and margins are narrow.</p>
+                  <p>Osler described medicine as uncertainty and probability. Kahneman and Tversky later showed that humans are predictably poor at judgment under uncertainty. Clinicians are not exempt. Under time pressure, incomplete information, and cognitive load, error becomes systematic. MarineMD builds structure that improves probabilistic reasoning and strengthens how teams think together.</p>
 
                   <details>
                     <summary>What this is <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      MarineMD is a professional framework for clinical reasoning, communication, readiness, and systems learning. It is intended to support education, quality improvement, and institutional conversation around safer care.
+                      This is a framework and a set of tools that reinforce common ordering of thought in clinical work. Teams improve when they reason in the same order and speak the same clinical language.
                     </div>
                   </details>
                 </div>
               </section>
 
-              <section class="slide" id="slide-standards" aria-label="Standards">
-                <p class="kicker">Standards</p>
-                <h3>Readiness should be trained, reinforced, and visible in practice.</h3>
+              <section class="slide" id="slide-train" aria-label="Train Like You Fight">
+                <p class="kicker">Train Like You Fight</p>
+                <h3>Readiness standards and credibility.</h3>
                 <div class="slideBody">
-                  <p>Reliable care depends on preparation over time. In medicine, readiness includes judgment, communication, professionalism, discipline, and the ability to function well when complexity rises.</p>
+                  <p>In the Marine Corps, performance under pressure reflected preparation over time. You trained like you fought. Medicine is no different. Clinical judgment improves through deliberate, continuous training. Red Zone exists for this reason.</p>
 
                   <details>
-                    <summary>Professional readiness <span class="chev">v</span></summary>
+                    <summary>Readiness standards <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Professional readiness means showing up prepared, reasoning carefully, escalating appropriately, documenting clearly, and functioning as a dependable member of a care team.
+                      In the Marine Corps, readiness standards were explicit. Weight and fitness were measured and enforced because performance under stress is not a matter of intention. It is a matter of preparation. I lived that standard personally early on. The point was operational readiness.<br/><br/>
+                      Medicine needs the same clarity. If clinicians are expected to lead preventive care and behavior change, they should be able to model basic readiness and self stewardship. Not perfection. Not aesthetics. Readiness.
                     </div>
                   </details>
 
                   <details>
-                    <summary>Educational relevance <span class="chev">v</span></summary>
+                    <summary>Team culture and performance <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      This is intended to be useful to trainees, faculty, and leaders who care about patient safety, communication, decision-making, and a more disciplined clinical culture.
+                      Neurodiverse clinicians are often mislabeled as hostile or eccentric when what they exhibit is intensity, focus, and commitment to patient care. Performance matters more than posture. The goal is competence, integrity, and patient benefit.<br/><br/>
+                      Becoming a physician requires sacrifice. That obligation does not end once training is complete. Patients do not benefit from half measures. Medicine improves when professionals hold themselves and each other to higher standards.
                     </div>
                   </details>
                 </div>
@@ -650,55 +510,50 @@ footer{
           <div class="rowTrack">
             <div class="pairPage">
 
-              <section class="slide" id="slide-readiness" aria-label="Clinical Readiness">
+              <section class="slide" id="slide-redzone" aria-label="Clinical Readiness">
                 <p class="kicker">Clinical Readiness</p>
-                <h3>A common reasoning structure for clinicians working under pressure.</h3>
+                <h3>Continuous cognitive readiness for clinicians working under pressure.</h3>
                 <div class="slideBody">
-                  <p>MarineMD organizes decision-making into a practical sequence: signal, verify, act, and support with evidence. Symptoms and signs raise probability. Labs, imaging, and bedside data verify or challenge impressions. Action focuses on the next best clinical step. Evidence helps keep decisions disciplined and current.</p>
+                  <p>Signal means symptoms and signs. Verify means labs, imaging, and data. Action means what to do next, grounded in evidence, guidelines, and one landmark study that matters.</p>
 
                   <details>
                     <summary>How it improves teamwork <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Teams function better when they reason in the same order. That creates cleaner handoffs, better escalation, less ambiguity, and faster alignment around risk, next steps, and priorities.
+                      Interprofessional relationships improve when teams share a consistent ordering of thought. Cleaner handoffs, fewer assumptions, faster alignment under pressure.
                     </div>
                   </details>
 
                   <details>
-                    <summary>Educational value <span class="chev">v</span></summary>
+                    <summary>Osler <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      This structure is useful for trainees because it makes reasoning more visible. It is useful for faculty because it offers a consistent frame for teaching, coaching, and feedback.
+                      Medicine is a science of uncertainty and an art of probability.<br/>
+                      - Sir William Osler
                     </div>
                   </details>
 
+                  <p>Open Clinical Readiness</p>
                   <div class="ctaRow">
-                    <a class="cta ctaRZ" href="readiness.html">Open Clinical Readiness</a>
+                    <a class="cta ctaRZ" href="redzone.html">Open Clinical Readiness</a>
                   </div>
                 </div>
               </section>
 
-              <section class="slide" id="feedback" aria-label="Feedback">
-                <p class="kicker">Feedback</p>
-                <h3>Structured feedback to improve care.</h3>
+              <section class="slide" id="slide-cc" aria-label="Convict Conditioning">
+                <p class="kicker">Convict Conditioning</p>
+                <h3>Training you can actually sustain.</h3>
                 <div class="slideBody">
-                  <p>A structured feedback platform where patients and care teams can share de-identified experiences to help identify recurring communication gaps, workflow barriers, and opportunities for improvement.</p>
+                  <p>Progressive bodyweight strength tracked over time. Push ups, pull ups, squats, bridges, handstands. Capability is built through consistency.</p>
 
                   <details>
-                    <summary>Why this matters <span class="chev">v</span></summary>
+                    <summary>Integrity and follow through <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Hospitals track many important quality metrics, but some patterns in communication, escalation, and coordination remain difficult to capture. Better feedback can make those patterns more visible.
+                      If you counsel prevention, your life should not contradict your counsel. Credibility matters in medicine.
                     </div>
                   </details>
 
-                  <details>
-                    <summary>Design principle <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      The emphasis is on de-identified, structured, non-punitive insight that helps programs and institutions see where communication, coordination, or escalation may be breaking down.
-                    </div>
-                  </details>
-
+                  <p>Open Convict Conditioning</p>
                   <div class="ctaRow">
-                    <a class="cta ctaGhost" href="feedback.html">Open Feedback</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
+                    <a class="cta ctaCC" href="cc.html">Open Convict Conditioning</a>
                   </div>
                 </div>
               </section>
@@ -707,60 +562,6 @@ footer{
           </div>
         </div>
 
-        <div class="hRow" aria-label="Row 3">
-          <div class="rowTrack">
-            <div class="pairPage">
-
-              <section class="slide" id="slide-framework" aria-label="Framework">
-                <p class="kicker">Framework</p>
-                <h3>System accountability through measurable response.</h3>
-                <div class="slideBody">
-                  <p>MarineMD is interested in how long known risk persists without escalation, whether policy or workflow friction contributes to delay, and how institutions can strengthen weak points before they lead to preventable harm.</p>
-                  <p>This is system accountability, not individual blame. The focus is better care, better communication, and more reliable escalation pathways.</p>
-
-                  <details>
-                    <summary>Governance boundary <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      The intended approach is aggregated, de-identified, and non-punitive. No clinician naming. No patient identification. No diagnostic claims. No urgent triage. Quality-improvement and governance data only.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaGhost" href="framework.html">Open Framework</a>
-                  </div>
-                </div>
-              </section>
-
-              <section class="slide" id="join" aria-label="Join">
-                <p class="kicker">Join</p>
-                <h3>An initiative for people who want to build better clinical culture.</h3>
-                <div class="slideBody">
-                  <p>MarineMD is for trainees, faculty, quality leaders, and collaborators who care about sound reasoning, strong communication, professional standards, and systems that learn rather than merely react.</p>
-
-                  <details>
-                    <summary>Who may want to join <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Residents, fellows, attending physicians, educators, GME leaders, administrators, quality-improvement teams, patient safety advocates, and interdisciplinary collaborators.
-                    </div>
-                  </details>
-
-                  <details>
-                    <summary>What joining can mean <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Participating in development, contributing ideas, piloting educational tools, refining feedback frameworks, or helping shape a more coherent culture around reasoning, readiness, and accountability.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaCC" href="join.html">Join the Initiative</a>
-                    <a class="cta ctaGhost" href="https://diimed.com" rel="noopener" target="_blank">Visit DIIMED</a>
-                  </div>
-                </div>
-              </section>
-
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="diamondStage" style="padding-top:10px;">
@@ -795,20 +596,79 @@ footer{
           <div class="center">
             <p class="quote">
               The good physician treats the disease. The great physician treats the patient who has the disease.
-              <span class="who">— Sir William Osler</span>
+              <span class="who">- Sir William Osler</span>
             </p>
           </div>
 
-          <a class="node nodeLeft" href="#slide-purpose">Purpose</a>
-          <a class="node nodeRight" href="#join">Join</a>
+          <a class="node nodeLeft" href="#feedback">Feedback</a>
+          <a class="node nodeRight" href="#doctrine">Doctrine</a>
           <a class="node nodeBottom" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
         </div>
       </div>
 
-      <footer>
-        © MarineMD<br/>
-        Physician-founded, veteran-owned initiative focused on clinical reasoning, communication, and systems improvement.
-      </footer>
+      <div class="rows">
+        <div class="hRow" aria-label="Feedback and Doctrine">
+          <div class="rowTrack">
+            <div class="pairPage">
+
+              <section class="slide" id="feedback" aria-label="Feedback">
+                <p class="kicker">Feedback</p>
+                <h3>Structured feedback to improve care.</h3>
+                <div class="slideBody">
+                  <p>A central hub where patients and care teams can submit de-identified feedback about care experiences.<br/>The goal is to identify patterns that institutional metrics may miss and support meaningful improvement.</p>
+
+                  <details>
+                    <summary>Why this matters <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Hospitals track many important quality measures, but some communication failures and workflow barriers remain difficult to see clearly. This is designed to surface those patterns and support better care.
+                    </div>
+                  </details>
+                  <details>
+                    <summary>Provider feedback and clinical reasoning <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Harrison&#39;s Principles of Internal Medicine describes clinical medicine as work performed under uncertainty, time pressure, and incomplete information. Decisions are probabilistic, not absolute. Clinicians rely on heuristics and pattern recognition to function, but those same tools create predictable blind spots. Error is rarely about knowledge deficits; it is more often about how information is filtered, framed, and acted upon in real clinical environments.<br/><br/>
+                      This is not an individual failure. Harrison&#39;s emphasizes that cognitive bias persists even in experienced physicians and cannot be eliminated by training alone. What improves judgment is structure, shared reasoning, and feedback that reflects how decisions actually unfold at the bedside.<br/><br/>
+                      Institutional metrics capture outcomes and compliance, but they often miss the cognitive conditions under which decisions are made. Feedback from clinicians and care teams surfaces patterns of friction, ambiguity, and delay that shape care long before an outcome is recorded. At scale, this perspective allows systems to identify recurrent failure points, refine policy, and raise standards of care in ways that align with how medicine is actually practiced.<br/><br/>
+                      MarineMD builds on this principle. By combining structured decision frameworks with clinician feedback, it addresses the reality Harrison&#39;s describes: better care emerges not from eliminating uncertainty, but from designing systems that reason well within it.
+                    </div>
+                  </details>
+
+                  <div class="ctaRow">
+                    <a class="cta ctaGhost" href="feedback.html">Open Feedback</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
+                  </div>
+                </div>
+              </section>
+
+              <section class="slide" id="doctrine" aria-label="Doctrine">
+                <p class="kicker">Doctrine</p>
+                <h3>System accountability through measurable response.</h3>
+                <div class="slideBody">
+                  <p>This is system accountability, not individual blame. MarineMD measures how long known risk persists without escalation, and whether policy and workflow friction create preventable delay.</p>
+
+                  <p>High-performing teams improve by identifying vulnerable points in a system and strengthening them before they lead to preventable harm. In healthcare, ignored failures do not stay isolated. Accountability exists to improve the system so the whole structure becomes more reliable.</p>
+
+                  <p>The patient-facing part stays de-identified and non-punitive. The verification layer uses standard signed tokens (JWT/JWS style signatures) already used in portals and banking to prove "this record came from that institution" without exposing identity.</p>
+
+                  <details>
+                    <summary>Legal boundary (survivable by design) <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Aggregated and de-identified. No clinician naming. No patient identification. No diagnosis claims. No urgent triage. Governance data only.
+                    </div>
+                  </details>
+
+                  <div class="ctaRow">
+                    <a class="cta ctaGhost" href="doctrine.html">Open Doctrine</a>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>© MarineMD</footer>
     </div>
   </section>
 </div>
