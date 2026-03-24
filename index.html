@@ -1,3 +1,5 @@
+Yes — I kept your format and only changed the section ideas/text plus added color accents to the buttons, using your uploaded file as the base.  ￼
+
 <!doctype html>
 <html lang="en">
 <head> 
@@ -278,11 +280,31 @@ body{
   z-index:4;
   transform:translateZ(44px);
 }
-.node:active{filter:brightness(1.06)}
-.nodeTop{top:-12px; left:50%; transform:translateX(-50%) translateZ(44px);}
-.nodeBottom{bottom:-18px; left:50%; transform:translateX(-50%) translateZ(44px);}
-.nodeLeft{left:-22px; top:50%; transform:translateY(-50%) translateZ(44px);}
-.nodeRight{right:-22px; top:50%; transform:translateY(-50%) translateZ(44px);}
+.node:hover{filter:brightness(1.08)}
+.nodeTop{
+  top:-12px; left:50%;
+  transform:translateX(-50%) translateZ(44px);
+  border-color:rgba(241,200,77,.34);
+  box-shadow:var(--shadow2), 0 0 18px rgba(241,200,77,.12);
+}
+.nodeBottom{
+  bottom:-18px; left:50%;
+  transform:translateX(-50%) translateZ(44px);
+  border-color:rgba(39,224,160,.30);
+  box-shadow:var(--shadow2), 0 0 18px rgba(39,224,160,.10);
+}
+.nodeLeft{
+  left:-22px; top:50%;
+  transform:translateY(-50%) translateZ(44px);
+  border-color:rgba(47,123,255,.30);
+  box-shadow:var(--shadow2), 0 0 18px rgba(47,123,255,.10);
+}
+.nodeRight{
+  right:-22px; top:50%;
+  transform:translateY(-50%) translateZ(44px);
+  border-color:rgba(255,59,212,.28);
+  box-shadow:var(--shadow2), 0 0 18px rgba(255,59,212,.10);
+}
 
 /* sections / cards */
 .slide{
@@ -334,7 +356,6 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   padding:9px 11px;
   border-radius:14px;
   border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.20);
   color:rgba(232,238,246,.94);
   font-size:10.6px;
   font-weight:950;
@@ -343,11 +364,27 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  transition:filter .12s ease, transform .12s ease, box-shadow .12s ease;
 }
-.cta:active{filter:brightness(1.07)}
-.ctaRZ{border-color:rgba(241,200,77,.32); box-shadow:0 0 0 1px rgba(241,200,77,.10) inset;}
-.ctaCC{border-color:rgba(39,224,160,.30); box-shadow:0 0 0 1px rgba(39,224,160,.10) inset;}
-.ctaGhost{border-color:rgba(255,255,255,.12); background:rgba(0,0,0,.12);}
+.cta:hover{
+  filter:brightness(1.08);
+  transform:translateY(-1px);
+}
+.ctaRZ{
+  background:linear-gradient(180deg, rgba(241,200,77,.18), rgba(241,200,77,.08));
+  border-color:rgba(241,200,77,.34);
+  box-shadow:0 0 0 1px rgba(241,200,77,.10) inset, 0 0 18px rgba(241,200,77,.10);
+}
+.ctaCC{
+  background:linear-gradient(180deg, rgba(39,224,160,.18), rgba(39,224,160,.08));
+  border-color:rgba(39,224,160,.32);
+  box-shadow:0 0 0 1px rgba(39,224,160,.10) inset, 0 0 18px rgba(39,224,160,.10);
+}
+.ctaGhost{
+  background:linear-gradient(180deg, rgba(47,123,255,.14), rgba(255,59,212,.08));
+  border-color:rgba(255,255,255,.12);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
+}
 
 /* two-up rows */
 .rows{display:flex;flex-direction:column;gap:18px;padding:14px 0 10px 0;}
@@ -384,7 +421,7 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   .slide p{font-size:10.2px;}
 }
 
-#slide-redzone,#slide-cc,#feedback,#doctrine{
+#slide-readiness,#slide-systems,#feedback,#framework{
   scroll-margin-top:calc(var(--headerH) + 18px);
 }
 
@@ -451,8 +488,8 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
             </p>
           </div>
 
-          <a class="node nodeTop" href="#slide-redzone">Clinical Readiness</a>
-          <a class="node nodeBottom" href="#slide-cc">Convict Conditioning</a>
+          <a class="node nodeTop" href="#slide-readiness">Clinical Readiness</a>
+          <a class="node nodeBottom" href="#slide-systems">Systems Improvement</a>
         </div>
       </div>
 
@@ -478,27 +515,30 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
                 </div>
               </section>
 
-              <section class="slide" id="slide-train" aria-label="Train Like You Fight">
-                <p class="kicker">Train Like You Fight</p>
-                <h3>Readiness standards and credibility.</h3>
+              <section class="slide" id="slide-systems" aria-label="Systems Improvement">
+                <p class="kicker">Systems Improvement</p>
+                <h3>Better care requires better systems, not just better intentions.</h3>
                 <div class="slideBody">
-                  <p>In the Marine Corps, performance under pressure reflected preparation over time. You trained like you fought. Medicine is no different. Clinical judgment improves through deliberate, continuous training. Red Zone exists for this reason.</p>
+                  <p>MarineMD focuses on the communication gaps, workflow barriers, delayed escalation, and structural friction points that contribute to preventable harm. Systems improvement means identifying those weaknesses early and building processes that help teams respond more clearly, more reliably, and with less avoidable delay.</p>
 
                   <details>
-                    <summary>Readiness standards <span class="chev">v</span></summary>
+                    <summary>Why this matters <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      In the Marine Corps, readiness standards were explicit. Weight and fitness were measured and enforced because performance under stress is not a matter of intention. It is a matter of preparation. I lived that standard personally early on. The point was operational readiness.<br/><br/>
-                      Medicine needs the same clarity. If clinicians are expected to lead preventive care and behavior change, they should be able to model basic readiness and self stewardship. Not perfection. Not aesthetics. Readiness.
+                      Many failures in medicine do not come from lack of effort. They emerge from fragmented communication, unclear responsibility, delayed recognition, and systems that do not reliably support sound decisions under pressure.
                     </div>
                   </details>
 
                   <details>
-                    <summary>Team culture and performance <span class="chev">v</span></summary>
+                    <summary>What this supports <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Neurodiverse clinicians are often mislabeled as hostile or eccentric when what they exhibit is intensity, focus, and commitment to patient care. Performance matters more than posture. The goal is competence, integrity, and patient benefit.<br/><br/>
-                      Becoming a physician requires sacrifice. That obligation does not end once training is complete. Patients do not benefit from half measures. Medicine improves when professionals hold themselves and each other to higher standards.
+                      This supports quality improvement, patient safety, escalation review, process redesign, and a more disciplined culture around accountability, communication, and response.
                     </div>
                   </details>
+
+                  <p>Open Systems Improvement</p>
+                  <div class="ctaRow">
+                    <a class="cta ctaCC" href="systems.html">Open Systems Improvement</a>
+                  </div>
                 </div>
               </section>
 
@@ -510,7 +550,7 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
           <div class="rowTrack">
             <div class="pairPage">
 
-              <section class="slide" id="slide-redzone" aria-label="Clinical Readiness">
+              <section class="slide" id="slide-readiness" aria-label="Clinical Readiness">
                 <p class="kicker">Clinical Readiness</p>
                 <h3>Continuous cognitive readiness for clinicians working under pressure.</h3>
                 <div class="slideBody">
@@ -533,27 +573,36 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
                   <p>Open Clinical Readiness</p>
                   <div class="ctaRow">
-                    <a class="cta ctaRZ" href="redzone.html">Open Clinical Readiness</a>
+                    <a class="cta ctaRZ" href="readiness.html">Open Clinical Readiness</a>
                   </div>
                 </div>
               </section>
 
-              <section class="slide" id="slide-cc" aria-label="Convict Conditioning">
-                <p class="kicker">Convict Conditioning</p>
-                <h3>Training you can actually sustain.</h3>
+              <section class="slide" id="feedback" aria-label="Feedback">
+                <p class="kicker">Feedback</p>
+                <h3>Structured feedback to improve care.</h3>
                 <div class="slideBody">
-                  <p>Progressive bodyweight strength tracked over time. Push ups, pull ups, squats, bridges, handstands. Capability is built through consistency.</p>
+                  <p>A central hub where patients and care teams can submit de-identified feedback about care experiences.<br/>The goal is to identify patterns that institutional metrics may miss and support meaningful improvement.</p>
 
                   <details>
-                    <summary>Integrity and follow through <span class="chev">v</span></summary>
+                    <summary>Why this matters <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      If you counsel prevention, your life should not contradict your counsel. Credibility matters in medicine.
+                      Hospitals track many important quality measures, but some communication failures and workflow barriers remain difficult to see clearly. This is designed to surface those patterns and support better care.
+                    </div>
+                  </details>
+                  <details>
+                    <summary>Provider feedback and clinical reasoning <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Harrison&#39;s Principles of Internal Medicine describes clinical medicine as work performed under uncertainty, time pressure, and incomplete information. Decisions are probabilistic, not absolute. Clinicians rely on heuristics and pattern recognition to function, but those same tools create predictable blind spots. Error is rarely about knowledge deficits; it is more often about how information is filtered, framed, and acted upon in real clinical environments.<br/><br/>
+                      This is not an individual failure. Harrison&#39;s emphasizes that cognitive bias persists even in experienced physicians and cannot be eliminated by training alone. What improves judgment is structure, shared reasoning, and feedback that reflects how decisions actually unfold at the bedside.<br/><br/>
+                      Institutional metrics capture outcomes and compliance, but they often miss the cognitive conditions under which decisions are made. Feedback from clinicians and care teams surfaces patterns of friction, ambiguity, and delay that shape care long before an outcome is recorded. At scale, this perspective allows systems to identify recurrent failure points, refine policy, and raise standards of care in ways that align with how medicine is actually practiced.<br/><br/>
+                      MarineMD builds on this principle. By combining structured decision frameworks with clinician feedback, it addresses the reality Harrison&#39;s describes: better care emerges not from eliminating uncertainty, but from designing systems that reason well within it.
                     </div>
                   </details>
 
-                  <p>Open Convict Conditioning</p>
                   <div class="ctaRow">
-                    <a class="cta ctaCC" href="cc.html">Open Convict Conditioning</a>
+                    <a class="cta ctaGhost" href="feedback.html">Open Feedback</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
                   </div>
                 </div>
               </section>
@@ -601,54 +650,25 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
           </div>
 
           <a class="node nodeLeft" href="#feedback">Feedback</a>
-          <a class="node nodeRight" href="#doctrine">Doctrine</a>
+          <a class="node nodeRight" href="#framework">Framework</a>
           <a class="node nodeBottom" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
         </div>
       </div>
 
       <div class="rows">
-        <div class="hRow" aria-label="Feedback and Doctrine">
+        <div class="hRow" aria-label="Framework">
           <div class="rowTrack">
             <div class="pairPage">
 
-              <section class="slide" id="feedback" aria-label="Feedback">
-                <p class="kicker">Feedback</p>
-                <h3>Structured feedback to improve care.</h3>
-                <div class="slideBody">
-                  <p>A central hub where patients and care teams can submit de-identified feedback about care experiences.<br/>The goal is to identify patterns that institutional metrics may miss and support meaningful improvement.</p>
-
-                  <details>
-                    <summary>Why this matters <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Hospitals track many important quality measures, but some communication failures and workflow barriers remain difficult to see clearly. This is designed to surface those patterns and support better care.
-                    </div>
-                  </details>
-                  <details>
-                    <summary>Provider feedback and clinical reasoning <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Harrison&#39;s Principles of Internal Medicine describes clinical medicine as work performed under uncertainty, time pressure, and incomplete information. Decisions are probabilistic, not absolute. Clinicians rely on heuristics and pattern recognition to function, but those same tools create predictable blind spots. Error is rarely about knowledge deficits; it is more often about how information is filtered, framed, and acted upon in real clinical environments.<br/><br/>
-                      This is not an individual failure. Harrison&#39;s emphasizes that cognitive bias persists even in experienced physicians and cannot be eliminated by training alone. What improves judgment is structure, shared reasoning, and feedback that reflects how decisions actually unfold at the bedside.<br/><br/>
-                      Institutional metrics capture outcomes and compliance, but they often miss the cognitive conditions under which decisions are made. Feedback from clinicians and care teams surfaces patterns of friction, ambiguity, and delay that shape care long before an outcome is recorded. At scale, this perspective allows systems to identify recurrent failure points, refine policy, and raise standards of care in ways that align with how medicine is actually practiced.<br/><br/>
-                      MarineMD builds on this principle. By combining structured decision frameworks with clinician feedback, it addresses the reality Harrison&#39;s describes: better care emerges not from eliminating uncertainty, but from designing systems that reason well within it.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaGhost" href="feedback.html">Open Feedback</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
-                  </div>
-                </div>
-              </section>
-
-              <section class="slide" id="doctrine" aria-label="Doctrine">
-                <p class="kicker">Doctrine</p>
+              <section class="slide" id="framework" aria-label="Framework">
+                <p class="kicker">Framework</p>
                 <h3>System accountability through measurable response.</h3>
                 <div class="slideBody">
                   <p>This is system accountability, not individual blame. MarineMD measures how long known risk persists without escalation, and whether policy and workflow friction create preventable delay.</p>
 
                   <p>High-performing teams improve by identifying vulnerable points in a system and strengthening them before they lead to preventable harm. In healthcare, ignored failures do not stay isolated. Accountability exists to improve the system so the whole structure becomes more reliable.</p>
 
-                  <p>The patient-facing part stays de-identified and non-punitive. The verification layer uses standard signed tokens (JWT/JWS style signatures) already used in portals and banking to prove "this record came from that institution" without exposing identity.</p>
+                  <p>The patient-facing part stays de-identified and non-punitive. The verification layer uses standard signed tokens already used in secure systems to help prove institutional origin without exposing identity.</p>
 
                   <details>
                     <summary>Legal boundary (survivable by design) <span class="chev">v</span></summary>
@@ -658,8 +678,16 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
                   </details>
 
                   <div class="ctaRow">
-                    <a class="cta ctaGhost" href="doctrine.html">Open Doctrine</a>
+                    <a class="cta ctaGhost" href="framework.html">Open Framework</a>
                   </div>
+                </div>
+              </section>
+
+              <section class="slide" aria-label="Spacer">
+                <p class="kicker">MarineMD</p>
+                <h3>Judgment under uncertainty.</h3>
+                <div class="slideBody">
+                  <p>Clinical reasoning, systems improvement, structured feedback, and a clearer language for teams working under pressure.</p>
                 </div>
               </section>
 
