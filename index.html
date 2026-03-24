@@ -27,8 +27,8 @@
 
   --brand:12.5px;
   --tag:10.6px;
-  --h1:10px;
-  --p:9.3px;
+  --h1:10.4px;
+  --p:9.4px;
 
   --diamondSize:min(270px, 86vw);
   --diamondSize2:min(240px, 86vw);
@@ -56,7 +56,6 @@ body{
   max-width:1200px;
   margin:0 auto;
   padding:var(--pad);
-
   padding-top:calc(var(--pad) + env(safe-area-inset-top));
   padding-left:calc(var(--pad) + env(safe-area-inset-left));
   padding-right:calc(var(--pad) + env(safe-area-inset-right));
@@ -95,7 +94,6 @@ body{
   gap:10px;
 }
 
-/* illusion layer */
 .illusion{
   position:absolute;
   inset:-60px -40px -60px -40px;
@@ -125,20 +123,16 @@ body{
   opacity:.9;
 }
 
-/* TOP BAR / BRAND */
 .brandbar{
   position:sticky;
   top:0;
   z-index:50;
-
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:2px;
-
   min-height:var(--headerH);
   padding:10px 2px 10px 2px;
-
   background:rgba(5,6,10,.72);
   backdrop-filter: blur(8px);
   border-bottom:1px solid rgba(255,255,255,.10);
@@ -165,45 +159,34 @@ body{
   gap:2px;
 }
 
-/* HERO SECTION */
-.heroCopy{position:relative;z-index:3;padding:6px 8px 14px 8px;}
-.heroCopy h1{margin:0 0 6px 0;font-size:var(--h1);line-height:1.18;font-weight:950;letter-spacing:.12px;}
-.heroCopy p{margin:0;font-size:var(--p);line-height:1.35;color:rgba(232,238,246,.90);}
-
-.heroButtons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:10px;
+.heroCopy{
+  position:relative;
+  z-index:3;
+  padding:8px 8px 8px 8px;
+  max-width:620px;
+  margin:0 auto;
+  text-align:center;
 }
-
-.startStrip{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-top:12px;
+.heroCopy h1{
+  margin:0 0 6px 0;
+  font-size:var(--h1);
+  line-height:1.18;
+  font-weight:950;
+  letter-spacing:.12px;
 }
-
-.startCard{
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:14px;
-  background:rgba(0,0,0,.18);
-  box-shadow:var(--shadow2);
-  padding:10px;
+.heroCopy p{
+  margin:0;
+  font-size:var(--p);
+  line-height:1.38;
+  color:rgba(232,238,246,.90);
 }
-.startCard strong{
-  display:block;
-  font-size:10.4px;
+.heroLead{
+  color:rgba(170,182,199,.95);
+  font-weight:950;
   margin-bottom:4px;
-}
-.startCard span{
-  display:block;
-  font-size:9.9px;
-  line-height:1.32;
-  color:rgba(232,238,246,.88);
+  letter-spacing:.14px;
 }
 
-/* diamonds */
 .diamondStage{display:flex;justify-content:center;padding:4px 0 0 0;margin-top:10px;}
 .diamondWrap{
   position:relative;
@@ -215,7 +198,6 @@ body{
 }
 .diamondWrap.small{width:var(--diamondSize2);height:var(--diamondSize2);}
 
-/* small diamond tuning */
 .diamondWrap.small .center{width:56%;}
 .diamondWrap.small .center .quote{font-size:10.0px;line-height:1.22;}
 .diamondWrap.small .node{max-width:140px;}
@@ -273,7 +255,6 @@ body{
   mask-image:radial-gradient(circle at 50% 50%, rgba(0,0,0,1), rgba(0,0,0,0) 72%);
 }
 
-/* DIAMOND CENTER */
 .center{
   position:absolute;
   top:50%; left:50%;
@@ -288,7 +269,6 @@ body{
 .center .quote{margin:0;font-size:10.5px;line-height:1.25;font-style:italic;color:rgba(232,238,246,.92);}
 .center .who{margin-top:6px;display:block;font-size:10.5px;font-style:normal;font-weight:950;color:rgba(170,182,199,.95);}
 
-/* diamond buttons */
 .node{
   position:absolute;
   min-height:44px;
@@ -337,7 +317,6 @@ body{
   box-shadow:var(--shadow2), 0 0 16px rgba(255,59,212,.10);
 }
 
-/* sections / cards */
 .slide{
   border:1px solid rgba(255,255,255,.12);
   border-radius:18px;
@@ -361,7 +340,6 @@ body{
   touch-action:pan-y;
 }
 
-/* collapsible */
 details{margin-top:10px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(0,0,0,.14);overflow:hidden;}
 summary{
   list-style:none;cursor:pointer;user-select:none;
@@ -380,7 +358,6 @@ summary::-webkit-details-marker{display:none}
 details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
 .detailsBody{padding:10px 10px 12px 10px;font-size:10.3px;line-height:1.35;color:rgba(232,238,246,.90);}
 
-/* CTAs */
 .ctaRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
 .cta{
   min-height:40px;
@@ -417,7 +394,6 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
 }
 
-/* two-up rows */
 .rows{display:flex;flex-direction:column;gap:18px;padding:14px 0 10px 0;}
 .rowTitle{text-align:center;margin:0 0 10px 0;font-size:10.6px;font-weight:950;letter-spacing:.28px;color:rgba(170,182,199,.92);}
 
@@ -441,8 +417,45 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   gap:14px;
 }
 
-@media (max-width:760px){
-  .startStrip{grid-template-columns:1fr}
+.footerNav{
+  margin-top:10px;
+  border-top:1px solid rgba(255,255,255,.10);
+  padding:14px 8px 4px 8px;
+}
+.footerLinks{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:10px;
+}
+.footerLink{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:7px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+  color:rgba(232,238,246,.90);
+  text-decoration:none;
+  font-size:9.8px;
+  font-weight:950;
+}
+.footerMeta{
+  max-width:760px;
+  margin:0 auto;
+  text-align:center;
+  font-size:9.4px;
+  line-height:1.4;
+  color:rgba(170,182,199,.88);
+}
+footer{
+  padding:10px 6px 0 6px;
+  color:rgba(170,182,199,.88);
+  font-size:9.6px;
+  text-align:center;
 }
 
 @media (max-width:420px){
@@ -454,13 +467,12 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   .slide{padding:10px;}
   .slide h3{font-size:11.6px;}
   .slide p{font-size:10.2px;}
+  .footerLinks{gap:6px}
 }
 
-#slide-communication,#slide-systems,#feedback,#proof,#join,#start{
+#slide-communication,#slide-systems,#feedback,#proof,#join{
   scroll-margin-top:calc(var(--headerH) + 18px);
 }
-
-footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-align:center;}
 </style>
 </head>
 
@@ -472,38 +484,18 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
       <div class="brandbar">
         <div class="brandGroup">
-         <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
-         <div class="brandLeft">
-           <p class="brandName">MarineMD</p>
-           <p class="brandTag">Bridging innovation and inclusion for a better tomorrow.</p>
-         </div>
-       </div>
-     </div>
+          <img class="brandMark" src="emblem.png" alt="MarineMD emblem" />
+          <div class="brandLeft">
+            <p class="brandName">MarineMD</p>
+            <p class="brandTag">Bridging innovation and inclusion for a better tomorrow.</p>
+          </div>
+        </div>
+      </div>
 
       <div class="heroCopy">
+        <p class="heroLead">For clinicians, trainees, and care teams.</p>
         <h1>Better decisions need better structure.</h1>
-        <p>MarineMD helps clinicians and care teams improve communication, systems safety, and practical bedside judgment.</p>
-
-        <div class="heroButtons">
-          <a class="cta ctaPrimary" href="#join">Join the waitlist</a>
-          <a class="cta ctaSecondary" href="#slide-communication">Communication resources</a>
-          <a class="cta ctaGhost" href="#slide-systems">Systems safety</a>
-        </div>
-
-        <div class="startStrip" id="start">
-          <div class="startCard">
-            <strong>I’m a resident or student</strong>
-            <span>Learn communication, trust-building, and practical frameworks you can use on the floor.</span>
-          </div>
-          <div class="startCard">
-            <strong>I’m a clinician</strong>
-            <span>Explore tools for patient conversations, behavior change, and stronger team communication.</span>
-          </div>
-          <div class="startCard">
-            <strong>I’m an educator or quality leader</strong>
-            <span>See how MarineMD approaches systems friction, escalation, feedback, and safer care.</span>
-          </div>
-        </div>
+        <p>MarineMD supports communication, practical bedside judgment, and safer systems without crowding the opening of the page.</p>
       </div>
 
       <div class="diamondStage">
@@ -722,6 +714,20 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="footerNav">
+        <div class="footerLinks">
+          <a class="footerLink" href="#slide-communication">Communication</a>
+          <a class="footerLink" href="#slide-systems">Systems Safety</a>
+          <a class="footerLink" href="#feedback">Feedback</a>
+          <a class="footerLink" href="#proof">Why MarineMD</a>
+          <a class="footerLink" href="#join">Join</a>
+          <a class="footerLink" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
+        </div>
+        <div class="footerMeta">
+          MarineMD is built around practical reasoning, communication, ethical influence, and safer systems.
         </div>
       </div>
 
