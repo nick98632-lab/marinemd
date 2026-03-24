@@ -166,9 +166,42 @@ body{
 }
 
 /* HERO SECTION */
-.heroCopy{position:relative;z-index:3;padding:6px 8px 20px 8px;}
+.heroCopy{position:relative;z-index:3;padding:6px 8px 14px 8px;}
 .heroCopy h1{margin:0 0 6px 0;font-size:var(--h1);line-height:1.18;font-weight:950;letter-spacing:.12px;}
 .heroCopy p{margin:0;font-size:var(--p);line-height:1.35;color:rgba(232,238,246,.90);}
+
+.heroButtons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.startStrip{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+
+.startCard{
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  background:rgba(0,0,0,.18);
+  box-shadow:var(--shadow2);
+  padding:10px;
+}
+.startCard strong{
+  display:block;
+  font-size:10.4px;
+  margin-bottom:4px;
+}
+.startCard span{
+  display:block;
+  font-size:9.9px;
+  line-height:1.32;
+  color:rgba(232,238,246,.88);
+}
 
 /* diamonds */
 .diamondStage{display:flex;justify-content:center;padding:4px 0 0 0;margin-top:10px;}
@@ -368,12 +401,12 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   filter:brightness(1.08);
   transform:translateY(-1px);
 }
-.ctaRZ{
+.ctaPrimary{
   background:linear-gradient(180deg, rgba(241,200,77,.18), rgba(241,200,77,.08));
   border-color:rgba(241,200,77,.32);
   box-shadow:0 0 0 1px rgba(241,200,77,.10) inset, 0 0 16px rgba(241,200,77,.10);
 }
-.ctaCC{
+.ctaSecondary{
   background:linear-gradient(180deg, rgba(39,224,160,.18), rgba(39,224,160,.08));
   border-color:rgba(39,224,160,.30);
   box-shadow:0 0 0 1px rgba(39,224,160,.10) inset, 0 0 16px rgba(39,224,160,.10);
@@ -408,6 +441,10 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   gap:14px;
 }
 
+@media (max-width:760px){
+  .startStrip{grid-template-columns:1fr}
+}
+
 @media (max-width:420px){
   .center{width:70%}
   .node{font-size:10.8px;max-width:160px}
@@ -419,7 +456,7 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   .slide p{font-size:10.2px;}
 }
 
-#slide-readiness,#slide-communication,#feedback,#framework,#join{
+#slide-communication,#slide-systems,#feedback,#proof,#join,#start{
   scroll-margin-top:calc(var(--headerH) + 18px);
 }
 
@@ -444,8 +481,29 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
      </div>
 
       <div class="heroCopy">
-        <h1>Judgment under uncertainty. Standards that hold.</h1>
-        <p>MarineMD is a physician-founded initiative for clinicians and care teams who want sharper clinical reasoning, clearer communication, and stronger systems of care.</p>
+        <h1>Better decisions need better structure.</h1>
+        <p>MarineMD helps clinicians and care teams improve communication, systems safety, and practical bedside judgment.</p>
+
+        <div class="heroButtons">
+          <a class="cta ctaPrimary" href="#join">Join the waitlist</a>
+          <a class="cta ctaSecondary" href="#slide-communication">Communication resources</a>
+          <a class="cta ctaGhost" href="#slide-systems">Systems safety</a>
+        </div>
+
+        <div class="startStrip" id="start">
+          <div class="startCard">
+            <strong>I’m a resident or student</strong>
+            <span>Learn communication, trust-building, and practical frameworks you can use on the floor.</span>
+          </div>
+          <div class="startCard">
+            <strong>I’m a clinician</strong>
+            <span>Explore tools for patient conversations, behavior change, and stronger team communication.</span>
+          </div>
+          <div class="startCard">
+            <strong>I’m an educator or quality leader</strong>
+            <span>See how MarineMD approaches systems friction, escalation, feedback, and safer care.</span>
+          </div>
+        </div>
       </div>
 
       <div class="diamondStage">
@@ -486,8 +544,8 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
             </p>
           </div>
 
-          <a class="node nodeTop" href="#slide-readiness">Clinical Readiness</a>
-          <a class="node nodeBottom" href="#slide-communication">Communication</a>
+          <a class="node nodeTop" href="#slide-communication">Communication</a>
+          <a class="node nodeBottom" href="#join">Join MarineMD</a>
         </div>
       </div>
 
@@ -497,67 +555,6 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
         <div class="hRow" aria-label="Row 1">
           <div class="rowTrack">
             <div class="pairPage">
-
-              <section class="slide" id="slide-purpose" aria-label="Purpose">
-                <p class="kicker">Purpose</p>
-                <h3>Better decisions need better structure.</h3>
-                <div class="slideBody">
-                  <p>Medicine runs on judgment under uncertainty. MarineMD is built to help clinicians think clearly, communicate well, and respond earlier when risk is rising.</p>
-
-                  <details>
-                    <summary>What this is <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      A practical framework for clinical reasoning, communication, feedback, and systems improvement.
-                    </div>
-                  </details>
-                </div>
-              </section>
-
-              <section class="slide" id="framework" aria-label="Framework">
-                <p class="kicker">Framework</p>
-                <h3>Accountability without blame.</h3>
-                <div class="slideBody">
-                  <p>MarineMD looks at how long risk goes unaddressed, where communication breaks down, and how systems can be strengthened before harm happens.</p>
-
-                  <details>
-                    <summary>Boundary <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      De-identified. Non-punitive. Focused on systems, not naming and shaming.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaGhost" href="framework.html">Framework</a>
-                  </div>
-                </div>
-              </section>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="hRow" aria-label="Row 2">
-          <div class="rowTrack">
-            <div class="pairPage">
-
-              <section class="slide" id="slide-readiness" aria-label="Clinical Readiness">
-                <p class="kicker">Clinical Readiness</p>
-                <h3>Clear thinking when the pressure is on.</h3>
-                <div class="slideBody">
-                  <p>Signal. Verify. Act. Evidence. MarineMD gives teams a shared way to think through clinical problems, communicate faster, and reduce avoidable mistakes.</p>
-
-                  <details>
-                    <summary>Why it helps <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      When teams use the same order of thought, handoffs improve, assumptions shrink, and escalation happens earlier.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaRZ" href="readiness.html">Clinical Readiness</a>
-                  </div>
-                </div>
-              </section>
 
               <section class="slide" id="slide-communication" aria-label="Communication">
                 <p class="kicker">Communication</p>
@@ -573,10 +570,72 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
                   </details>
 
                   <div class="ctaRow">
-                    <a class="cta ctaCC" href="communication.html">Communication Resources</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Motivational Interviewing — Coming Soon</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Behavior Change — Coming Soon</a>
+                    <a class="cta ctaSecondary" href="communication.html">Communication resources</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Motivational interviewing — Coming soon</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Behavior change — Coming soon</a>
                   </div>
+                </div>
+              </section>
+
+              <section class="slide" id="slide-systems" aria-label="Systems Safety">
+                <p class="kicker">Systems Safety</p>
+                <h3>Capture patterns in delay, communication, and care experience.</h3>
+                <div class="slideBody">
+                  <p>MarineMD focuses on communication gaps, workflow barriers, delayed escalation, and system friction that contribute to preventable harm.</p>
+
+                  <details>
+                    <summary>What this supports <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Quality improvement, patient safety, escalation review, process redesign, and stronger organizational response.
+                    </div>
+                  </details>
+
+                  <div class="ctaRow">
+                    <a class="cta ctaPrimary" href="systems.html">Systems safety</a>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="hRow" aria-label="Row 2">
+          <div class="rowTrack">
+            <div class="pairPage">
+
+              <section class="slide" id="feedback" aria-label="Feedback">
+                <p class="kicker">Feedback</p>
+                <h3>Feedback that leads somewhere.</h3>
+                <div class="slideBody">
+                  <p>MarineMD is building a way for patients and care teams to share de-identified feedback so patterns in communication, delay, and care experience are easier to see.</p>
+
+                  <details>
+                    <summary>Why this matters <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Many breakdowns in care are obvious to the people living through them but hard to capture in standard metrics.
+                    </div>
+                  </details>
+
+                  <div class="ctaRow">
+                    <a class="cta ctaGhost" href="feedback.html">Feedback</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
+                  </div>
+                </div>
+              </section>
+
+              <section class="slide" id="proof" aria-label="Why MarineMD">
+                <p class="kicker">Why MarineMD</p>
+                <h3>Physician-founded. Veteran-owned. Systems-focused.</h3>
+                <div class="slideBody">
+                  <p>MarineMD is built around practical reasoning, communication, ethical influence, and safer systems. Its perspective is structured, de-identified, and non-punitive.</p>
+
+                  <details>
+                    <summary>What that means <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      The focus is not naming and shaming. It is finding patterns, improving response, and building tools that make care teams more effective.
+                    </div>
+                  </details>
                 </div>
               </section>
 
@@ -623,41 +682,21 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
           </div>
 
           <a class="node nodeLeft" href="#feedback">Feedback</a>
-          <a class="node nodeRight" href="#framework">Framework</a>
+          <a class="node nodeRight" href="#proof">Why MarineMD</a>
           <a class="node nodeBottom" href="#join">Join MarineMD</a>
         </div>
       </div>
 
       <div class="rows">
-        <div class="hRow" aria-label="Feedback and Join">
+        <div class="hRow" aria-label="Join">
           <div class="rowTrack">
             <div class="pairPage">
-
-              <section class="slide" id="feedback" aria-label="Feedback">
-                <p class="kicker">Feedback</p>
-                <h3>Feedback that leads somewhere.</h3>
-                <div class="slideBody">
-                  <p>MarineMD is building a way for patients and care teams to share de-identified feedback so patterns in communication, delay, and care experience are easier to see.</p>
-
-                  <details>
-                    <summary>Why this matters <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Many breakdowns in care are obvious to the people living through them but hard to capture in standard metrics.
-                    </div>
-                  </details>
-
-                  <div class="ctaRow">
-                    <a class="cta ctaGhost" href="feedback.html">Feedback</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
-                  </div>
-                </div>
-              </section>
 
               <section class="slide" id="join" aria-label="Join MarineMD">
                 <p class="kicker">Join</p>
                 <h3>Help build what comes next.</h3>
                 <div class="slideBody">
-                  <p>MarineMD is for clinicians, trainees, educators, and system leaders who want better reasoning, better communication, and safer care.</p>
+                  <p>Get updates on communication resources, new tools, pilot opportunities, and early systems-improvement work.</p>
 
                   <details>
                     <summary>Who should join <span class="chev">v</span></summary>
@@ -666,17 +705,18 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
                     </div>
                   </details>
 
-                  <details>
-                    <summary>How to participate <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Follow development, contribute ideas, collaborate on pilots, or help shape the educational and systems side of the project.
-                    </div>
-                  </details>
-
                   <div class="ctaRow">
-                    <a class="cta ctaCC" href="join.html">Join MarineMD</a>
+                    <a class="cta ctaSecondary" href="join.html">Join the waitlist</a>
                     <a class="cta ctaGhost" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
                   </div>
+                </div>
+              </section>
+
+              <section class="slide" aria-label="Spacer">
+                <p class="kicker">MarineMD</p>
+                <h3>Clear thinking. Better communication. Safer systems.</h3>
+                <div class="slideBody">
+                  <p>Better decisions need better structure. Join MarineMD to access frameworks, communication tools, and early systems-improvement resources.</p>
                 </div>
               </section>
 
