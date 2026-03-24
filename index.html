@@ -18,6 +18,7 @@
   --neonGreen:#27e0a0;
   --neonPink:#ff3bd4;
   --neonAmber:#f1c84d;
+  --neonRed:#ff3b3b;
 
   --shadow:0 18px 70px rgba(0,0,0,.60);
   --shadow2:0 10px 28px rgba(0,0,0,.50);
@@ -45,6 +46,9 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   color:var(--text);
   background:
+    radial-gradient(900px 420px at 50% 0%, rgba(255,59,59,.30), transparent 58%),
+    radial-gradient(700px 280px at 18% 0%, rgba(255,59,59,.18), transparent 55%),
+    radial-gradient(700px 280px at 82% 0%, rgba(255,59,59,.16), transparent 55%),
     radial-gradient(1200px 800px at 15% 10%, rgba(47,123,255,.20), transparent 60%),
     radial-gradient(1100px 780px at 85% 15%, rgba(39,224,160,.14), transparent 62%),
     radial-gradient(900px 700px at 50% 95%, rgba(255,59,212,.10), transparent 60%),
@@ -80,7 +84,8 @@ body{
 .hero{
   border:1px solid var(--line);
   border-radius:var(--r);
-  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+  background:
+    linear-gradient(180deg, rgba(255,70,70,.08), rgba(255,255,255,.018) 22%, rgba(255,255,255,.018));
   box-shadow:var(--shadow);
   overflow:hidden;
   padding-top: env(safe-area-inset-top);
@@ -98,7 +103,7 @@ body{
   position:absolute;
   inset:-60px -40px -60px -40px;
   pointer-events:none;
-  opacity:.26;
+  opacity:.34;
   mix-blend-mode:screen;
 }
 .illusion::before{
@@ -114,13 +119,16 @@ body{
   content:"";
   position:absolute; inset:0;
   background:
+    radial-gradient(540px 250px at 50% 8%, rgba(255,59,59,.34), transparent 58%),
+    radial-gradient(320px 180px at 16% 14%, rgba(255,59,59,.18), transparent 60%),
+    radial-gradient(320px 180px at 84% 14%, rgba(255,59,59,.16), transparent 60%),
     radial-gradient(500px 320px at 20% 25%, rgba(47,123,255,.22), transparent 60%),
     radial-gradient(520px 360px at 78% 35%, rgba(39,224,160,.18), transparent 62%),
     radial-gradient(520px 420px at 55% 85%, rgba(255,59,212,.14), transparent 62%),
     linear-gradient(130deg, transparent 38%, rgba(241,200,77,.14) 40%, transparent 42%),
     linear-gradient(50deg,  transparent 41%, rgba(47,123,255,.11) 43%, transparent 45%),
     linear-gradient(0deg,   transparent 52%, rgba(39,224,160,.09) 54%, transparent 56%);
-  opacity:.9;
+  opacity:.95;
 }
 
 .brandbar{
@@ -133,13 +141,22 @@ body{
   gap:2px;
   min-height:var(--headerH);
   padding:10px 2px 10px 2px;
-  background:rgba(5,6,10,.72);
+  background:
+    linear-gradient(180deg, rgba(255,59,59,.16), rgba(5,6,10,.74) 58%, rgba(5,6,10,.72));
   backdrop-filter: blur(8px);
   border-bottom:1px solid rgba(255,255,255,.10);
+  box-shadow:0 10px 28px rgba(255,59,59,.10);
 }
 
 .brandLeft{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;min-width:0;margin:0px;}
-.brandName{font-size:var(--brand);font-weight:950;letter-spacing:.18px;line-height:1.05;margin:0;}
+.brandName{
+  font-size:var(--brand);
+  font-weight:950;
+  letter-spacing:.18px;
+  line-height:1.05;
+  margin:0;
+  text-shadow:0 0 12px rgba(255,59,59,.22);
+}
 .brandTag{font-size:var(--tag);font-style:italic;opacity:0.85;color:rgba(170,182,199,.92);margin:0;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 .brandMark{
@@ -147,8 +164,8 @@ body{
   width:44px;
   height:62px;
   border-radius:12px;
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 14px 32px rgba(0,0,0,.55);
+  border:1px solid rgba(255,90,90,.24);
+  box-shadow:0 14px 32px rgba(0,0,0,.55), 0 0 18px rgba(255,59,59,.12);
   object-fit:contain;
   display:block;
 }
@@ -181,10 +198,11 @@ body{
   color:rgba(232,238,246,.90);
 }
 .heroLead{
-  color:rgba(170,182,199,.95);
+  color:rgba(255,132,132,.96);
   font-weight:950;
   margin-bottom:4px;
   letter-spacing:.14px;
+  text-shadow:0 0 12px rgba(255,59,59,.16);
 }
 
 .diamondStage{display:flex;justify-content:center;padding:4px 0 0 0;margin-top:10px;}
@@ -552,7 +570,7 @@ footer{
                 <p class="kicker">Communication</p>
                 <h3>Communication shapes trust, behavior, and outcomes.</h3>
                 <div class="slideBody">
-                  <p>This work is shaped by a longstanding study of psychology, communication, motivational interviewing, and the ethical use of persuasion principles to improve trust, behavior change, and clinical outcomes.</p>
+                  <p>MarineMD draws on psychology, motivational interviewing, and communication science to improve trust, behavior change, and clinical outcomes.</p>
 
                   <details>
                     <summary>What this includes <span class="chev">v</span></summary>
@@ -571,7 +589,7 @@ footer{
 
               <section class="slide" id="slide-systems" aria-label="Systems Safety">
                 <p class="kicker">Systems Safety</p>
-                <h3>Capture patterns in delay, communication, and care experience.</h3>
+                <h3>Most breakdowns in care are preventable. Most go uncaptured.</h3>
                 <div class="slideBody">
                   <p>MarineMD focuses on communication gaps, workflow barriers, delayed escalation, and system friction that contribute to preventable harm.</p>
 
@@ -620,12 +638,12 @@ footer{
                 <p class="kicker">Why MarineMD</p>
                 <h3>Physician-founded. Veteran-owned. Systems-focused.</h3>
                 <div class="slideBody">
-                  <p>MarineMD is built around practical reasoning, communication, ethical influence, and safer systems. Its perspective is structured, de-identified, and non-punitive.</p>
+                  <p>MarineMD is built around practical reasoning, communication, ethical influence, and safer systems. MarineMD’s approach is structured, de-identified, and non-punitive.</p>
 
                   <details>
                     <summary>What that means <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      The focus is not naming and shaming. It is finding patterns, improving response, and building tools that make care teams more effective.
+                      The focus is finding patterns, improving response, and building tools that make care teams more effective.
                     </div>
                   </details>
                 </div>
@@ -708,7 +726,7 @@ footer{
                 <p class="kicker">MarineMD</p>
                 <h3>Clear thinking. Better communication. Safer systems.</h3>
                 <div class="slideBody">
-                  <p>Better decisions need better structure. Join MarineMD to access frameworks, communication tools, and early systems-improvement resources.</p>
+                  <p>Better decisions need better structure. Join MarineMD to access frameworks, communication tools, and systems-improvement resources.</p>
                 </div>
               </section>
 
