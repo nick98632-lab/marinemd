@@ -278,30 +278,30 @@ body{
   z-index:4;
   transform:translateZ(44px);
 }
-.node:hover{filter:brightness(1.08)}
+.node:active{filter:brightness(1.06)}
 .nodeTop{
   top:-12px; left:50%;
   transform:translateX(-50%) translateZ(44px);
-  border-color:rgba(241,200,77,.34);
-  box-shadow:var(--shadow2), 0 0 18px rgba(241,200,77,.12);
+  border-color:rgba(241,200,77,.32);
+  box-shadow:var(--shadow2), 0 0 16px rgba(241,200,77,.10);
 }
 .nodeBottom{
   bottom:-18px; left:50%;
   transform:translateX(-50%) translateZ(44px);
   border-color:rgba(39,224,160,.30);
-  box-shadow:var(--shadow2), 0 0 18px rgba(39,224,160,.10);
+  box-shadow:var(--shadow2), 0 0 16px rgba(39,224,160,.10);
 }
 .nodeLeft{
   left:-22px; top:50%;
   transform:translateY(-50%) translateZ(44px);
   border-color:rgba(47,123,255,.30);
-  box-shadow:var(--shadow2), 0 0 18px rgba(47,123,255,.10);
+  box-shadow:var(--shadow2), 0 0 16px rgba(47,123,255,.10);
 }
 .nodeRight{
   right:-22px; top:50%;
   transform:translateY(-50%) translateZ(44px);
   border-color:rgba(255,59,212,.28);
-  box-shadow:var(--shadow2), 0 0 18px rgba(255,59,212,.10);
+  box-shadow:var(--shadow2), 0 0 16px rgba(255,59,212,.10);
 }
 
 /* sections / cards */
@@ -362,7 +362,7 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  transition:filter .12s ease, transform .12s ease, box-shadow .12s ease;
+  transition:filter .12s ease, transform .12s ease;
 }
 .cta:hover{
   filter:brightness(1.08);
@@ -370,16 +370,16 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
 }
 .ctaRZ{
   background:linear-gradient(180deg, rgba(241,200,77,.18), rgba(241,200,77,.08));
-  border-color:rgba(241,200,77,.34);
-  box-shadow:0 0 0 1px rgba(241,200,77,.10) inset, 0 0 18px rgba(241,200,77,.10);
+  border-color:rgba(241,200,77,.32);
+  box-shadow:0 0 0 1px rgba(241,200,77,.10) inset, 0 0 16px rgba(241,200,77,.10);
 }
 .ctaCC{
   background:linear-gradient(180deg, rgba(39,224,160,.18), rgba(39,224,160,.08));
-  border-color:rgba(39,224,160,.32);
-  box-shadow:0 0 0 1px rgba(39,224,160,.10) inset, 0 0 18px rgba(39,224,160,.10);
+  border-color:rgba(39,224,160,.30);
+  box-shadow:0 0 0 1px rgba(39,224,160,.10) inset, 0 0 16px rgba(39,224,160,.10);
 }
 .ctaGhost{
-  background:linear-gradient(180deg, rgba(47,123,255,.14), rgba(255,59,212,.08));
+  background:linear-gradient(180deg, rgba(47,123,255,.12), rgba(255,59,212,.08));
   border-color:rgba(255,255,255,.12);
   box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
 }
@@ -419,7 +419,7 @@ details[open] .chev{transform:rotate(180deg);color:rgba(232,238,246,.92)}
   .slide p{font-size:10.2px;}
 }
 
-#slide-readiness,#slide-systems,#feedback,#framework{
+#slide-readiness,#slide-communication,#feedback,#framework,#join{
   scroll-margin-top:calc(var(--headerH) + 18px);
 }
 
@@ -445,7 +445,7 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
       <div class="heroCopy">
         <h1>Judgment under uncertainty. Standards that hold.</h1>
-        <p>MarineMD is built for clinicians and care teams. It is a veteran-owned effort founded by a physician and United States Marine. The goal is to support teams that train continuously, communicate clearly, and uphold meaningful standards in patient care.</p>
+        <p>MarineMD is a physician-founded initiative for clinicians and care teams who want sharper clinical reasoning, clearer communication, and stronger systems of care.</p>
       </div>
 
       <div class="diamondStage">
@@ -487,7 +487,7 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
           </div>
 
           <a class="node nodeTop" href="#slide-readiness">Clinical Readiness</a>
-          <a class="node nodeBottom" href="#slide-systems">Systems Improvement</a>
+          <a class="node nodeBottom" href="#slide-communication">Communication</a>
         </div>
       </div>
 
@@ -500,42 +500,34 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
               <section class="slide" id="slide-purpose" aria-label="Purpose">
                 <p class="kicker">Purpose</p>
-                <h3>Structure improves decisions when time is short.</h3>
+                <h3>Better decisions need better structure.</h3>
                 <div class="slideBody">
-                  <p>Osler described medicine as uncertainty and probability. Kahneman and Tversky later showed that humans are predictably poor at judgment under uncertainty. Clinicians are not exempt. Under time pressure, incomplete information, and cognitive load, error becomes systematic. MarineMD builds structure that improves probabilistic reasoning and strengthens how teams think together.</p>
+                  <p>Medicine runs on judgment under uncertainty. MarineMD is built to help clinicians think clearly, communicate well, and respond earlier when risk is rising.</p>
 
                   <details>
                     <summary>What this is <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      This is a framework and a set of tools that reinforce common ordering of thought in clinical work. Teams improve when they reason in the same order and speak the same clinical language.
+                      A practical framework for clinical reasoning, communication, feedback, and systems improvement.
                     </div>
                   </details>
                 </div>
               </section>
 
-              <section class="slide" id="slide-systems" aria-label="Systems Improvement">
-                <p class="kicker">Systems Improvement</p>
-                <h3>Better care requires better systems, not just better intentions.</h3>
+              <section class="slide" id="framework" aria-label="Framework">
+                <p class="kicker">Framework</p>
+                <h3>Accountability without blame.</h3>
                 <div class="slideBody">
-                  <p>MarineMD focuses on the communication gaps, workflow barriers, delayed escalation, and structural friction points that contribute to preventable harm. Systems improvement means identifying those weaknesses early and building processes that help teams respond more clearly, more reliably, and with less avoidable delay.</p>
+                  <p>MarineMD looks at how long risk goes unaddressed, where communication breaks down, and how systems can be strengthened before harm happens.</p>
 
                   <details>
-                    <summary>Why this matters <span class="chev">v</span></summary>
+                    <summary>Boundary <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Many failures in medicine do not come from lack of effort. They emerge from fragmented communication, unclear responsibility, delayed recognition, and systems that do not reliably support sound decisions under pressure.
+                      De-identified. Non-punitive. Focused on systems, not naming and shaming.
                     </div>
                   </details>
 
-                  <details>
-                    <summary>What this supports <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      This supports quality improvement, patient safety, escalation review, process redesign, and a more disciplined culture around accountability, communication, and response.
-                    </div>
-                  </details>
-
-                  <p>Open Systems Improvement</p>
                   <div class="ctaRow">
-                    <a class="cta ctaCC" href="systems.html">Open Systems Improvement</a>
+                    <a class="cta ctaGhost" href="framework.html">Framework</a>
                   </div>
                 </div>
               </section>
@@ -550,57 +542,40 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
               <section class="slide" id="slide-readiness" aria-label="Clinical Readiness">
                 <p class="kicker">Clinical Readiness</p>
-                <h3>Continuous cognitive readiness for clinicians working under pressure.</h3>
+                <h3>Clear thinking when the pressure is on.</h3>
                 <div class="slideBody">
-                  <p>Signal means symptoms and signs. Verify means labs, imaging, and data. Action means what to do next, grounded in evidence, guidelines, and one landmark study that matters.</p>
+                  <p>Signal. Verify. Act. Evidence. MarineMD gives teams a shared way to think through clinical problems, communicate faster, and reduce avoidable mistakes.</p>
 
                   <details>
-                    <summary>How it improves teamwork <span class="chev">v</span></summary>
+                    <summary>Why it helps <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Interprofessional relationships improve when teams share a consistent ordering of thought. Cleaner handoffs, fewer assumptions, faster alignment under pressure.
+                      When teams use the same order of thought, handoffs improve, assumptions shrink, and escalation happens earlier.
                     </div>
                   </details>
 
-                  <details>
-                    <summary>Osler <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Medicine is a science of uncertainty and an art of probability.<br/>
-                      - Sir William Osler
-                    </div>
-                  </details>
-
-                  <p>Open Clinical Readiness</p>
                   <div class="ctaRow">
-                    <a class="cta ctaRZ" href="readiness.html">Open Clinical Readiness</a>
+                    <a class="cta ctaRZ" href="readiness.html">Clinical Readiness</a>
                   </div>
                 </div>
               </section>
 
-              <section class="slide" id="feedback" aria-label="Feedback">
-                <p class="kicker">Feedback</p>
-                <h3>Structured feedback to improve care.</h3>
+              <section class="slide" id="slide-communication" aria-label="Communication">
+                <p class="kicker">Communication</p>
+                <h3>Communication shapes trust, behavior, and outcomes.</h3>
                 <div class="slideBody">
-                  <p>A central hub where patients and care teams can submit de-identified feedback about care experiences.<br/>The goal is to identify patterns that institutional metrics may miss and support meaningful improvement.</p>
+                  <p>This work is shaped by a longstanding study of psychology, communication, motivational interviewing, and the ethical use of persuasion principles to improve trust, behavior change, and clinical outcomes.</p>
 
                   <details>
-                    <summary>Why this matters <span class="chev">v</span></summary>
+                    <summary>What this includes <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Hospitals track many important quality measures, but some communication failures and workflow barriers remain difficult to see clearly. This is designed to surface those patterns and support better care.
-                    </div>
-                  </details>
-                  <details>
-                    <summary>Provider feedback and clinical reasoning <span class="chev">v</span></summary>
-                    <div class="detailsBody">
-                      Harrison&#39;s Principles of Internal Medicine describes clinical medicine as work performed under uncertainty, time pressure, and incomplete information. Decisions are probabilistic, not absolute. Clinicians rely on heuristics and pattern recognition to function, but those same tools create predictable blind spots. Error is rarely about knowledge deficits; it is more often about how information is filtered, framed, and acted upon in real clinical environments.<br/><br/>
-                      This is not an individual failure. Harrison&#39;s emphasizes that cognitive bias persists even in experienced physicians and cannot be eliminated by training alone. What improves judgment is structure, shared reasoning, and feedback that reflects how decisions actually unfold at the bedside.<br/><br/>
-                      Institutional metrics capture outcomes and compliance, but they often miss the cognitive conditions under which decisions are made. Feedback from clinicians and care teams surfaces patterns of friction, ambiguity, and delay that shape care long before an outcome is recorded. At scale, this perspective allows systems to identify recurrent failure points, refine policy, and raise standards of care in ways that align with how medicine is actually practiced.<br/><br/>
-                      MarineMD builds on this principle. By combining structured decision frameworks with clinician feedback, it addresses the reality Harrison&#39;s describes: better care emerges not from eliminating uncertainty, but from designing systems that reason well within it.
+                      Motivational interviewing, difficult conversations, bedside trust-building, behavior change, influence principles, and communication strategies that strengthen both patient care and team function.
                     </div>
                   </details>
 
                   <div class="ctaRow">
-                    <a class="cta ctaGhost" href="feedback.html">Open Feedback</a>
-                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
+                    <a class="cta ctaCC" href="communication.html">Communication Resources</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Motivational Interviewing — Coming Soon</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">Behavior Change — Coming Soon</a>
                   </div>
                 </div>
               </section>
@@ -649,43 +624,59 @@ footer{padding:10px 6px 0 6px;color:rgba(170,182,199,.88);font-size:9.6px;text-a
 
           <a class="node nodeLeft" href="#feedback">Feedback</a>
           <a class="node nodeRight" href="#framework">Framework</a>
-          <a class="node nodeBottom" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
+          <a class="node nodeBottom" href="#join">Join MarineMD</a>
         </div>
       </div>
 
       <div class="rows">
-        <div class="hRow" aria-label="Framework">
+        <div class="hRow" aria-label="Feedback and Join">
           <div class="rowTrack">
             <div class="pairPage">
 
-              <section class="slide" id="framework" aria-label="Framework">
-                <p class="kicker">Framework</p>
-                <h3>System accountability through measurable response.</h3>
+              <section class="slide" id="feedback" aria-label="Feedback">
+                <p class="kicker">Feedback</p>
+                <h3>Feedback that leads somewhere.</h3>
                 <div class="slideBody">
-                  <p>This is system accountability, not individual blame. MarineMD measures how long known risk persists without escalation, and whether policy and workflow friction create preventable delay.</p>
-
-                  <p>High-performing teams improve by identifying vulnerable points in a system and strengthening them before they lead to preventable harm. In healthcare, ignored failures do not stay isolated. Accountability exists to improve the system so the whole structure becomes more reliable.</p>
-
-                  <p>The patient-facing part stays de-identified and non-punitive. The verification layer uses standard signed tokens already used in secure systems to help prove institutional origin without exposing identity.</p>
+                  <p>MarineMD is building a way for patients and care teams to share de-identified feedback so patterns in communication, delay, and care experience are easier to see.</p>
 
                   <details>
-                    <summary>Legal boundary (survivable by design) <span class="chev">v</span></summary>
+                    <summary>Why this matters <span class="chev">v</span></summary>
                     <div class="detailsBody">
-                      Aggregated and de-identified. No clinician naming. No patient identification. No diagnosis claims. No urgent triage. Governance data only.
+                      Many breakdowns in care are obvious to the people living through them but hard to capture in standard metrics.
                     </div>
                   </details>
 
                   <div class="ctaRow">
-                    <a class="cta ctaGhost" href="framework.html">Open Framework</a>
+                    <a class="cta ctaGhost" href="feedback.html">Feedback</a>
+                    <a class="cta ctaGhost" href="#" aria-disabled="true" onclick="return false;">In development</a>
                   </div>
                 </div>
               </section>
 
-              <section class="slide" aria-label="Spacer">
-                <p class="kicker">MarineMD</p>
-                <h3>Judgment under uncertainty.</h3>
+              <section class="slide" id="join" aria-label="Join MarineMD">
+                <p class="kicker">Join</p>
+                <h3>Help build what comes next.</h3>
                 <div class="slideBody">
-                  <p>Clinical reasoning, systems improvement, structured feedback, and a clearer language for teams working under pressure.</p>
+                  <p>MarineMD is for clinicians, trainees, educators, and system leaders who want better reasoning, better communication, and safer care.</p>
+
+                  <details>
+                    <summary>Who should join <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Residents, fellows, attendings, nurses, educators, quality leaders, and anyone serious about improving how care teams think and work together.
+                    </div>
+                  </details>
+
+                  <details>
+                    <summary>How to participate <span class="chev">v</span></summary>
+                    <div class="detailsBody">
+                      Follow development, contribute ideas, collaborate on pilots, or help shape the educational and systems side of the project.
+                    </div>
+                  </details>
+
+                  <div class="ctaRow">
+                    <a class="cta ctaCC" href="join.html">Join MarineMD</a>
+                    <a class="cta ctaGhost" href="https://diimed.com" rel="noopener" target="_blank">DIIMED</a>
+                  </div>
                 </div>
               </section>
 
